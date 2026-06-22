@@ -63,6 +63,11 @@
     .substeps li { font-size: 14px; color: var(--text-2); line-height: 1.5; }
     .substeps b { display: inline; color: var(--text); font-size: inherit; }
 
+    .deflist { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 7px; }
+    .deflist li { font-size: 14px; color: var(--text-2); line-height: 1.5; }
+    .deflist b { display: inline; color: var(--text); font-size: inherit; }
+    .deflist .pt { color: var(--brand); font-weight: 700; }
+
     .examples { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; margin-top: 26px; }
     .ex-head { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
     .ex-sub { font-size: 13.5px; color: var(--text-2); margin-bottom: 16px; }
@@ -175,9 +180,9 @@
 
   <main>
     <div class="steps">
-      <div class="step"><div class="n">1</div><div class="t"><b>เลือกสถานการณ์</b>เลือกการ์ดด้านล่าง</div></div>
+      <div class="step"><div class="n">1</div><div class="t"><b>เลือกสถานการณ์</b>เลือกการ์ดด้านล่าง — มี 2 แนวทาง:<ul class="deflist"><li><b>NNPU · ร้านเปิดใหม่</b> — ขายด้วยการให้คำปรึกษา แนะนำ Solutions ที่ดีที่สุด ทั้งหน้าบ้าน หลังบ้าน และเดลิเวอรี่</li><li><b>NPU · ร้านเปิดแล้วแต่ยังไม่มีระบบ</b> — ขายด้วยการหาปัญหาของร้าน เพิ่มประสิทธิภาพการทำงานและการขาย ด้วย Solutions ที่เรามี</li></ul></div></div>
       <div class="step"><div class="n">2</div><div class="t"><b>เริ่ม Roleplay</b><ol class="substeps"><li>ก่อนเริ่ม กดดูตัวอย่างวิธีใช้ Roleplay กับ AI ก่อน (ปุ่มด้านล่าง)</li><li><b>บันทึก VDO หน้าจอพร้อมเปิดกล้องและไมค์</b> (Macbook: กด <b>⌘+Shift+5</b> แล้วเลือก Record)</li><li>คัดลอก Prompt → เปิด ChatGPT แล้วกดเลือก <b>Use voice</b> (โหมดคุยด้วยเสียง) → พูดกับ AI ว่า <b>"ต้องการฝึก Roleplay การขายระบบ POS"</b> → วาง Prompt (⌘/Ctrl+V) แล้วเล่นเป็น Sales</li></ol><a class="guide-link" href="https://drive.google.com/file/d/12C1GVUORZeatnVrrV04a3bmIy_STYq08/view?usp=sharing" target="_blank" rel="noopener">▶ ดูตัวอย่างวิธีใช้ Roleplay กับ AI</a></div></div>
-      <div class="step"><div class="n">3</div><div class="t"><b>ให้คะแนน</b>นำ VDO ที่บันทึก (ทั้งภาพและเสียง) อัปโหลดลงใน Gemini · เลือกโหมด <b style="display:inline">Thinking</b> · แล้ววาง Prompt เกณฑ์ลงไป</div></div>
+      <div class="step"><div class="n">3</div><div class="t"><b>ให้คะแนน</b>นำ VDO ที่บันทึก (ทั้งภาพและเสียง) อัปโหลดลงใน Gemini · เลือกโหมด <b style="display:inline">Thinking</b> · แล้ววาง Prompt เกณฑ์ลงไป<br>คะแนนเต็ม <b style="display:inline">100 คะแนน</b> แบ่งเป็น:<ul class="deflist"><li><b>Trust</b> (เปิดการขาย) = <span class="pt">9</span> คะแนน</li><li><b>Understand</b> (ค้นหาความต้องการ) = <span class="pt">23</span> คะแนน</li><li><b>Solution</b> (นำเสนอโซลูชัน) = <span class="pt">34</span> คะแนน</li><li><b>Value &amp; Objection</b> (คุณค่า/ข้อโต้แย้ง) = <span class="pt">24</span> คะแนน</li><li><b>Close</b> (ปิดการขาย) = <span class="pt">10</span> คะแนน</li></ul></div></div>
     </div>
 
     <div class="cards" id="cards"></div>
