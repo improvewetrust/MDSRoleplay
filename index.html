@@ -76,6 +76,12 @@
     .diff2 { color: #fbbf24; background: rgba(251,191,36,.12); }
     .diff3 { color: #f87171; background: rgba(248,113,113,.12); }
 
+    .group { display: flex; flex-direction: column; gap: 18px; }
+    .group-head { padding: 2px 2px 6px; }
+    .gh-badge { display: inline-block; font-size: 13px; font-weight: 700; letter-spacing: .5px; color: var(--brand); background: var(--brand-light); padding: 5px 12px; border-radius: 7px; }
+    .gh-title { font-size: 27px; font-weight: 700; margin-top: 12px; letter-spacing: -0.5px; }
+    .gh-desc { font-size: 14px; color: var(--text-2); margin-top: 6px; line-height: 1.5; }
+
     .examples { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; margin-top: 26px; }
     .ex-head { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
     .ex-sub { font-size: 13.5px; color: var(--text-2); margin-bottom: 16px; }
@@ -1166,25 +1172,39 @@ Sales ต้องเป็นคนค้นหา ถ้าไม่ถาม 
     $("overlay").addEventListener("click", (e) => { if (e.target.id === "overlay") closeModal(); });
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
 
+    const GROUPS = [
+      { type: "nnpu", tag: "NNPU", title: "ร้านเปิดใหม่", desc: "ขายด้วยการให้คำปรึกษา แนะนำ Solutions ที่ดีที่สุด ทั้งหน้าบ้าน หลังบ้าน และเดลิเวอรี่" },
+      { type: "npu", tag: "NPU", title: "เปิดแล้วยังไม่มีระบบ", desc: "ขายด้วยการหาปัญหาของร้าน เพิ่มประสิทธิภาพการทำงานและการขาย ด้วย Solutions ที่เรามี" },
+    ];
+
+    const cardHTML = (s) => `
+      <div class="card">
+        <div class="card-top">
+          <span class="diffbadge diff${s.level}"><span class="stars">${DIFF[s.level].stars}</span> ${DIFF[s.level].label}</span>
+        </div>
+        <h2>${s.title}</h2>
+        <p class="who">${s.who}</p>
+        <ul class="facts">${s.facts.map((f) => `<li>${f}</li>`).join("")}</ul>
+        <div class="actions">
+          <button class="btn btn-gpt" data-act="roleplay" data-id="${s.id}">🎭 เริ่ม Roleplay → เปิด ChatGPT</button>
+          <button class="btn btn-gemini" data-act="grade" data-id="${s.id}">📊 ให้คะแนน → เปิด Gemini</button>
+          <div class="row2">
+            <button class="btn btn-ghost" data-act="view-roleplay" data-id="${s.id}">👁 ดูบท Roleplay</button>
+            <button class="btn btn-ghost" data-act="view-grade" data-id="${s.id}">👁 ดูเกณฑ์</button>
+          </div>
+        </div>
+      </div>`;
+
     function render() {
       const wrap = $("cards");
-      wrap.innerHTML = SCENARIOS.map((s) => `
-        <div class="card">
-          <div class="card-top">
-            <span class="tag">${s.tag}</span>
-            <span class="diffbadge diff${s.level}"><span class="stars">${DIFF[s.level].stars}</span> ${DIFF[s.level].label}</span>
+      wrap.innerHTML = GROUPS.map((g) => `
+        <div class="group">
+          <div class="group-head">
+            <span class="gh-badge">${g.tag}</span>
+            <h2 class="gh-title">${g.title}</h2>
+            <p class="gh-desc">${g.desc}</p>
           </div>
-          <h2>${s.title}</h2>
-          <p class="who">${s.who}</p>
-          <ul class="facts">${s.facts.map((f) => `<li>${f}</li>`).join("")}</ul>
-          <div class="actions">
-            <button class="btn btn-gpt" data-act="roleplay" data-id="${s.id}">🎭 เริ่ม Roleplay → เปิด ChatGPT</button>
-            <button class="btn btn-gemini" data-act="grade" data-id="${s.id}">📊 ให้คะแนน → เปิด Gemini</button>
-            <div class="row2">
-              <button class="btn btn-ghost" data-act="view-roleplay" data-id="${s.id}">👁 ดูบท Roleplay</button>
-              <button class="btn btn-ghost" data-act="view-grade" data-id="${s.id}">👁 ดูเกณฑ์</button>
-            </div>
-          </div>
+          ${SCENARIOS.filter((s) => s.type === g.type).map(cardHTML).join("")}
         </div>
       `).join("");
 
