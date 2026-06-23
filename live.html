@@ -130,7 +130,8 @@
     const $ = (id) => document.getElementById(id);
 
     // ---------- Worker URL config ----------
-    let WORKER_URL = localStorage.getItem("mds_worker_url") || "";
+    const DEFAULT_WORKER_URL = "https://mds-roleplay-voice.mdslearnanddevelop.workers.dev";
+    let WORKER_URL = localStorage.getItem("mds_worker_url") || DEFAULT_WORKER_URL;
     function refreshCfg(){
       $("wurl").value = WORKER_URL;
       $("wok").textContent = WORKER_URL ? "✓ ตั้งค่าแล้ว" : "ยังไม่ได้ตั้งค่า — กรอก URL ของ Cloudflare Worker";
@@ -286,7 +287,10 @@
       stopMedia();
       setStatus("จบบทสนทนา — กำลังประเมินคะแนน…", false);
       const lines = transcript.filter(l=>l.text).map(l=> (l.role==='sales'?'เซลส์: ':'ลูกค้า: ')+l.text).join("\n");
-      if (!lines.trim()){ showResult("ยังไม่มีบทสนทนาให้ประเมิน (ลองพูดคุยก่อนกดจบ)", true); return; }
+      const count = transcript.filter(l=>l.text).length;
+      const tBlock = "\n\n———————————————\n📝 บทสนทนาที่ระบบบันทึกได้ (" + count + " บรรทัด):\n" +
+                     (lines || "(ระบบไม่ได้บันทึกข้อความเลย — อาจเป็นปัญหาการถอดเสียงเป็นข้อความ)");
+      if (!lines.trim()){ showResult("⚠️ ยังไม่มีบทสนทนาให้ประเมิน — ระบบถอดเสียงเป็นข้อความไม่ได้ ลองพูดให้ชัดขึ้น/นานขึ้น แล้วค่อยกดจบ" + tBlock, true); return; }
       try{
         const r = await fetch(WORKER_URL+"/score",{
           method:"POST", headers:{"Content-Type":"application/json"},
@@ -294,8 +298,8 @@
         });
         const data = await r.json();
         if (data.error) throw new Error(JSON.stringify(data));
-        showResult(data.result, false);
-      }catch(e){ showResult("ประเมินไม่สำเร็จ: "+e, true); }
+        showResult(data.result + tBlock, false);
+      }catch(e){ showResult("ประเมินไม่สำเร็จ: "+e + tBlock, true); }
     }
 
     function showResult(text, isErr){
