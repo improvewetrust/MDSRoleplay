@@ -239,7 +239,7 @@
         if (session.error) throw new Error(JSON.stringify(session));
       }catch(e){ setStatus("สร้างเซสชันไม่สำเร็จ: "+e, false); return; }
 
-      const ephemeral = session.client_secret && session.client_secret.value;
+      const ephemeral = session.value || (session.client_secret && session.client_secret.value);
       if (!ephemeral){ setStatus("ไม่ได้ token จาก Worker (เช็ค OPENAI_API_KEY)", false); return; }
 
       try{
@@ -253,7 +253,7 @@
 
         const offer = await pc.createOffer();
         await pc.setLocalDescription(offer);
-        const sdpRes = await fetch(`https://api.openai.com/v1/realtime?model=${REALTIME_MODEL}`,{
+        const sdpRes = await fetch(`https://api.openai.com/v1/realtime/calls?model=${REALTIME_MODEL}`,{
           method:"POST", body: offer.sdp,
           headers:{ Authorization:`Bearer ${ephemeral}`, "Content-Type":"application/sdp" }
         });

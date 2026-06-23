@@ -37,22 +37,28 @@ export default {
     if (!env.OPENAI_API_KEY) return json({ error: "OPENAI_API_KEY ยังไม่ถูกตั้งค่าใน Worker" }, 500);
 
     try {
-      // ---- ออก ephemeral token สำหรับ Realtime ----
+      // ---- ออก ephemeral token สำหรับ Realtime (GA: /v1/realtime/client_secrets) ----
       if (url.pathname === "/session" && req.method === "POST") {
         const { instructions, voice } = await req.json();
-        const r = await fetch("https://api.openai.com/v1/realtime/sessions", {
+        const r = await fetch("https://api.openai.com/v1/realtime/client_secrets", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${env.OPENAI_API_KEY}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            model: REALTIME_MODEL,
-            voice: voice || DEFAULT_VOICE,
-            instructions: instructions || "",
-            modalities: ["audio", "text"],
-            input_audio_transcription: { model: "whisper-1" },
-            turn_detection: { type: "server_vad", silence_duration_ms: 700 },
+            session: {
+              type: "realtime",
+              model: REALTIME_MODEL,
+              instructions: instructions || "",
+              audio: {
+                input: {
+                  transcription: { model: "whisper-1" },
+                  turn_detection: { type: "server_vad", silence_duration_ms: 700 },
+                },
+                output: { voice: voice || DEFAULT_VOICE },
+              },
+            },
           }),
         });
         const data = await r.json();
