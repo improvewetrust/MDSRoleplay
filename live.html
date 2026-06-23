@@ -58,10 +58,16 @@
     .btn-go{background:var(--gpt);color:#fff}
     .btn-go:hover{filter:brightness(1.08)}
     .btn:disabled{opacity:.5;cursor:not-allowed}
+    .acts{margin-top:auto;display:flex;flex-direction:column;gap:10px}
+    .acts .btn{margin-top:0}
+    .btn-info{background:transparent;color:var(--text-2);border-color:var(--border)}
+    .btn-info:hover{color:var(--text);border-color:var(--border-h)}
 
     /* session overlay */
     #ov{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:24px;z-index:90}
     #ov.show{display:flex}
+    #infoOv{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:24px;z-index:90}
+    #infoOv.show{display:flex}
     .panel{background:var(--surface);border:1px solid var(--border-h);border-radius:var(--radius);width:720px;max-width:100%;max-height:88vh;display:flex;flex-direction:column;overflow:hidden}
     .panel-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
     .panel-head h3{font-size:17px;font-weight:700}
@@ -107,6 +113,20 @@
   </main>
 
   <audio id="aud" autoplay></audio>
+
+  <div id="infoOv">
+    <div class="panel">
+      <div class="panel-head">
+        <h3 id="i-title">ข้อมูลร้าน / สถานการณ์</h3>
+        <button class="x" onclick="closeInfo()">×</button>
+      </div>
+      <div class="result" id="i-body" style="display:block"></div>
+      <div class="panel-foot">
+        <button class="btn btn-ghost" onclick="closeInfo()">ปิด</button>
+        <button class="btn btn-go" id="i-start">🎙️ เริ่มพูดคุยเลย</button>
+      </div>
+    </div>
+  </div>
 
   <div id="ov">
     <div class="panel">
@@ -191,7 +211,10 @@
         <h2>${s.title}</h2>
         <p class="who">${s.who}</p>
         <ul class="facts">${s.facts.map(f=>`<li>${f}</li>`).join("")}</ul>
-        <button class="btn btn-go" data-id="${s.id}">🎙️ เริ่มพูดคุย (เสียงสด)</button>
+        <div class="acts">
+          <button class="btn btn-go" data-go="${s.id}">🎙️ เริ่มพูดคุย (เสียงสด)</button>
+          <button class="btn btn-info" data-info="${s.id}">👁 ดูข้อมูลร้าน / สถานการณ์</button>
+        </div>
       </div>`;
     }
     function render(){
@@ -200,11 +223,32 @@
           <div class="group-head"><span class="gh-badge">${g.tag}</span><h2 class="gh-title">${g.title}</h2><p class="gh-desc">${g.desc}</p></div>
           ${SCENARIOS.filter(s=>s.type===g.type).map(cardHTML).join("")}
         </div>`).join("");
-      $("cards").querySelectorAll("button[data-id]").forEach(b=>{
-        b.addEventListener("click", ()=> startRoleplay(b.dataset.id));
+      $("cards").querySelectorAll("button[data-go]").forEach(b=>{
+        b.addEventListener("click", ()=> startRoleplay(b.dataset.go));
+      });
+      $("cards").querySelectorAll("button[data-info]").forEach(b=>{
+        b.addEventListener("click", ()=> showInfo(b.dataset.info));
       });
     }
     render();
+
+    // ---------- info modal (ดูข้อมูลร้านก่อนเริ่ม) ----------
+    async function showInfo(id){
+      const sc = SCENARIOS.find(s=>s.id===id);
+      $("i-title").textContent = `${DIFF[sc.level].stars} ${DIFF[sc.level].label} · ${sc.title}`;
+      $("i-body").textContent = "กำลังโหลดข้อมูล…";
+      $("infoOv").classList.add("show");
+      try{
+        await loadPrompts();
+        const full = PROMPTS[sc.roleplay] || "";
+        // โชว์เฉพาะส่วนสถานการณ์/ข้อมูลร้าน (ตัดส่วนกฎพฤติกรรมออก)
+        const info = full.split("# ROLEPLAY RULES")[0].trim();
+        $("i-body").textContent = info || full;
+      }catch(e){ $("i-body").textContent = "โหลดข้อมูลไม่สำเร็จ: "+e; }
+      $("i-start").onclick = ()=>{ closeInfo(); startRoleplay(id); };
+    }
+    function closeInfo(){ $("infoOv").classList.remove("show"); }
+    $("infoOv").addEventListener("click", (e)=>{ if(e.target.id==="infoOv") closeInfo(); });
 
     // ---------- realtime session ----------
     let pc=null, dc=null, micStream=null, current=null;
