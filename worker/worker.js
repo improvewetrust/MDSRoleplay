@@ -10,7 +10,7 @@
 
 const REALTIME_MODEL = "gpt-realtime";
 const SCORING_MODEL = "gpt-4o";
-const DEFAULT_VOICE = "alloy";
+const DEFAULT_VOICE = "cedar";
 
 function corsHeaders(env) {
   return {
