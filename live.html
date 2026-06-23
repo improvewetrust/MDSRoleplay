@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sales Roleplay — โหมดเสียงสด (Beta) · Wongnai POS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --brand:#f25533; --brand-light:rgba(242,85,51,.10); --brand-dark:#d94420;
+      --gpt:#10a37f; --gpt-light:rgba(16,163,127,.12);
+      --surface:#17171f; --surface-2:#1e1e28; --bg:#0f0f14;
+      --border:rgba(255,255,255,.075); --border-h:rgba(255,255,255,.16);
+      --text:#ececf1; --text-2:#8a8a9c; --radius:14px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Sarabun','Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.55}
+    a{color:inherit}
+    header{max-width:1040px;margin:0 auto;padding:40px 24px 8px}
+    .badge{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--brand);background:var(--brand-light);padding:6px 14px;border-radius:999px;margin-bottom:18px}
+    h1{font-size:30px;font-weight:700;letter-spacing:-.5px}
+    h1 span{color:var(--brand)}
+    .sub{color:var(--text-2);font-size:16px;margin-top:8px;max-width:720px}
+    .topnav{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+    .pill{font-size:13.5px;font-weight:600;text-decoration:none;background:var(--surface-2);border:1px solid var(--border);padding:8px 14px;border-radius:10px}
+    .pill:hover{border-color:var(--border-h)}
+    main{max-width:1040px;margin:0 auto;padding:24px 24px 80px}
+
+    .cfg{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:24px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .cfg label{font-size:14px;color:var(--text-2);font-weight:600}
+    .cfg input{flex:1;min-width:240px;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:10px 12px;color:var(--text);font-family:inherit;font-size:14px}
+    .cfg button{background:var(--brand);color:#fff;border:none;border-radius:9px;padding:10px 16px;font-family:inherit;font-weight:600;cursor:pointer}
+    .cfg .ok{color:var(--gpt);font-size:13.5px;font-weight:600}
+
+    .cards{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+    @media(max-width:820px){.cards{grid-template-columns:1fr}}
+    .group{display:flex;flex-direction:column;gap:18px}
+    .group-head{padding:2px 2px 6px}
+    .gh-badge{display:inline-block;font-size:13px;font-weight:700;letter-spacing:.5px;color:var(--brand);background:var(--brand-light);padding:5px 12px;border-radius:7px}
+    .gh-title{font-size:27px;font-weight:700;margin-top:12px;letter-spacing:-.5px}
+    .gh-desc{font-size:14px;color:var(--text-2);margin-top:6px;line-height:1.5}
+
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;display:flex;flex-direction:column;transition:border-color .15s,transform .15s}
+    .card:hover{border-color:var(--border-h);transform:translateY(-2px)}
+    .diffbadge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;margin-bottom:14px;align-self:flex-start}
+    .stars{letter-spacing:1px}
+    .diff1{color:#34d399;background:rgba(52,211,153,.12)}
+    .diff2{color:#fbbf24;background:rgba(251,191,36,.12)}
+    .diff3{color:#f87171;background:rgba(248,113,113,.12)}
+    .card h2{font-size:21px;font-weight:700}
+    .card .who{color:var(--text-2);font-size:14px;margin:4px 0 16px}
+    .facts{list-style:none;display:grid;gap:8px;margin-bottom:22px}
+    .facts li{display:flex;gap:9px;font-size:14.5px;color:#c8c8d4}
+    .facts li::before{content:"";flex:none;width:6px;height:6px;border-radius:50%;background:var(--brand);margin-top:9px}
+    .btn{display:flex;align-items:center;justify-content:center;gap:9px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;padding:13px 16px;border-radius:11px;border:1px solid transparent;width:100%;margin-top:auto}
+    .btn-go{background:var(--gpt);color:#fff}
+    .btn-go:hover{filter:brightness(1.08)}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+
+    /* session overlay */
+    #ov{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:24px;z-index:90}
+    #ov.show{display:flex}
+    .panel{background:var(--surface);border:1px solid var(--border-h);border-radius:var(--radius);width:720px;max-width:100%;max-height:88vh;display:flex;flex-direction:column;overflow:hidden}
+    .panel-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .panel-head h3{font-size:17px;font-weight:700}
+    .panel-head .x{background:none;border:none;color:var(--text-2);font-size:22px;cursor:pointer;line-height:1}
+    .status{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text-2);padding:14px 22px;border-bottom:1px solid var(--border)}
+    .dot{width:10px;height:10px;border-radius:50%;background:#666}
+    .dot.live{background:var(--gpt);animation:pulse 1.4s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+    .transcript{flex:1;overflow:auto;padding:18px 22px;display:flex;flex-direction:column;gap:12px;min-height:200px}
+    .line{max-width:85%;padding:10px 14px;border-radius:14px;font-size:14.5px;line-height:1.5;white-space:pre-wrap}
+    .line.sales{align-self:flex-end;background:var(--gpt-light);border:1px solid rgba(16,163,127,.3)}
+    .line.cust{align-self:flex-start;background:var(--surface-2);border:1px solid var(--border)}
+    .line .who{font-size:12px;font-weight:700;color:var(--text-2);margin-bottom:3px}
+    .panel-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end}
+    .panel-foot .btn{width:auto;margin:0;padding:11px 20px}
+    .btn-stop{background:#f87171;color:#111}
+    .btn-ghost{background:transparent;color:var(--text-2);border-color:var(--border)}
+    .btn-ghost:hover{color:var(--text);border-color:var(--border-h)}
+    .result{padding:18px 22px;overflow:auto;flex:1;white-space:pre-wrap;font-size:13.5px;line-height:1.6;color:#d2d2dd;font-family:'Sarabun',monospace}
+    .hint{font-size:12.5px;color:var(--text-2);padding:0 22px 14px}
+    .err{color:#f87171}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="badge">🎙️ Voice Roleplay · Beta</div>
+    <h1>Sales Roleplay <span>โหมดเสียงสด</span></h1>
+    <p class="sub">กดเริ่ม → AI ทักทายด้วยเสียงเอง → พูดคุยขายแบบเรียลไทม์ → กด "จบการขาย" แล้วระบบสรุปคะแนนให้อัตโนมัติ (ไม่ต้องคัดลอก/วาง)</p>
+    <div class="topnav">
+      <a class="pill" href="./index.html">← กลับโหมดพิมพ์ (ChatGPT/Gemini)</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="cfg" id="cfg">
+      <label for="wurl">Worker URL:</label>
+      <input id="wurl" type="text" placeholder="https://mds-roleplay-voice.xxx.workers.dev" />
+      <button id="wsave">บันทึก</button>
+      <span class="ok" id="wok"></span>
+    </div>
+
+    <div class="cards" id="cards"></div>
+  </main>
+
+  <audio id="aud" autoplay></audio>
+
+  <div id="ov">
+    <div class="panel">
+      <div class="panel-head">
+        <h3 id="p-title">Roleplay</h3>
+        <button class="x" onclick="endAndClose()">×</button>
+      </div>
+      <div class="status"><span class="dot" id="p-dot"></span><span id="p-status">กำลังเชื่อมต่อ…</span></div>
+      <div class="transcript" id="p-trans"></div>
+      <div class="result" id="p-result" style="display:none"></div>
+      <div class="hint" id="p-hint">พูดได้เลยเมื่อสถานะเป็น "กำลังคุย" — พูดเป็นพนักงานขาย (Sales)</div>
+      <div class="panel-foot">
+        <button class="btn btn-ghost" onclick="endAndClose()">ปิด</button>
+        <button class="btn btn-stop" id="p-end" onclick="finishRoleplay()">⏹ จบการขาย + ให้คะแนน</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const REALTIME_MODEL = "gpt-realtime";
+    const $ = (id) => document.getElementById(id);
+
+    // ---------- Worker URL config ----------
+    let WORKER_URL = localStorage.getItem("mds_worker_url") || "";
+    function refreshCfg(){
+      $("wurl").value = WORKER_URL;
+      $("wok").textContent = WORKER_URL ? "✓ ตั้งค่าแล้ว" : "ยังไม่ได้ตั้งค่า — กรอก URL ของ Cloudflare Worker";
+    }
+    $("wsave").onclick = () => {
+      WORKER_URL = $("wurl").value.trim().replace(/\/$/,"");
+      localStorage.setItem("mds_worker_url", WORKER_URL);
+      refreshCfg();
+    };
+    refreshCfg();
+
+    // ---------- scenario meta (ตรงกับ index.html) ----------
+    const DIFF = { 1:{label:"ปกติ",stars:"★☆☆"}, 2:{label:"ยาก",stars:"★★☆"}, 3:{label:"ยากมาก",stars:"★★★"} };
+    const GROUPS = [
+      { type:"nnpu", tag:"NNPU", title:"ร้านเปิดใหม่", desc:"ขายด้วยการให้คำปรึกษา แนะนำ Solutions ที่ดีที่สุด ทั้งหน้าบ้าน หลังบ้าน และเดลิเวอรี่" },
+      { type:"npu", tag:"NPU", title:"เปิดแล้วยังไม่มีระบบ", desc:"ขายด้วยการหาปัญหาของร้าน เพิ่มประสิทธิภาพการทำงานและการขาย ด้วย Solutions ที่เรามี" },
+    ];
+    const SCENARIOS = [
+      { id:"nnpu1", type:"nnpu", level:1, title:"Aroma Corner", who:"คุณอรุณ · ร้านกาแฟพรีเมียมกำลังจะเปิด · ยูเนี่ยนมอลล์", facts:["ลูกค้าใจร้อน ดุ ๆ ถามละเอียด ไม่ตกลงง่าย","ยังไม่เคยใช้ POS · กังวลการสอนพนักงาน","งบไม่จำกัด แต่ต้องการระบบที่เชื่อถือได้"], roleplay:"nnpu-roleplay", grade:"nnpu-grade" },
+      { id:"nnpu2", type:"nnpu", level:2, title:"ครัวเชฟตั้ม", who:"เชฟตั้ม · ร้านอาหารฟิวชั่นกำลังจะเปิด · ทองหล่อ", facts:["เคยทำเชนใหญ่ รู้จัก POS เจ้าอื่น · เทียบคู่แข่งตลอด","ถามลึก ROI / ต้นทุนต่อจาน / เดลิเวอรี่","คุมต้นทุนเป๊ะ จับผิดข้อมูลเซลส์"], roleplay:"nnpu2-roleplay", grade:"nnpu-grade" },
+      { id:"nnpu3", type:"nnpu", level:3, title:"ชาบูเฮียบุ้ง", who:"เฮียบุ้ง · ชาบู 2 สาขา กำลังเปิดสาขา 3", facts:["เขี้ยว ใจร้อน เวลาน้อย ต่อรองโหด","เคยใช้ POS เจ้าอื่นแล้วระบบล่ม → ระแวงหนัก","ขู่จะไปเจ้าอื่นตลอด · ต้องการระบบห้ามล่ม"], roleplay:"nnpu3-roleplay", grade:"nnpu-grade" },
+      { id:"npu1", type:"npu", level:1, title:"ข้าวแกงศรีวัฒน์", who:"คุณศรีวัฒน์ · ร้านอาหารจานเดียว เปิดมา 1 ปี · พระราม 4", facts:["พูดตรง ห่วงเรื่องเงิน ต่อรองทุกบาท","จดออเดอร์ด้วยมือ + เครื่องคิดเลข มักผิดพลาด","งบจำกัด · พนักงานบางคนอายุ 55+"], roleplay:"npu-roleplay", grade:"npu-grade" },
+      { id:"npu2", type:"npu", level:2, title:"ก๋วยเตี๋ยวป้าแดง", who:"ป้าแดง · ก๋วยเตี๋ยวเปิดมา 8 ปี ขายดี · ย่านชุมชน", facts:["ติดวิธีเดิม จดมือ · ต่อต้านการเปลี่ยนแปลงสูง","\"อยู่มา 8 ปีไม่เห็นต้องมี\" · ไม่ถนัดเทคโนโลยี","ห่วงว่าตอนพีกจะช้าลง · กลัวใช้ไม่เป็น"], roleplay:"npu2-roleplay", grade:"npu-grade" },
+      { id:"npu3", type:"npu", level:3, title:"ครัวคุณนัท", who:"คุณนัท · ตามสั่ง+คาเฟ่ เปิดมา 2 ปี · ย่านออฟฟิศ", facts:["เคยซื้อ POS ถูกแล้วใช้ยาก ทิ้ง · เสียเงินเปล่า","เคยโดนเซลส์หลอกขาย → ไม่ไว้ใจเซลส์เลย","ตั้งการ์ดสูง ขอหลักฐาน · ขู่รีวิวถ้าพูดเกินจริง"], roleplay:"npu3-roleplay", grade:"npu-grade" },
+    ];
+
+    // ---------- โหลด persona/เกณฑ์ จาก index.html (แหล่งเดียว) ----------
+    let PROMPTS = null;
+    async function loadPrompts(){
+      if (PROMPTS) return PROMPTS;
+      const html = await (await fetch("./index.html", { cache:"no-store" })).text();
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      PROMPTS = {};
+      doc.querySelectorAll('script[type="text/plain"]').forEach(s => { PROMPTS[s.id] = s.textContent.trim(); });
+      return PROMPTS;
+    }
+    const VOICE_PREAMBLE =
+      "[โหมดสนทนาด้วยเสียงแบบเรียลไทม์] คุณกำลังคุยต่อหน้ากับพนักงานขายระบบ POS พูดภาษาไทยเท่านั้น " +
+      "น้ำเสียงเป็นธรรมชาติเหมือนคนจริง ตอบทีละจังหวะสั้น ๆ (1-3 ประโยค) ห้ามพูดยาวเป็นย่อหน้า ห้ามอ่านเป็นข้อ ๆ ห้ามหลุดบทเป็น AI " +
+      "เริ่มบทสนทนาด้วยการทักทายสั้น ๆ ตามบทแล้วรอให้พนักงานขายพูดก่อน นี่คือบทบาทของคุณ:\n\n";
+    function buildInstructions(roleplayId){
+      let t = PROMPTS[roleplayId] || "";
+      t = t.split("เมื่อ Sales พิมพ์ว่า")[0].trim(); // ตัดส่วนที่เกี่ยวกับการพิมพ์ออก
+      return VOICE_PREAMBLE + t;
+    }
+
+    // ---------- render cards ----------
+    function cardHTML(s){
+      return `<div class="card">
+        <span class="diffbadge diff${s.level}"><span class="stars">${DIFF[s.level].stars}</span> ${DIFF[s.level].label}</span>
+        <h2>${s.title}</h2>
+        <p class="who">${s.who}</p>
+        <ul class="facts">${s.facts.map(f=>`<li>${f}</li>`).join("")}</ul>
+        <button class="btn btn-go" data-id="${s.id}">🎙️ เริ่มพูดคุย (เสียงสด)</button>
+      </div>`;
+    }
+    function render(){
+      $("cards").innerHTML = GROUPS.map(g=>`
+        <div class="group">
+          <div class="group-head"><span class="gh-badge">${g.tag}</span><h2 class="gh-title">${g.title}</h2><p class="gh-desc">${g.desc}</p></div>
+          ${SCENARIOS.filter(s=>s.type===g.type).map(cardHTML).join("")}
+        </div>`).join("");
+      $("cards").querySelectorAll("button[data-id]").forEach(b=>{
+        b.addEventListener("click", ()=> startRoleplay(b.dataset.id));
+      });
+    }
+    render();
+
+    // ---------- realtime session ----------
+    let pc=null, dc=null, micStream=null, current=null;
+    let transcript=[]; // {role:'sales'|'cust', text}
+
+    function setStatus(txt, live){ $("p-status").textContent=txt; $("p-dot").classList.toggle("live", !!live); }
+    function renderTranscript(){
+      $("p-trans").innerHTML = transcript.map(l=>
+        `<div class="line ${l.role}"><div class="who">${l.role==='sales'?'เซลส์ (คุณ)':'ลูกค้า (AI)'}</div>${l.text||''}</div>`
+      ).join("");
+      $("p-trans").scrollTop = $("p-trans").scrollHeight;
+    }
+    function addLine(role, text){ transcript.push({role, text}); renderTranscript(); }
+
+    async function startRoleplay(id){
+      current = SCENARIOS.find(s=>s.id===id);
+      if (!WORKER_URL){ alert("กรุณาตั้งค่า Worker URL ก่อน (ช่องด้านบน)"); return; }
+      transcript=[]; renderTranscript();
+      $("p-result").style.display="none"; $("p-trans").style.display="flex";
+      $("p-end").disabled=false; $("p-hint").classList.remove("err");
+      $("p-title").textContent = `${DIFF[current.level].label} · ${current.title}`;
+      $("p-hint").textContent = 'รอสักครู่ AI จะทักทายก่อน แล้วพูดตอบเป็นพนักงานขายได้เลย';
+      $("ov").classList.add("show");
+      setStatus("กำลังขออนุญาตไมโครโฟน…", false);
+
+      try{
+        await loadPrompts();
+        micStream = await navigator.mediaDevices.getUserMedia({ audio:true });
+      }catch(e){ setStatus("เข้าถึงไมโครโฟนไม่ได้: "+e, false); return; }
+
+      setStatus("กำลังสร้างเซสชัน…", false);
+      let session;
+      try{
+        const r = await fetch(WORKER_URL+"/session", {
+          method:"POST", headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({ instructions: buildInstructions(current.roleplay) })
+        });
+        session = await r.json();
+        if (session.error) throw new Error(JSON.stringify(session));
+      }catch(e){ setStatus("สร้างเซสชันไม่สำเร็จ: "+e, false); return; }
+
+      const ephemeral = session.client_secret && session.client_secret.value;
+      if (!ephemeral){ setStatus("ไม่ได้ token จาก Worker (เช็ค OPENAI_API_KEY)", false); return; }
+
+      try{
+        pc = new RTCPeerConnection();
+        pc.ontrack = (e)=>{ $("aud").srcObject = e.streams[0]; };
+        micStream.getTracks().forEach(t=> pc.addTrack(t, micStream));
+
+        dc = pc.createDataChannel("oai-events");
+        dc.onopen = ()=>{ setStatus("กำลังคุย — พูดได้เลย", true); dc.send(JSON.stringify({type:"response.create"})); };
+        dc.onmessage = (ev)=> handleEvent(JSON.parse(ev.data));
+
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        const sdpRes = await fetch(`https://api.openai.com/v1/realtime?model=${REALTIME_MODEL}`,{
+          method:"POST", body: offer.sdp,
+          headers:{ Authorization:`Bearer ${ephemeral}`, "Content-Type":"application/sdp" }
+        });
+        const answer = { type:"answer", sdp: await sdpRes.text() };
+        await pc.setRemoteDescription(answer);
+        setStatus("เชื่อมต่อแล้ว กำลังเริ่ม…", true);
+      }catch(e){ setStatus("เชื่อมต่อเสียงไม่สำเร็จ: "+e, false); }
+    }
+
+    function handleEvent(msg){
+      const t = msg.type || "";
+      // ผู้ใช้ (เซลส์) พูด -> transcription เสร็จ
+      if (t === "conversation.item.input_audio_transcription.completed"){
+        if (msg.transcript) addLine("sales", msg.transcript.trim());
+      }
+      // ลูกค้า (AI) พูด -> assistant audio transcript เสร็จ
+      else if (t === "response.audio_transcript.done" || t === "response.output_audio_transcript.done"){
+        if (msg.transcript) addLine("cust", msg.transcript.trim());
+      }
+    }
+
+    async function finishRoleplay(){
+      $("p-end").disabled=true;
+      stopMedia();
+      setStatus("จบบทสนทนา — กำลังประเมินคะแนน…", false);
+      const lines = transcript.filter(l=>l.text).map(l=> (l.role==='sales'?'เซลส์: ':'ลูกค้า: ')+l.text).join("\n");
+      if (!lines.trim()){ showResult("ยังไม่มีบทสนทนาให้ประเมิน (ลองพูดคุยก่อนกดจบ)", true); return; }
+      try{
+        const r = await fetch(WORKER_URL+"/score",{
+          method:"POST", headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({ rubric: PROMPTS[current.grade], transcript: lines })
+        });
+        const data = await r.json();
+        if (data.error) throw new Error(JSON.stringify(data));
+        showResult(data.result, false);
+      }catch(e){ showResult("ประเมินไม่สำเร็จ: "+e, true); }
+    }
+
+    function showResult(text, isErr){
+      $("p-trans").style.display="none";
+      const el = $("p-result"); el.style.display="block"; el.textContent=text;
+      el.classList.toggle("err", !!isErr);
+      setStatus("ประเมินเสร็จแล้ว", false);
+      $("p-hint").textContent = "ปิดหน้าต่างนี้เพื่อเลือกสถานการณ์ใหม่";
+    }
+
+    function stopMedia(){
+      try{ if(dc) dc.close(); }catch(e){}
+      try{ if(pc) pc.close(); }catch(e){}
+      try{ if(micStream) micStream.getTracks().forEach(t=>t.stop()); }catch(e){}
+      dc=null; pc=null; micStream=null;
+    }
+    function endAndClose(){ stopMedia(); $("ov").classList.remove("show"); }
+  </script>
+</body>
+</html>

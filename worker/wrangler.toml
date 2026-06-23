@@ -1,0 +1,10 @@
+name = "mds-roleplay-voice"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# ตั้ง origin ที่อนุญาต (แนะนำให้ล็อกไว้ที่หน้าเว็บจริง)
+[vars]
+ALLOW_ORIGIN = "https://improvewetrust.github.io"
+
+# OPENAI_API_KEY เป็น secret — อย่าใส่ในไฟล์นี้
+# ตั้งด้วย:  wrangler secret put OPENAI_API_KEY
