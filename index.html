@@ -59,6 +59,21 @@
     }
     .guide-link:hover { border-color: var(--border-h); }
 
+    .voice-cta {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      width: 100%; text-decoration: none;
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: #fff; font-size: 19px; font-weight: 700; letter-spacing: -0.2px;
+      padding: 18px 24px; border-radius: 14px; margin-bottom: 26px;
+      box-shadow: 0 8px 26px rgba(242,85,51,0.32);
+      transition: filter .15s, transform .15s;
+    }
+    .voice-cta:hover { filter: brightness(1.07); transform: translateY(-2px); }
+    .voice-cta .arrow { font-size: 22px; transition: transform .15s; }
+    .voice-cta:hover .arrow { transform: translateX(4px); }
+    .voice-cta .tagbeta { font-size: 12px; font-weight: 700; background: rgba(255,255,255,.22); padding: 3px 9px; border-radius: 6px; }
+    @media (max-width: 560px) { .voice-cta { font-size: 16px; flex-wrap: wrap; text-align: center; } }
+
     .substeps { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 7px; }
     .substeps li { font-size: 14px; color: var(--text-2); line-height: 1.5; }
     .substeps b { display: inline; color: var(--text); font-size: inherit; }
@@ -187,10 +202,12 @@
 </head>
 <body>
   <header>
+    <a class="voice-cta" href="./live.html">
+      🎙️ ลองโหมดเสียงสด <span class="tagbeta">Beta</span> — คุยกับ AI ด้วยเสียง + ให้คะแนนอัตโนมัติ <span class="arrow">→</span>
+    </a>
     <div class="badge">🎯 Sales Skill Lab</div>
     <h1>Sales Roleplay <span>Trainer</span></h1>
     <p class="sub">เลือกสถานการณ์ → ฝึก Roleplay กับ ChatGPT พร้อมอัดวิดีโอหน้าจอ → อัปโหลดวิดีโอให้ Gemini ประเมินคะแนนตามเกณฑ์มาตรฐานของทีม</p>
-    <a class="guide-link" href="./live.html" style="margin-top:14px">🎙️ ลองโหมดเสียงสด (Beta) — คุยกับ AI ด้วยเสียง + ให้คะแนนอัตโนมัติ</a>
   </header>
 
   <main>
