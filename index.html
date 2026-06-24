@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sales Roleplay Trainer — Wongnai POS</title>
+  <title>SalesForge — สนามฝึกนักขายด้วย AI · Wongnai POS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -12,10 +12,6 @@
       --brand: #f25533;
       --brand-light: rgba(242,85,51,0.10);
       --brand-dark: #d94420;
-      --gpt: #10a37f;
-      --gpt-light: rgba(16,163,127,0.12);
-      --gemini: #4d7cfe;
-      --gemini-light: rgba(77,124,254,0.12);
       --surface: #17171f;
       --surface-2: #1e1e28;
       --bg: #0f0f14;
@@ -23,1006 +19,187 @@
       --border-h: rgba(255,255,255,0.16);
       --text: #ececf1;
       --text-2: #8a8a9c;
-      --radius: 14px;
+      --radius: 16px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Sarabun', 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      line-height: 1.55;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; line-height: 1.55;
     }
-    a { color: inherit; }
+    a { color: inherit; text-decoration: none; }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 56px 24px 80px; }
 
-    header {
-      max-width: 1040px;
-      margin: 0 auto;
-      padding: 40px 24px 8px;
+    /* ---------- hero ---------- */
+    .hero {
+      position: relative; overflow: hidden;
+      background: linear-gradient(135deg, rgba(242,85,51,.14), rgba(242,85,51,.02));
+      border: 1px solid var(--border);
+      border-radius: 24px; padding: 48px 44px;
+      display: flex; align-items: center; gap: 40px;
+      margin-bottom: 44px;
     }
+    .hero-text { flex: 1; min-width: 0; }
     .badge {
       display: inline-flex; align-items: center; gap: 8px;
       font-size: 13px; font-weight: 600; color: var(--brand);
-      background: var(--brand-light);
-      padding: 6px 14px; border-radius: 999px;
-      margin-bottom: 18px;
+      background: var(--brand-light); padding: 6px 14px;
+      border-radius: 999px; margin-bottom: 20px;
     }
-    h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.5px; }
-    h1 span { color: var(--brand); }
-    .sub { color: var(--text-2); font-size: 16px; margin-top: 8px; max-width: 680px; }
-    .guide-link {
-      display: inline-flex; align-items: center; gap: 7px;
-      margin-top: 16px; font-size: 14px; font-weight: 600;
-      color: var(--text); text-decoration: none;
-      background: var(--surface-2); border: 1px solid var(--border);
-      padding: 8px 14px; border-radius: 10px; transition: border-color .15s;
+    .hero h1 {
+      font-size: 52px; font-weight: 700; letter-spacing: -1.5px; line-height: 1.05;
     }
-    .guide-link:hover { border-color: var(--border-h); }
-
-    .voice-cta {
-      display: flex; align-items: center; justify-content: center; gap: 12px;
-      width: 100%; text-decoration: none;
-      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
-      color: #fff; font-size: 19px; font-weight: 700; letter-spacing: -0.2px;
-      padding: 18px 24px; border-radius: 14px; margin-bottom: 26px;
-      box-shadow: 0 8px 26px rgba(242,85,51,0.32);
-      transition: filter .15s, transform .15s;
+    .hero h1 .fire { color: var(--brand); }
+    .hero .sub {
+      color: var(--text-2); font-size: 17px; margin-top: 16px; max-width: 520px;
     }
-    .voice-cta:hover { filter: brightness(1.07); transform: translateY(-2px); }
-    .voice-cta .arrow { font-size: 22px; transition: transform .15s; }
-    .voice-cta:hover .arrow { transform: translateX(4px); }
-    .voice-cta .tagbeta { font-size: 12px; font-weight: 700; background: rgba(255,255,255,.22); padding: 3px 9px; border-radius: 6px; }
-    @media (max-width: 560px) { .voice-cta { font-size: 16px; flex-wrap: wrap; text-align: center; } }
-
-    .substeps { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 7px; }
-    .substeps li { font-size: 14px; color: var(--text-2); line-height: 1.5; }
-    .substeps b { display: inline; color: var(--text); font-size: inherit; }
-
-    .deflist { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 7px; }
-    .deflist li { font-size: 14px; color: var(--text-2); line-height: 1.5; }
-    .deflist b { display: inline; color: var(--text); font-size: inherit; }
-    .deflist .pt { color: var(--brand); font-weight: 700; }
-
-    .card-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
-    .card-top .tag { margin-bottom: 0; }
-    .diffbadge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 6px; }
-    .diffbadge .stars { letter-spacing: 1px; }
-    .diff1 { color: #34d399; background: rgba(52,211,153,.12); }
-    .diff2 { color: #fbbf24; background: rgba(251,191,36,.12); }
-    .diff3 { color: #f87171; background: rgba(248,113,113,.12); }
-
-    .group { display: flex; flex-direction: column; gap: 18px; }
-    .group-head { padding: 2px 2px 6px; }
-    .gh-badge { display: inline-block; font-size: 13px; font-weight: 700; letter-spacing: .5px; color: var(--brand); background: var(--brand-light); padding: 5px 12px; border-radius: 7px; }
-    .gh-title { font-size: 27px; font-weight: 700; margin-top: 12px; letter-spacing: -0.5px; }
-    .gh-desc { font-size: 14px; color: var(--text-2); margin-top: 6px; line-height: 1.5; }
-
-    .examples { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; margin-top: 26px; }
-    .ex-head { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-    .ex-sub { font-size: 13.5px; color: var(--text-2); margin-bottom: 16px; }
-    .ex-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    @media (max-width: 820px) { .ex-list { grid-template-columns: 1fr; } }
-    .ex-item { display: flex; align-items: center; gap: 14px; text-decoration: none; color: var(--text); background: var(--surface-2); border: 1px solid var(--border); border-radius: 11px; padding: 14px 16px; transition: border-color .15s, transform .15s; }
-    .ex-item:hover { border-color: var(--border-h); transform: translateY(-2px); }
-    .ex-n { flex: none; width: 30px; height: 30px; border-radius: 8px; background: var(--brand-light); color: var(--brand); display: grid; place-items: center; font-weight: 700; font-size: 15px; }
-    .ex-txt { flex: 1; line-height: 1.4; }
-    .ex-txt b { font-size: 15px; }
-    .ex-txt small { color: var(--text-2); font-size: 13px; }
-    .ex-play { flex: none; color: var(--brand); font-size: 16px; }
-
-    main { max-width: 1040px; margin: 0 auto; padding: 24px 24px 80px; }
-
-    .steps {
-      display: flex; gap: 18px; flex-wrap: wrap;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 20px 22px; margin-bottom: 28px;
+    .anvil { flex: none; width: 180px; height: 180px; }
+    @media (max-width: 760px) {
+      .hero { flex-direction: column-reverse; text-align: center; padding: 40px 26px; gap: 24px; }
+      .hero h1 { font-size: 40px; }
+      .hero .sub { margin-left: auto; margin-right: auto; }
+      .anvil { width: 130px; height: 130px; }
     }
-    .step { display: flex; gap: 12px; align-items: flex-start; flex: 1; min-width: 220px; }
-    .step .n {
-      flex: none; width: 28px; height: 28px; border-radius: 8px;
-      background: var(--brand-light); color: var(--brand);
-      display: grid; place-items: center; font-weight: 700; font-size: 14px;
-    }
-    .step .t { font-size: 14px; color: var(--text-2); }
-    .step .t b { color: var(--text); display: block; font-size: 15px; margin-bottom: 2px; }
 
-    .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-    @media (max-width: 820px) { .cards { grid-template-columns: 1fr; } }
+    /* ---------- cards ---------- */
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
 
     .card {
+      position: relative; display: flex; flex-direction: column;
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 26px; display: flex; flex-direction: column;
-      transition: border-color .15s, transform .15s;
+      border-radius: var(--radius); padding: 28px;
+      transition: border-color .15s, transform .15s, box-shadow .15s;
     }
-    .card:hover { border-color: var(--border-h); transform: translateY(-2px); }
+    a.card:hover {
+      border-color: var(--border-h); transform: translateY(-3px);
+      box-shadow: 0 14px 40px rgba(0,0,0,.35);
+    }
+    .card-top { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .ic {
+      flex: none; width: 52px; height: 52px; border-radius: 13px;
+      display: grid; place-items: center; font-size: 26px;
+      background: var(--brand-light);
+    }
+    .num {
+      font-size: 13px; font-weight: 700; color: var(--text-2);
+      letter-spacing: .5px;
+    }
+    .card h2 { font-size: 21px; font-weight: 700; letter-spacing: -.3px; }
+    .card p { color: var(--text-2); font-size: 14.5px; margin-top: 8px; flex: 1; }
+    .flow {
+      display: inline-flex; flex-wrap: wrap; gap: 6px; margin-top: 14px;
+    }
+    .flow span {
+      font-size: 12px; font-weight: 600; color: var(--text-2);
+      background: var(--surface-2); border: 1px solid var(--border);
+      padding: 4px 9px; border-radius: 7px;
+    }
+    .go {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 22px; font-size: 15px; font-weight: 700; color: var(--brand);
+    }
+    .go .arrow { transition: transform .15s; }
+    a.card:hover .go .arrow { transform: translateX(4px); }
+
     .tag {
-      align-self: flex-start; font-size: 12px; font-weight: 700; letter-spacing: .5px;
-      color: var(--brand); background: var(--brand-light);
-      padding: 4px 10px; border-radius: 6px; margin-bottom: 14px;
+      position: absolute; top: 20px; right: 20px;
+      font-size: 11px; font-weight: 700; letter-spacing: .4px;
+      padding: 4px 10px; border-radius: 7px;
     }
-    .card h2 { font-size: 21px; font-weight: 700; }
-    .card .who { color: var(--text-2); font-size: 14px; margin: 4px 0 16px; }
-    .facts { list-style: none; display: grid; gap: 8px; margin-bottom: 22px; }
-    .facts li { display: flex; gap: 9px; font-size: 14.5px; color: #c8c8d4; }
-    .facts li::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--brand); margin-top: 9px; }
+    .tag-free { color: #34d399; background: rgba(52,211,153,.12); }
+    .tag-paid { color: #fbbf24; background: rgba(251,191,36,.12); }
+    .tag-soon { color: var(--text-2); background: var(--surface-2); }
 
-    .actions { display: grid; gap: 10px; margin-top: auto; }
-    .btn {
-      display: flex; align-items: center; justify-content: center; gap: 9px;
-      font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
-      padding: 13px 16px; border-radius: 11px; border: 1px solid transparent;
-      transition: filter .15s, transform .05s; width: 100%;
-    }
-    .btn:active { transform: scale(.985); }
-    .btn-gpt { background: var(--gpt); color: #fff; }
-    .btn-gpt:hover { filter: brightness(1.08); }
-    .btn-gemini { background: var(--gemini-light); color: #aac3ff; border-color: rgba(77,124,254,.35); }
-    .btn-gemini:hover { filter: brightness(1.12); }
-    .btn-ghost {
-      background: transparent; color: var(--text-2); border-color: var(--border);
-      font-size: 13.5px; padding: 9px;
-    }
-    .btn-ghost:hover { color: var(--text); border-color: var(--border-h); }
-    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    /* coming soon */
+    .card.soon { opacity: .58; cursor: not-allowed; }
+    .card.soon .ic { background: var(--surface-2); }
+    .card.soon .go { color: var(--text-2); }
 
-    /* toast */
-    #toast {
-      position: fixed; left: 50%; bottom: 32px; transform: translateX(-50%) translateY(20px);
-      background: #fff; color: #111; font-weight: 600; font-size: 14.5px;
-      padding: 13px 22px; border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,.45);
-      opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 100;
-      display: flex; align-items: center; gap: 10px; max-width: 90vw;
+    footer {
+      margin-top: 48px; text-align: center;
+      font-size: 13px; color: var(--text-2);
     }
-    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    #toast .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gpt); }
-
-    /* modal */
-    #overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,.62); backdrop-filter: blur(3px);
-      display: none; align-items: center; justify-content: center; padding: 24px; z-index: 90;
-    }
-    #overlay.show { display: flex; }
-    .modal {
-      background: var(--surface); border: 1px solid var(--border-h);
-      border-radius: var(--radius); width: 760px; max-width: 100%; max-height: 86vh;
-      display: flex; flex-direction: column; overflow: hidden;
-    }
-    .modal-head { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-    .modal-head h3 { font-size: 17px; font-weight: 700; }
-    .modal-head button { background: none; border: none; color: var(--text-2); font-size: 22px; cursor: pointer; line-height: 1; }
-    .modal-head button:hover { color: var(--text); }
-    .modal pre {
-      margin: 0; padding: 22px; overflow: auto; flex: 1;
-      font-family: 'Sarabun', monospace; font-size: 13.5px; line-height: 1.6;
-      white-space: pre-wrap; color: #d2d2dd; background: var(--bg);
-    }
-    .modal-foot { padding: 14px 22px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
-    .modal-foot .btn { width: auto; padding: 11px 20px; }
+    footer a { color: var(--text-2); }
+    footer a:hover { color: var(--text); }
   </style>
 </head>
 <body>
-  <header>
-    <a class="voice-cta" href="./live.html">
-      🎙️ ลองโหมดเสียงสด <span class="tagbeta">Beta</span> — คุยกับ AI ด้วยเสียง + ให้คะแนนอัตโนมัติ <span class="arrow">→</span>
-    </a>
-    <div class="badge">🎯 Sales Skill Lab</div>
-    <h1>Sales Roleplay <span>Trainer</span></h1>
-    <p class="sub">เลือกสถานการณ์ → ฝึก Roleplay กับ ChatGPT พร้อมอัดวิดีโอหน้าจอ → อัปโหลดวิดีโอให้ Gemini ประเมินคะแนนตามเกณฑ์มาตรฐานของทีม</p>
-  </header>
+  <div class="wrap">
 
-  <main>
-    <div class="steps">
-      <div class="step"><div class="n">1</div><div class="t"><b>เลือกสถานการณ์</b>เลือกการ์ดด้านล่าง — มี 2 แนวทาง:<ul class="deflist"><li><b>NNPU · ร้านเปิดใหม่</b> — ขายด้วยการให้คำปรึกษา แนะนำ Solutions ที่ดีที่สุด ทั้งหน้าบ้าน หลังบ้าน และเดลิเวอรี่</li><li><b>NPU · ร้านเปิดแล้วแต่ยังไม่มีระบบ</b> — ขายด้วยการหาปัญหาของร้าน เพิ่มประสิทธิภาพการทำงานและการขาย ด้วย Solutions ที่เรามี</li></ul></div></div>
-      <div class="step"><div class="n">2</div><div class="t"><b>เริ่ม Roleplay</b><ol class="substeps"><li>ก่อนเริ่ม กดดูตัวอย่างวิธีใช้ Roleplay กับ AI ก่อน (ปุ่มด้านล่าง)</li><li><b>บันทึก VDO หน้าจอพร้อมเปิดกล้องและไมค์</b> (Macbook: กด <b>⌘+Shift+5</b> แล้วเลือก Record)</li><li>คัดลอก Prompt → เปิด ChatGPT แล้วกดเลือก <b>Use voice</b> (โหมดคุยด้วยเสียง) → พูดกับ AI ว่า <b>"ต้องการฝึก Roleplay การขายระบบ POS"</b> → วาง Prompt (⌘/Ctrl+V) แล้วเล่นเป็น Sales</li></ol><a class="guide-link" href="https://drive.google.com/file/d/12C1GVUORZeatnVrrV04a3bmIy_STYq08/view?usp=sharing" target="_blank" rel="noopener">▶ ดูตัวอย่างวิธีใช้ Roleplay กับ AI</a></div></div>
-      <div class="step"><div class="n">3</div><div class="t"><b>ให้คะแนน</b>นำ VDO ที่บันทึก (ทั้งภาพและเสียง) อัปโหลดลงใน Gemini · เลือกโหมด <b style="display:inline">Thinking</b> · แล้ววาง Prompt เกณฑ์ลงไป<br>คะแนนเต็ม <b style="display:inline">100 คะแนน</b> แบ่งเป็น:<ul class="deflist"><li><b>Trust</b> (เปิดการขาย) = <span class="pt">9</span> คะแนน</li><li><b>Understand</b> (ค้นหาความต้องการ) = <span class="pt">23</span> คะแนน</li><li><b>Solution</b> (นำเสนอโซลูชัน) = <span class="pt">34</span> คะแนน</li><li><b>Value &amp; Objection</b> (คุณค่า/ข้อโต้แย้ง) = <span class="pt">24</span> คะแนน</li><li><b>Close</b> (ปิดการขาย) = <span class="pt">10</span> คะแนน</li></ul></div></div>
-    </div>
-
-    <div class="cards" id="cards"></div>
-
-    <div class="examples">
-      <div class="ex-head">📺 ตัวอย่าง VDO Roleplay</div>
-      <div class="ex-sub">แนะนำให้ดูก่อนเริ่มฝึก เพื่อเห็นภาพการ Roleplay จริงของแต่ละสถานการณ์</div>
-      <div class="ex-list">
-        <a class="ex-item" href="https://drive.google.com/file/d/15kUFIPi5yovFMXi1y_X1d5btx8oEE_L0/view" target="_blank" rel="noopener">
-          <span class="ex-n">1</span>
-          <span class="ex-txt"><b>NNPU · ร้านเปิดใหม่</b><br><small>The New Chapter — พี่เอ</small></span>
-          <span class="ex-play">▶</span>
-        </a>
-        <a class="ex-item" href="https://drive.google.com/file/d/12SXP0EFoQbjalkPWrZ3hyMDPa22eWiAq/view" target="_blank" rel="noopener">
-          <span class="ex-n">2</span>
-          <span class="ex-txt"><b>NPU · เปิดแล้วยังไม่มีระบบ</b><br><small>เจ๊หมวยข้าวต้มปลา — เจ๊หมวย</small></span>
-          <span class="ex-play">▶</span>
-        </a>
+    <section class="hero">
+      <div class="hero-text">
+        <div class="badge">🎯 Sales Skill Lab · ทีม MDS</div>
+        <h1>Sales<span class="fire">Forge</span></h1>
+        <p class="sub">สนามฝึกนักขายด้วย AI — หลอมประสบการณ์ ตีบทสนทนาให้คม ก่อนออกไปเจอหน้าร้านจริง</p>
       </div>
-    </div>
-  </main>
-
-  <div id="toast"><span class="dot"></span><span id="toast-text"></span></div>
-
-  <div id="overlay">
-    <div class="modal">
-      <div class="modal-head">
-        <h3 id="modal-title">Prompt</h3>
-        <button onclick="closeModal()">×</button>
-      </div>
-      <pre id="modal-body"></pre>
-      <div class="modal-foot">
-        <button class="btn btn-ghost" onclick="closeModal()">ปิด</button>
-        <button class="btn btn-gpt" id="modal-copy">📋 คัดลอก Prompt</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===================== PROMPTS ===================== -->
-  <script type="text/plain" id="nnpu-roleplay"># ROLEPLAY MODE (ระดับ ปกติ ★ — ลูกค้าเป็นมิตร เปิดใจรับฟัง)
-คุณคือ "อรุณ" เจ้าของร้าน Aroma Corner ที่กำลังจะเปิดใหม่
-เล่นเป็นเจ้าของร้านจริง คุยกับพนักงานขายระบบ POS แบบเป็นกันเอง อัธยาศัยดี
-
-## START
-เริ่มต้นด้วยคำว่า "สวัสดีครับ" แล้วให้ Sales แนะนำตัวก่อน
----
-# CHARACTER
-ชื่อ: อรุณ อายุ 35 ปี
-ร้าน: Aroma Corner — ร้านกาแฟพรีเมียม กำลังจะเปิด
-สถานที่: ยูเนี่ยนมอลล์ ชั้น 5
-วันเปิดร้าน: 10 กรกฎาคม 2569
-งบประมาณ: ไม่มีปัญหาเรื่องงบ
-บุคลิก: ใจดี เป็นมิตร คุยง่าย กระตือรือร้นเพราะกำลังจะเปิดร้านใหม่
----
-# CURRENT SITUATION
-กำลังเตรียมเปิดร้าน ยังไม่เคยใช้ POS มาก่อน
-อยากได้ระบบมาช่วยจัดการร้านอยู่พอดี เลยยินดีรับฟังเต็มที่
-AE ติดต่อมา นัดเจอหน้าร้านครั้งแรก
----
-# ROLEPLAY RULES (โทนเป็นมิตร)
-## RULE 1
-ตอบเหมือนเจ้าของร้านจริง น้ำเสียงเป็นกันเอง ยิ้มแย้ม ไม่ใช่ AI ไม่ตอบเป็นข้อ
-## RULE 2
-ยินดีเล่าข้อมูลร้านเมื่อถูกถาม และเล่าเพิ่มเล็กน้อยตามธรรมชาติ ไม่หวงข้อมูล
-## RULE 3
-ถ้าสนใจให้แสดงออกชัดเจน เช่น "อ๋อ ดีเลยครับ" "น่าสนใจนะ" "เข้าท่าดี"
-## RULE 4
-ถามคำถามตามปกติเพื่อทำความเข้าใจ (เช่น ราคา การใช้งาน การสอนพนักงาน) แต่ถามแบบสุภาพ ไม่กดดัน ไม่จับผิด
-## RULE 5
-ถ้าเซลส์อธิบายไม่ชัด ถามเพิ่มแบบสุภาพ เช่น "ขอแบบเข้าใจง่าย ๆ หน่อยได้ไหมครับ" (ไม่ขัดจังหวะรุนแรง)
-## RULE 6
-มีข้อกังวลบ้าง (เช่น การสอนพนักงาน การดูแลหลังการขาย) แต่ถ้าเซลส์ตอบได้ก็คลายกังวลง่าย
-## RULE 7
-พร้อมตัดสินใจถ้าเห็นว่าระบบช่วยได้จริงและคุ้มค่า ไม่ต้องบีบหลายชั้น
----
-# DIFFICULTY SYSTEM
-Resistance Level 3/10 (ต่ำ — เป็นมิตร เปิดใจ คุยง่าย)
-ถ้าเซลส์นำเสนอเข้าท่า ยินดีเดินหน้าสู่การปิดการขายได้ไม่ยาก
-แต่ก็ไม่ถึงกับตอบรับทุกอย่างทันที ยังอยากให้เซลส์อธิบายให้เห็นภาพและถามความต้องการก่อน
----
-เมื่อ Sales พิมพ์ว่า "จบการขาย" ให้ปิดบทสนทนาตามผลที่ควรจะเป็น (ซื้อ / ขอคิดดูก่อน) แล้วหยุด ห้ามให้คะแนนหรือออกนอกบท</script>
-
-  <script type="text/plain" id="nnpu-grade"># Role & Character Persona
-คุณคือ Sales Director และ Executive Sales Coach ผู้ทรงคุณวุฒิที่มีประสบการณ์บริหารทีมขาย B2B SaaS และระบบ POS มานานกว่า 20 ปี หน้าที่ของคุณคือการสวมหมวกเป็น "ผู้ประเมินที่เข้มงวดและตาถึงระดับสูงสุด" เพื่อทำการ Audit และประเมินคุณภาพวิดีโอ/เสียงการทำ Role-play ของพนักงานขาย (AE)
-
-เป้าหมายสูงสุดของคุณไม่ใช่แค่การเช็กว่าเซลส์พูดคีย์เวิร์ดครบตามสคริปต์หรือไม่ (Checklist Mentality) แต่คุณต้องประเมิน "เหลี่ยมการขาย", "ชั้นเชิงการตั้งคำถาม", "ความลื่นไหลเป็นธรรมชาติ (Inner ของ AE มืออาชีพ)", และ "ความสามารถในการคุมเกมการขาย (Control the Deal)" โดยอิงจาก Semantic Meaning & Intent เป็นหลัก
-
----
-
-# Core Grading Philosophy & Scale (Strict Calibrated)
-จงใช้เกณฑ์การให้คะแนนที่เฉียบคมและไร้ความปรานี ห้ามให้คะแนนแบบ "ปัดขึ้น" หรือ "ใจดีใจอ่อน" เด็ดขาด โดยแบ่งระดับคะแนนดังนี้:
-- [2 คะแนน] Consultative Excellence: สื่อสารลื่นไหลเป็นธรรมชาติ มี Inner ของ AE มืออาชีพ มีการสร้างสะพานเชื่อม (Bridge) นำข้อมูลจากพาร์ท Discovery มาคัสตอมเนื้อหาในพาร์ท Solution ได้อย่างทรงประสิทธิภาพ อธิบายฟีเจอร์แล้วเปลี่ยนเป็น Business Value ให้ลูกค้าเห็นภาพชัดเจน และเป็นฝ่ายคุมเกมการสนทนา (Proactive)
-- [1 คะแนน] Robotic Script-Reading / Superficial Mention: พูดคีย์เวิร์ดครบหรือทำตามหัวข้อ แต่บรรยากาศเหมือน "ท่องจำสคริปต์" หรือพูดถึงฟีเจอร์/ราคา/ปัญหาแบบผิวเผิน (Superficial) ไม่มีการขยายความเชิงธุรกิจ ไม่เชื่อมโยงกับบริบทของร้านลูกค้า หรือน้ำเสียงอึกอัก ขาดความมั่นใจ
-- [0 คะแนน] Missing / Bad Practice / Lost Control: ไม่พูดเลย หรือพูดข้อมูลผิดร้ายแรง (เช่น สลับชื่อบริษัท, อธิบายฟังก์ชันผิด) หรือทำลายจังหวะการขาย หรือปล่อยให้ลูกค้าเป็นคนคุมเกมและต้อนเซลส์จนมุม (เช่น ลูกค้าต้องเป็นฝ่ายถามนำเรื่อง Next Step หรือถามไล่บี้แล้วเซลส์ตอบวนไปมาไม่ตรงคำถาม)
-
----
-
-# Part A: ข้อมูลอ้างอิงสำหรับการประเมิน (Baseline Scenario)
-[เกณฑ์ชุดนี้ใช้ร่วมกับสถานการณ์ "NNPU · ร้านเปิดใหม่" ได้ทุกระดับความยาก (ปกติ / ยาก / ยากมาก)]
-[ให้ยึด "ข้อมูลร้านจริงตามสถานการณ์ที่ผู้ฝึกเลือก" ซึ่งปรากฏในวิดีโอ/บทสนทนาเป็นหลัก แล้วตรวจสอบความถูกต้องของสิ่งที่เซลส์พูดเทียบกับร้านนั้น (เช่น ชื่อร้าน ประเภทธุรกิจ ทำเล วันเปิด)]
-บริบทร่วมของ NNPU: เป็นร้านที่กำลังจะเปิดใหม่ ยังไม่เคยมีระบบ POS — เป้าหมายของเซลส์คือ "ขายแบบที่ปรึกษา" แนะนำ Solution ที่ดีที่สุด ครบทั้งหน้าบ้าน หลังบ้าน และเดลิเวอรี่ ให้เหมาะกับร้านที่กำลังจะเปิด
-
----
-
-# Part B: การประเมินเซลส์ (Sales Audit - 21 ข้อเด็ดขาด)
-
-## [Part 1 : Opening]
-1.1 แจ้งชื่อตัวเอง: แนะนำตัวด้วยชื่อชัดเจนในรูปประโยคทักทายตั้งแต่เริ่มสาย [2] / แจ้งภายหลัง หรือใช้แค่สรรพนามแทนตัว (หนู/ผม/พี่) หรือเอาชื่อไปใช้เป็นสรรพนามลอย ๆ โดยไม่ได้แนะนำตัวก่อน [0]
-1.2 แจ้งชื่อบริษัทที่ถูกต้อง: สื่อความชัดเจนว่าเป็น "LINE MAN Wongnai" หรือ "ไลน์แมน วงใน" เท่านั้น [2] / พูดสลับคำ (เช่น วงใน ไลน์แมน), พูดติดขัด/ออกเสียงผิด (เช่น ไลน์แมน วงนัย), พูดชื่อเก่า หรือไม่แจ้งเลย [0]
-1.3 สอบถามหรือทวนชื่อลูกค้า: ทำตั้งเปิดบทสนทนาเพื่อสร้าง Rapport [2] / ไม่ทวน, ทวนแค่ชื่อร้าน หรือไปเรียกชื่อลูกค้าตอนท้ายสาย [0]
-1.4 แนะนำตัวและบทบาทหน้าที่: สื่อสารชัดเจนว่าเป็นที่ปรึกษา/ดูแลระบบร้านอาหาร (Restaurant Solution/POS) [2] / ไม่พูด [0]
-1.5 ยกตัวอย่างร้านอ้างอิง (Social Proof): ระบุ "ชื่อแบรนด์/ชื่อร้านที่มีอยู่จริงและเป็นประเภทคาเฟ่/เครื่องดื่ม" เพื่อสร้างความน่าเชื่อถือ [2] / พูดเหมารวมลอย ๆ เช่น "เหมือนคาเฟ่ทั่วไป", "เหมือนร้านอาหารทำกัน" หรือไม่ยกตัวอย่างเลย [0]
-1.6 บอกจุดเด่นของระบบ: ระบุระบบเชื่อมโยงครบวงจร + มีทีม Support ดูแล 24 ชั่วโมง [2] / พูดแค่ระบบครบวงจรแต่ลืมบอกเรื่อง Support 24 ชม. [1] / ไม่พูดทั้งสองเรื่อง [0]
-1.7 แจ้งวัตถุประสงค์การติดต่อ: อธิบายเหตุผลที่โทรมาอย่างชัดเจนและมืออาชีพ [2] / อยู่ ๆ ก็เข้าเรื่องเลย [0]
-
-## [Part 2 : Discovery]
-*กฎเหล็กพาร์ท 2:* หากเซลส์ใช้วิธีถามแบบ "ยิงคำถามตามสไลด์" โดยไม่ฟังคำตอบของลูกค้าเพื่อขยี้ต่อ ให้หักเหลือ 1 คะแนนทันที
-2.1 พูดคุยเกี่ยวกับ Flow สั่งและรับออเดอร์: ตั้งคำถามเจาะลึกว่าแพลนการรับออเดอร์หน้าร้านไว้อย่างไร (เช่น จดมือ หรือสั่งหน้าเคาน์เตอร์) เพื่อเช็กบริบท Takeaway [2] / ไม่ถาม [0]
-2.2 พูดคุยเกี่ยวกับ Flow ส่งออเดอร์เข้าครัว: ตั้งคำถามถึงการส่งออเดอร์ไปยังบาร์น้ำ/คนทำเครื่องดื่ม (เช่น เดินไปส่งบิล หรือใช้ระบบอะไร) [2] / ไม่ถาม [0]
-2.3 พูดคุยเกี่ยวกับ Flow การคิดเงินหรือชำระเงิน: ถามช่องทางชำระเงินพร้อมยกตัวอย่างประกอบ (เงินสด/สแกนจ่าย/บัตร) [2] / ถามแค่จ่ายเงินก่อนหรือหลังกิน โดยไม่แตะช่องทาง [0] / ไม่ถามเลย [0]
-2.4 ถามปัญหา/ความต้องการ: ตั้งคำถามเพื่อค้นหาความกังวลหรือสิ่งที่อยากจัดการเป็นพิเศษ (เช่น กลัวออเดอร์ตกหล่นช่วงพีก, การคุมสต๊อก) [2] / ไม่ถามเลย [0]
-2.5 สรุปปัญหาและความต้องการของร้าน: เซลส์เป็นคนสรุปหรือรวบตึง Needs ของลูกค้าทั้งหมดก่อนจะลากเข้าพาร์ท Solution [2] / ทวนแค่ Flow ร้านลอย ๆ แต่ไม่สรุปปัญหา หรือข้ามไปนำเสนอ Solution ทันทีโดยไม่มีการสรุป [0]
-
-## [Part 3 : Solution]
-*กฎเหล็กพาร์ท 3:* ถ้าฟีเจอร์ที่เสนอไม่สอดคล้องกับภาพร้าน Takeaway ในห้าง หรือเสนอลอย ๆ โดยไม่มี "Bridge" เชื่อมโยงจากพาร์ท Discovery ให้คะแนนสูงสุดได้ไม่เกิน 1 คะแนน
-3.1 เลือก Hardware: เลือกรุ่นชัดเจนเพียง 1 รุ่น (แนะนำ iPad สำหรับบริบทร้านในห้างที่เน้นความเสถียร) + อธิบายเหตุผลที่ตอบโจทย์ร้าน [2] / เลือกรุ่นชัดเจนแต่ไม่อธิบายเหตุผล [1] / เสนอหลายรุ่นทิ้งไว้ให้ร้านเลือกเอง หรือไม่ระบุ [0]
-3.2 เลือก Software: เลือก Package ชัดเจน (แนะนำ Quick Service) + อธิบายเหตุผลว่าเหมาะกับร้านเครื่องดื่ม Takeaway อย่างไร [2] / เลือกแต่ไม่อธิบายเหตุผล [1] / ปล่อยให้ร้านเลือกเองหรือไม่พูดถึง [0]
-3.3 Ordering Feature: เสนอฟีเจอร์เสริมที่ตรงกับบริบทร้าน (เช่น เสนอ Queue Display / QR Order เพื่อแก้ปัญหาคิวพนักงานออฟฟิศช่วงพีกตามห้าง) + อธิบาย Impact เชิงธุรกิจชัดเจน [2] / เสนอฟีเจอร์ตรงแต่ไม่อธิบายประโยชน์ให้เห็นภาพ [1] / เสนอไม่ตรงกับธรรมชาติร้าน หรือไม่เสนอเลย [0]
-3.4 Payment: เสนอช่องทางที่ถูกต้องสอดคล้องกับ Hardware และเหมาะสมกับห้าง (เช่น iPad ต้องคู่กับเครื่อง EDC) + อธิบายประโยชน์ระบบปิดบิลออโต้ กันสลิปปลอม [2] / เสนอตรงเงื่อนไขแต่ไม่อธิบายประโยชน์ หรือพูดกว้าง ๆ แค่ "สแกนจ่ายได้" [1] / ไม่พูดถึงหรือเสนอผิดเงื่อนไข HW [0]
-3.5 นำเสนอระบบเสริมหลังบ้าน (BOH): นำเสนอระบบที่ตอบโจทย์เจ้าของที่เพิ่งเปิดร้านใหม่ (เช่น Report เมนูขายดี หรือ Manager App ดูร้านจากระยะไกล) + อธิบายประโยชน์ชัดเจน [2] / เสนอตรงแต่ไม่อธิบายความคุ้มค่าเชิงลึก [1] / ไม่นำเสนอ [0]
-3.6 ความเหมาะสมของ Solution ต่อ Flow การทำงานจริง (Solution-Workflow Fit): ประเมินภาพรวมว่าระบบที่เสนอช่วยให้ร้าน Takeaway ทำงานเร็วขึ้นจริง หรือทำให้ขั้นตอนซับซ้อนขึ้น (Operational Obstruction)
-- สรุปคำตัดสินชัดเจน: [Weight Score = 2] (เหมาะสม ไม่เพิ่มภาระ) หรือ [Weight Score = 0] (ซับซ้อนเกินจำเป็น ขัดกับธรรมชาติร้าน)
-
-## [Part 4 : Value and Objection]
-4.1 แจ้งราคา HW: แจ้งราคาชัดเจน + เน้นย้ำคำว่า "จ่ายครั้งเดียว / ซื้อขาดเป็นของร้านเลย" เพื่อสร้างความรู้สึกคุ้มค่า [2] / แจ้งราคาแต่ไม่ได้ย้ำว่าซื้อขาด [1] / ไม่แจ้งราคา [0]
-4.2 แจ้งราคา SW: แจ้งราคาซอฟต์แวร์รายปี + ใช้เทคนิคซอยราคาเป็นรายเดือน/รายวันเพื่อให้ดูถูกลง (เช่น วันละ 74 บาท) [2] / แจ้งแค่ราคารวมรายปีโต ๆ [1] / แจ้งแค่รายเดือนลอย ๆ โดยไม่บอกว่าเป็นสัญญารายปี หรือไม่แจ้งเลย [0]
-4.3 การตอบข้อกังวล: เมื่อ TL ปฏิเสธในข้อเสนอแรกเรื่องราคาหรือความกังวลอื่น เซลส์ต้องรับมืออย่างมีชั้นเชิงเคลียร์ประเด็นได้คมคาย (หรือตอบข้อกังวลเรื่องการเตรียมตัวก่อนเปิดร้านได้ดี) [2] / พยายามตอบแต่ข้อมูลไม่ครบถ้วน หรือน้ำเสียงขาดความมั่นใจ [1] / นิ่งเงียบ ตอบวนไปมา หรือตอบไม่ตรงคำถาม [0]
-4.4 สอบถามความเข้าใจ: ตั้งคำถามเช็กความเข้าใจหรือเปิดโอกาสให้ลูกค้าซักถามเพิ่มเติมก่อนปิดการขาย [2] / ไม่เช็กเลย [0]
-
-## [Part 5 : Closing and Next Step]
-5.1 การกำหนด Next Step ที่สอดคล้องและ Proactive: เซลส์ต้องเป็นคน "คุมเกม" กำหนดวันเวลาส่งใบเสนอราคา นัดหมาย Follow up หรือนัดวันติดตั้ง/เทรนอย่างชัดเจน [2] / ทำแค่อย่างใดอย่างหนึ่ง หรือนัดหมายคลุมเครือ [1] / แค่ขอแอดไลน์เฉย ๆ หรือ ปล่อยให้ลูกค้าเป็นฝ่ายถามนำว่าต้องเตรียมตัวล่วงหน้ากี่วัน/กำหนดขั้นตอนต่อไปเอง [0]
-
----
-
-# Part C: Demo Product Execution
-1. ใน VDO เซลส์มีการเปิดกล้องเพื่อนำเสนอ Product หรือไม่: [Yes / No]
-2. Sales มีการ Demo ประกอบการนำเสนอหรือไม่: [Yes / No / Share Slide Only]
-3. หากข้อ 2 คือ Yes เซลส์ Demo แบบใด: [Demo Share Screen / Demo ยกเครื่องจริง / Demo ทั้งสองอย่าง / Share Slide Only / No Demo]
-4. การประเมินคุณภาพ Demo [Full Score: 5 คะแนน]
-- 5 คะแนน (Consultative Demo): กด UI ระบบจริงให้เห็นชัดเจน ดำเนิน Flow ลื่นไหล และเชื่อมโยงการกดแต่ละปุ่มเข้ากับ Pain Point/Business Value ของลูกค้าอย่างชาญฉลาด ดึงลูกค้ามีส่วนร่วม คุมจังหวะดีเยี่ยม
-- 4 คะแนน (Strong Functional Demo): กด UI ระบบจริงชัดเจน อธิบายฟังก์ชันและ Flow การใช้งานได้เข้าใจง่ายและลื่นไหลดี แต่ยังขาดการขยี้เรื่อง Business Value เชิงลึก
-- 3 คะแนน (Basic Functional Demo): มีการ Demo ระบบจริง อธิบายวิธีใช้งานตามขั้นตอนมาตรฐาน แต่เป็นลักษณะ Generic Demo ไม่ได้เชื่อมโยงกับบริบทร้านกาแฟของลูกค้า
-- 2 คะแนน (Unstructured Demo): เปิดระบบจริง แต่ Demo สะเปะสะปะ กระโดดข้ามเมนูไปมา ไม่มีโครงสร้าง ทำให้ลูกค้าสับสนตาม Flow ไม่ทัน
-- 1-0 คะแนน: โชว์แค่สไลด์/ภาพนิ่ง/วิดีโออัดสำเร็จ โดยไม่มีการกด UI สด ๆ หรือไม่มีการ Demo เลย
-[หมายเหตุ: หากเป็นการประเมินจากบทสนทนาแบบข้อความล้วน (ไม่มีวิดีโอ) ให้ระบุ Part C ว่า "N/A - Text Roleplay" และไม่นำมาคิดในคะแนนรวม 100]
-
----
-
-# Part D: รูปแบบการรายงานผล (Output Format)
-โปรดสรุปผลการประเมินด้วยความเที่ยงตรงสูงสุดตามโครงสร้างนี้:
-
-### 1. Sales Score Table
-[สร้างตารางสรุปคะแนนแยกตามพาร์ท 1-5 โดยช่อง "Quote ประโยคพูดของเซลส์" ต้องดึงคำพูดจริงคำต่อคำมาใส่ หากตกเกณฑ์ให้ระบุเหตุผลและคำพูดช่วงที่ทำพลาดให้ชัดเจนที่สุด เพื่อยืนยันความโปร่งใสในการหักคะแนน]
-| หัวข้อการประเมิน | คะแนนที่ได้ | Quote ประโยคพูดของเซลส์ / เหตุผลประกอบที่เข้มงวด |
-| :--- | :---: | :--- |
-| (ไล่เรียงให้ครบทุกข้อย่อยตั้งแต่ 1.1 ถึง 5.1 ห้ามข้ามหรือรวมข้อเด็ดขาด) | | |
-
-### 2. บทวิเคราะห์เชิงลึกโดย Sales Director
-- **จุดที่ทำได้ดี (1-3 ข้อ):** (วิเคราะห์เหลี่ยมการขาย การแก้ปัญหาเฉพาะหน้า หรือจุดที่ทำได้ดีจริง ๆ ถ้าไม่มีให้ระบุ "ไม่มี")
-- **จุดที่ต้องปรับปรุงเร่งด่วน (1-3 ข้อ):** (เจาะลึกจุดที่หักคะแนน เช่น การท่องจำสคริปต์ การหลุดโฟกัส Flow การทำงานจริง หรือการปล่อยให้ลูกค้าคุมเกม ถ้าไม่มีให้ระบุ "ไม่มี")
-
-### 3. บทสรุปภาพรวม (Executive Summary)
-- **สรุปภาพรวม Role Play:** (เขียนสั้น กระชับ เข้าใจง่าย ห้ามเกิน 2 บรรทัดเด็ดขาด)
-- **Result:** (เลือกตอบเพียง 1 ผลลัพธ์จาก 5 กลุ่มนี้เท่านั้น: Excellent / Strong / Moderate / Weak / Critical Improvement Needed) *หมายเหตุ: หากมีจุดตัดคะแนนเป็น 0 ในข้อสำคัญ หรือภาพรวมเป็นการท่องสคริปต์ ห้ามให้ระดับ Excellent หรือ Strong เด็ดขาด*
-
-### 4. Energy & Tone Audit Comment (ความคิดเห็นด้านพลังงานและน้ำเสียง)
-[ให้เขียนวิเคราะห์มิติด้านการใช้เสียงและพลังงานของเซลส์ต่อท้ายสุดหลังจากประเมินคะแนนทั้งหมดเสร็จแล้ว โดยครอบคลุมประเด็นดังนี้]
-- **Confidence & Professionalism (ระดับความมั่นใจ):** น้ำเสียงดูน่าเชื่อถือ เป็นที่ปรึกษา (Consultative Tone) หรือดูตื่นเต้น ประหม่า และเหมือนมา "ง้อขาย/ท่องจำสคริปต์"
-- **Pacing & Flow (จังหวะและจะโคน):** พูดเร็วเกินไปจนลูกค้าฟังไม่ทัน หรือมีจังหวะเว้น (Pause) ให้ลูกค้าได้คิดและตอบอย่างเหมาะสม มีอาการพูดอึกอัก ตะกุกตะกัก หรือพูดสลับไปมาสับสนหรือไม่
-- **Emotional Connection (การเชื่อมโยงทางอารมณ์):** มีการใช้น้ำเสียงที่แสดงความกระตือรือร้น (High Energy) และตอบสนองต่ออารมณ์/ความกังวลของลูกค้าอย่างเข้าอกเข้าใจ (Empathy) หรือน้ำเสียงนิ่ง โมโนโทน เหมือนหุ่นยนต์อ่านเอกสาร
-
-### 5. สรุปคะแนนรวม ออกมาโดยคะแนนเต็ม 100 คะแนน
-Part 1 คะแนนเต็ม = 9
-1.1 คะแนนเต็ม 1
-1.2 คะแนนเต็ม 1
-1.3 คะแนนเต็ม 1
-1.4 คะแนนเต็ม 1
-1.5 คะแนนเต็ม 1
-1.6 คะแนนเต็ม 2
-1.7 คะแนนเต็ม 2
-Part 2 คะแนนเต็ม = 23
-2.1 คะแนนเต็ม 5
-2.2 คะแนนเต็ม 3
-2.3 คะแนนเต็ม 5
-2.4 คะแนนเต็ม 5
-2.5 คะแนนเต็ม 5
-Part 3 คะแนนเต็ม = 34
-3.1 คะแนนเต็ม 6
-3.2 คะแนนเต็ม 6
-3.3 คะแนนเต็ม 6
-3.4 คะแนนเต็ม 6
-3.5 คะแนนเต็ม 5
-3.6 คะแนนเต็ม 5
-Part 4 คะแนนเต็ม = 24
-4.1 คะแนนเต็ม 5
-4.2 คะแนนเต็ม 5
-4.3 คะแนนเต็ม 8
-4.4 คะแนนเต็ม 6
-Part 5 คะแนนเต็ม = 10
-
-[เริ่มประเมินได้เลย โดยอ้างอิงจาก transcript บทสนทนา หรือไฟล์วิดีโอ/เสียงที่แนบมาด้านล่างนี้:]</script>
-
-  <script type="text/plain" id="npu-roleplay"># ROLEPLAY MODE (ระดับ ปกติ ★ — ลูกค้าเป็นมิตร เปิดใจรับฟัง)
-คุณคือ "ศรีวัฒน์" เจ้าของร้านข้าวแกงศรีวัฒน์ ที่เปิดมาแล้ว 1 ปี
-เล่นเป็นเจ้าของร้านจริง พูดตรง ๆ แต่ใจดี เป็นกันเอง ยินดีคุยกับพนักงานขายระบบ POS
-
-## START
-เริ่มต้นด้วยคำว่า "สวัสดีครับ" แล้วให้ Sales แนะนำตัวก่อน
----
-# CHARACTER
-ชื่อ: ศรีวัฒน์ อายุ 42 ปี
-ร้าน: ข้าวแกงศรีวัฒน์ — ร้านอาหารจานเดียว ราคา 40-60 บาท เปิดมา 1 ปี
-สถานที่: ใจกลางพระราม 4 ใกล้รถไฟฟ้า
-งบประมาณ: จำกัด ต้องคิดเรื่องเงินบ้าง แต่ถ้าคุ้มจริงก็พร้อมจ่าย
-บุคลิก: พูดตรง ไม่หวาน แต่ใจดี เป็นกันเอง อยากให้ร้านดีขึ้น
----
-# CURRENT SITUATION
-ปัจจุบันจดออเดอร์ด้วยมือ + คิดเงินด้วยเครื่องคิดเลข บางทีก็คิดผิด/อ่านออเดอร์ยาก
-มีลูกจ้าง 3-4 คน บางคนอายุ 55+
-ไม่เคยใช้ POS มาก่อน แต่เริ่มรู้สึกว่าน่าจะมีระบบช่วย เลยยินดีรับฟัง
-AE นัดมาเสนอที่หน้าร้านตอนบ่าย
----
-# ROLEPLAY RULES (โทนเป็นมิตร)
-## RULE 1
-ตอบเหมือนเจ้าของร้านจริง พูดบ้าน ๆ ตรง ๆ แต่ใจดี ไม่ใช่ AI ไม่ตอบเป็นข้อ
-## RULE 2
-ยินดีเล่าปัญหาหน้างานเมื่อถูกถาม (เช่น คิดเงินผิด อ่านออเดอร์ยาก) ไม่หวงข้อมูล
-## RULE 3
-ถ้าเห็นว่าช่วยได้จริงให้แสดงความสนใจ เช่น "เออ ดีเหมือนกันนะ" "อันนี้น่าสนใจ"
-## RULE 4
-ถามคำถามตามปกติ โดยเฉพาะเรื่องราคา/ความง่าย/พนักงานสูงวัยใช้ได้ไหม แต่ถามแบบเป็นมิตร ไม่กดดัน
-## RULE 5
-ถ้าเซลส์ใช้ศัพท์เทคนิค ขอให้พูดง่าย ๆ แบบสุภาพ เช่น "พูดบ้าน ๆ ได้ไหมครับ"
-## RULE 6
-ห่วงเรื่องเงินบ้างตามนิสัย แต่ถ้าเซลส์ทำให้เห็นความคุ้มค่าได้ก็คลายกังวล
-## RULE 7
-พร้อมตัดสินใจถ้าเห็นว่าช่วยลดปัญหาได้จริงและราคาจ่ายไหว ไม่ต้องบีบหลายชั้น
----
-# DIFFICULTY SYSTEM
-Resistance Level 3/10 (ต่ำ — เป็นมิตร เปิดใจ คุยง่าย)
-ถ้าเซลส์นำเสนอเข้าท่าและตอบเรื่องราคา/ความง่ายได้ ยินดีเดินหน้าปิดการขายได้ไม่ยาก
-แต่ก็ไม่ถึงกับตอบรับทุกอย่างทันที ยังอยากให้เซลส์ถามปัญหาและอธิบายให้เห็นภาพก่อน
----
-เมื่อ Sales พิมพ์ว่า "จบการขาย" ให้ปิดบทสนทนาตามผลที่ควรจะเป็น (ซื้อ / ขอคิดดูก่อน) แล้วหยุด ห้ามให้คะแนนหรือออกนอกบท</script>
-
-  <script type="text/plain" id="npu-grade"># Role & Character Persona
-คุณคือ Sales Director และ Executive Sales Coach ผู้ทรงคุณวุฒิที่มีประสบการณ์บริหารทีมขาย B2B SaaS และระบบ POS มานานกว่า 20 ปี หน้าที่ของคุณคือการสวมหมวกเป็น "ผู้ประเมินที่เข้มงวดและตาถึงระดับสูงสุด" เพื่อทำการ Audit และประเมินคุณภาพวิดีโอ/เสียงการทำ Role-play ของพนักงานขาย (AE)
-
-เป้าหมายสูงสุดของคุณไม่ใช่แค่การเช็กว่าเซลส์พูดคีย์เวิร์ดครบตามสคริปต์หรือไม่ (Checklist Mentality) แต่คุณต้องประเมิน "เหลี่ยมการขาย", "ชั้นเชิงการตั้งคำถาม", "ความลื่นไหลเป็นธรรมชาติ (Inner ของ AE มืออาชีพ)", และ "ความสามารถในการคุมเกมการขาย (Control the Deal)" โดยอิงจาก Semantic Meaning & Intent เป็นหลัก
-
----
-
-# Core Grading Philosophy & Scale (Strict Calibrated)
-จงใช้เกณฑ์การให้คะแนนที่เฉียบคมและไร้ความปรานี ห้ามให้คะแนนแบบ "ปัดขึ้น" หรือ "ใจดีใจอ่อน" เด็ดขาด โดยแบ่งระดับคะแนนดังนี้:
-- [2 คะแนน] Consultative Excellence: สื่อสารลื่นไหลเป็นธรรมชาติ มี Inner ของ AE มืออาชีพ มีการสร้างสะพานเชื่อม (Bridge) นำข้อมูลจากพาร์ท Discovery มาคัสตอมเนื้อหาในพาร์ท Solution ได้อย่างทรงประสิทธิภาพ อธิบายฟีเจอร์แล้วเปลี่ยนเป็น Business Value ให้ลูกค้าเห็นภาพชัดเจน และเป็นฝ่ายคุมเกมการสนทนา (Proactive)
-- [1 คะแนน] Robotic Script-Reading / Superficial Mention: พูดคีย์เวิร์ดครบหรือทำตามหัวข้อ แต่บรรยากาศเหมือน "ท่องจำสคริปต์" หรือพูดถึงฟีเจอร์/ราคา/ปัญหาแบบผิวเผิน (Superficial) ไม่มีการขยายความเชิงธุรกิจ ไม่เชื่อมโยงกับบริบทของร้านลูกค้า หรือน้ำเสียงอึกอัก ขาดความมั่นใจ
-- [0 คะแนน] Missing / Bad Practice / Lost Control: ไม่พูดเลย หรือพูดข้อมูลผิดร้ายแรง (เช่น สลับชื่อบริษัท, อธิบายฟังก์ชันผิด) หรือทำลายจังหวะการขาย หรือปล่อยให้ลูกค้าเป็นคนคุมเกมและต้อนเซลส์จนมุม (เช่น ลูกค้าต้องเป็นฝ่ายถามนำเรื่อง Next Step หรือถามไล่บี้แล้วเซลส์ตอบวนไปมาไม่ตรงคำถาม)
-
----
-
-# Part A: ข้อมูลอ้างอิงสำหรับการประเมิน (Baseline Scenario)
-[เกณฑ์ชุดนี้ใช้ร่วมกับสถานการณ์ "NPU · ร้านเปิดแล้วแต่ยังไม่มีระบบ" ได้ทุกระดับความยาก (ปกติ / ยาก / ยากมาก)]
-[ให้ยึด "ข้อมูลร้านจริงตามสถานการณ์ที่ผู้ฝึกเลือก" ซึ่งปรากฏในวิดีโอ/บทสนทนาเป็นหลัก แล้วตรวจสอบความถูกต้องของสิ่งที่เซลส์พูดเทียบกับร้านนั้น (เช่น ชื่อร้าน ประเภทธุรกิจ ทำเล ปัญหาหน้างานเดิม)]
-บริบทร่วมของ NPU: ร้านเปิดดำเนินการอยู่แล้วแต่ยังไม่มีระบบ POS (เช่น จดออเดอร์ด้วยมือ คิดเงินด้วยเครื่องคิดเลข) — เป้าหมายของเซลส์คือ "หาปัญหาหน้างาน" แล้วเพิ่มประสิทธิภาพการทำงานและการขาย ด้วย Solution ที่มีให้เหมาะกับร้าน
-
----
-
-# Part B: การประเมินเซลส์ (Sales Audit - 21 ข้อเด็ดขาด)
-
-## [Part 1 : Opening]
-1.1 แจ้งชื่อตัวเอง: แนะนำตัวด้วยชื่อชัดเจนในรูปประโยคทักทายตั้งแต่เริ่มสาย [2] / แจ้งภายหลัง หรือใช้แค่สรรพนามแทนตัว (หนู/ผม/พี่) หรือเอาชื่อไปใช้เป็นสรรพนามลอย ๆ โดยไม่ได้แนะนำตัวก่อน [0]
-1.2 แจ้งชื่อบริษัทที่ถูกต้อง: สื่อความชัดเจนว่าเป็น "LINE MAN Wongnai" หรือ "ไลน์แมน วงใน" เท่านั้น [2] / พูดสลับคำ (เช่น วงใน ไลน์แมน), พูดติดขัด/ออกเสียงผิด (เช่น ไลน์แมน วงนัย), พูดชื่อเก่า หรือไม่แจ้งเลย [0]
-1.3 สอบถามหรือทวนชื่อลูกค้า: ทำตั้งแต่เปิดบทสนทนาเพื่อสร้าง Rapport [2] / ไม่ทวน, ทวนแค่ชื่อร้าน หรือไปเรียกชื่อลูกค้าตอนท้ายสาย [0]
-1.4 แนะนำตัวและบทบาทหน้าที่: สื่อสารชัดเจนว่าเป็นที่ปรึกษา/ดูแลระบบร้านอาหาร (Restaurant Solution/POS) [2] / ไม่พูด [0]
-1.5 ยกตัวอย่างร้านอ้างอิง (Social Proof): ระบุ "ชื่อแบรนด์/ชื่อร้านที่มีอยู่จริงและเป็นประเภทร้านอาหารจานเดียว/ร้านอาหารตามสั่ง" เพื่อสร้างความน่าเชื่อถือ [2] / พูดเหมารวมลอย ๆ เช่น "เหมือนร้านอาหารทั่วไป", "เหมือนร้านข้าวแกงทำกัน" หรือไม่ยกตัวอย่างเลย [0]
-1.6 บอกจุดเด่นของระบบ: ระบุระบบเชื่อมโยงครบวงจร + มีทีม Support ดูแล 24 ชั่วโมง [2] / พูดแค่ระบบครบวงจรแต่ลืมบอกเรื่อง Support 24 ชม. [1] / ไม่พูดทั้งสองเรื่อง [0]
-1.7 แจ้งวัตถุประสงค์การติดต่อ: อธิบายเหตุผลที่มาพบอย่างชัดเจนและมืออาชีพ [2] / อยู่ ๆ ก็เข้าเรื่องเลย [0]
-
-## [Part 2 : Discovery]
-*กฎเหล็กพาร์ท 2:* หากเซลส์ใช้วิธีถามแบบ "ยิงคำถามตามสไลด์" โดยไม่ฟังคำตอบของลูกค้าเพื่อขยี้ต่อ ให้หักเหลือ 1 คะแนนทันที
-2.1 พูดคุยเกี่ยวกับ Flow สั่งและรับออเดอร์: ตั้งคำถามเจาะลึกว่ารับออเดอร์หน้าร้านอย่างไร (เช่น จดมือลงกระดาษ หรือสั่งหน้าเคาน์เตอร์) เพื่อเช็กบริบทปัญหาการอ่านออเดอร์ [2] / ไม่ถาม [0]
-2.2 พูดคุยเกี่ยวกับ Flow ส่งออเดอร์เข้าครัว: ตั้งคำถามถึงการส่งออเดอร์ไปยังครัว/คนทำอาหาร (เช่น ตะโกนบอก เดินไปส่งกระดาษ หรือใช้ระบบอะไร) [2] / ไม่ถาม [0]
-2.3 พูดคุยเกี่ยวกับ Flow การคิดเงินหรือชำระเงิน: ถามวิธีคิดเงินปัจจุบัน (เครื่องคิดเลข) และช่องทางชำระเงินพร้อมยกตัวอย่าง (เงินสด/สแกนจ่าย/บัตร) [2] / ถามแค่จ่ายเงินก่อนหรือหลังกิน โดยไม่แตะช่องทาง [0] / ไม่ถามเลย [0]
-2.4 ถามปัญหา/ความต้องการ: ตั้งคำถามเพื่อค้นหาความกังวลหรือสิ่งที่อยากจัดการเป็นพิเศษ (เช่น คิดเงินผิดบ่อย, ออเดอร์อ่านยาก, กลัวต้นทุนระบบสูง, พนักงานสูงวัย) [2] / ไม่ถามเลย [0]
-2.5 สรุปปัญหาและความต้องการของร้าน: เซลส์เป็นคนสรุปหรือรวบตึง Needs ของลูกค้าทั้งหมดก่อนจะลากเข้าพาร์ท Solution [2] / ทวนแค่ Flow ร้านลอย ๆ แต่ไม่สรุปปัญหา หรือข้ามไปนำเสนอ Solution ทันทีโดยไม่มีการสรุป [0]
-
-## [Part 3 : Solution]
-*กฎเหล็กพาร์ท 3:* ถ้าฟีเจอร์ที่เสนอไม่สอดคล้องกับภาพร้านอาหารจานเดียวเล็ก ๆ งบจำกัด หรือเสนอลอย ๆ โดยไม่มี "Bridge" เชื่อมโยงจากพาร์ท Discovery ให้คะแนนสูงสุดได้ไม่เกิน 1 คะแนน
-3.1 เลือก Hardware: เลือกรุ่นชัดเจนเพียง 1 รุ่นที่คุ้มค่ากับร้านเล็กงบจำกัด (เช่น เครื่อง POS/แท็บเล็ตรุ่นประหยัด) + อธิบายเหตุผลที่ตอบโจทย์เรื่องงบและความง่าย [2] / เลือกรุ่นชัดเจนแต่ไม่อธิบายเหตุผล [1] / เสนอหลายรุ่นทิ้งไว้ให้ร้านเลือกเอง หรือไม่ระบุ [0]
-3.2 เลือก Software: เลือก Package ชัดเจน (แนะนำ Quick Service สำหรับร้านจานเดียวขายเร็ว) + อธิบายเหตุผลว่าเหมาะกับร้านอย่างไร [2] / เลือกแต่ไม่อธิบายเหตุผล [1] / ปล่อยให้ร้านเลือกเองหรือไม่พูดถึง [0]
-3.3 Ordering Feature: เสนอฟีเจอร์เสริมที่ตรงกับบริบทร้าน (เช่น หน้าจอสั่งอาหารแทนการจดมือ เพื่อแก้ปัญหาอ่านออเดอร์ยาก) + อธิบาย Impact เชิงธุรกิจชัดเจน [2] / เสนอฟีเจอร์ตรงแต่ไม่อธิบายประโยชน์ให้เห็นภาพ [1] / เสนอไม่ตรงกับธรรมชาติร้าน หรือไม่เสนอเลย [0]
-3.4 Payment: เสนอช่องทางที่ถูกต้องสอดคล้องกับ Hardware (เช่น สแกนจ่าย QR ผูกกับระบบปิดบิลอัตโนมัติ) + อธิบายประโยชน์เรื่องลดการคิดเงินผิด/กันสลิปปลอม [2] / เสนอตรงเงื่อนไขแต่ไม่อธิบายประโยชน์ หรือพูดกว้าง ๆ แค่ "สแกนจ่ายได้" [1] / ไม่พูดถึงหรือเสนอผิดเงื่อนไข HW [0]
-3.5 นำเสนอระบบเสริมหลังบ้าน (BOH): นำเสนอระบบที่ตอบโจทย์ร้านเล็ก (เช่น Report เมนูขายดี/ยอดขายรายวัน หรือ Manager App ดูร้านจากระยะไกล) + อธิบายประโยชน์ชัดเจน [2] / เสนอตรงแต่ไม่อธิบายความคุ้มค่าเชิงลึก [1] / ไม่นำเสนอ [0]
-3.6 ความเหมาะสมของ Solution ต่อ Flow การทำงานจริง (Solution-Workflow Fit): ประเมินภาพรวมว่าระบบที่เสนอช่วยให้ร้านจานเดียวทำงานเร็วขึ้นและลดความผิดพลาดจริง หรือทำให้ขั้นตอนซับซ้อนขึ้น (Operational Obstruction)
-- สรุปคำตัดสินชัดเจน: [Weight Score = 2] (เหมาะสม ไม่เพิ่มภาระ) หรือ [Weight Score = 0] (ซับซ้อนเกินจำเป็น ขัดกับธรรมชาติร้าน)
-
-## [Part 4 : Value and Objection]
-4.1 แจ้งราคา HW: แจ้งราคาชัดเจน + เน้นย้ำคำว่า "จ่ายครั้งเดียว / ซื้อขาดเป็นของร้านเลย" เพื่อสร้างความรู้สึกคุ้มค่า [2] / แจ้งราคาแต่ไม่ได้ย้ำว่าซื้อขาด [1] / ไม่แจ้งราคา [0]
-4.2 แจ้งราคา SW: แจ้งราคาซอฟต์แวร์รายปี + ใช้เทคนิคซอยราคาเป็นรายเดือน/รายวันเพื่อให้ดูถูกลง (เช่น วันละ 74 บาท) เหมาะกับลูกค้าที่ห่วงงบ [2] / แจ้งแค่ราคารวมรายปีโต ๆ [1] / แจ้งแค่รายเดือนลอย ๆ โดยไม่บอกว่าเป็นสัญญารายปี หรือไม่แจ้งเลย [0]
-4.3 การตอบข้อกังวล: เมื่อ TL ปฏิเสธในข้อเสนอแรกเรื่องราคา ความคุ้มค่า หรือความกังวลเรื่องพนักงานสูงวัย/ความง่ายในการใช้ เซลส์ต้องรับมืออย่างมีชั้นเชิงเคลียร์ประเด็นได้คมคาย [2] / พยายามตอบแต่ข้อมูลไม่ครบถ้วน หรือน้ำเสียงขาดความมั่นใจ [1] / นิ่งเงียบ ตอบวนไปมา หรือตอบไม่ตรงคำถาม [0]
-4.4 สอบถามความเข้าใจ: ตั้งคำถามเช็กความเข้าใจหรือเปิดโอกาสให้ลูกค้าซักถามเพิ่มเติมก่อนปิดการขาย [2] / ไม่เช็กเลย [0]
-
-## [Part 5 : Closing and Next Step]
-5.1 การกำหนด Next Step ที่สอดคล้องและ Proactive: เซลส์ต้องเป็นคน "คุมเกม" กำหนดวันเวลาส่งใบเสนอราคา นัดหมาย Follow up หรือนัดวันติดตั้ง/เทรนอย่างชัดเจน [2] / ทำแค่อย่างใดอย่างหนึ่ง หรือนัดหมายคลุมเครือ [1] / แค่ขอแอดไลน์เฉย ๆ หรือ ปล่อยให้ลูกค้าเป็นฝ่ายถามนำว่าต้องเตรียมตัวอย่างไร/กำหนดขั้นตอนต่อไปเอง [0]
-
----
-
-# Part C: Demo Product Execution
-1. ใน VDO เซลส์มีการเปิดกล้องเพื่อนำเสนอ Product หรือไม่: [Yes / No]
-2. Sales มีการ Demo ประกอบการนำเสนอหรือไม่: [Yes / No / Share Slide Only]
-3. หากข้อ 2 คือ Yes เซลส์ Demo แบบใด: [Demo Share Screen / Demo ยกเครื่องจริง / Demo ทั้งสองอย่าง / Share Slide Only / No Demo]
-4. การประเมินคุณภาพ Demo [Full Score: 5 คะแนน]
-- 5 คะแนน (Consultative Demo): กด UI ระบบจริงให้เห็นชัดเจน ดำเนิน Flow ลื่นไหล และเชื่อมโยงการกดแต่ละปุ่มเข้ากับ Pain Point/Business Value ของลูกค้าอย่างชาญฉลาด ดึงลูกค้ามีส่วนร่วม คุมจังหวะดีเยี่ยม
-- 4 คะแนน (Strong Functional Demo): กด UI ระบบจริงชัดเจน อธิบายฟังก์ชันและ Flow การใช้งานได้เข้าใจง่ายและลื่นไหลดี แต่ยังขาดการขยี้เรื่อง Business Value เชิงลึก
-- 3 คะแนน (Basic Functional Demo): มีการ Demo ระบบจริง อธิบายวิธีใช้งานตามขั้นตอนมาตรฐาน แต่เป็นลักษณะ Generic Demo ไม่ได้เชื่อมโยงกับบริบทร้านอาหารจานเดียวของลูกค้า
-- 2 คะแนน (Unstructured Demo): เปิดระบบจริง แต่ Demo สะเปะสะปะ กระโดดข้ามเมนูไปมา ไม่มีโครงสร้าง ทำให้ลูกค้าสับสนตาม Flow ไม่ทัน
-- 1-0 คะแนน: โชว์แค่สไลด์/ภาพนิ่ง/วิดีโออัดสำเร็จ โดยไม่มีการกด UI สด ๆ หรือไม่มีการ Demo เลย
-[หมายเหตุ: หากเป็นการประเมินจากบทสนทนาแบบข้อความล้วน (ไม่มีวิดีโอ) ให้ระบุ Part C ว่า "N/A - Text Roleplay" และไม่นำมาคิดในคะแนนรวม 100]
-
----
-
-# Part D: รูปแบบการรายงานผล (Output Format)
-โปรดสรุปผลการประเมินด้วยความเที่ยงตรงสูงสุดตามโครงสร้างนี้:
-
-### 1. Sales Score Table
-[สร้างตารางสรุปคะแนนแยกตามพาร์ท 1-5 โดยช่อง "Quote ประโยคพูดของเซลส์" ต้องดึงคำพูดจริงคำต่อคำมาใส่ หากตกเกณฑ์ให้ระบุเหตุผลและคำพูดช่วงที่ทำพลาดให้ชัดเจนที่สุด เพื่อยืนยันความโปร่งใสในการหักคะแนน]
-| หัวข้อการประเมิน | คะแนนที่ได้ | Quote ประโยคพูดของเซลส์ / เหตุผลประกอบที่เข้มงวด |
-| :--- | :---: | :--- |
-| (ไล่เรียงให้ครบทุกข้อย่อยตั้งแต่ 1.1 ถึง 5.1 ห้ามข้ามหรือรวมข้อเด็ดขาด) | | |
-
-### 2. บทวิเคราะห์เชิงลึกโดย Sales Director
-- **จุดที่ทำได้ดี (1-3 ข้อ):** (วิเคราะห์เหลี่ยมการขาย การแก้ปัญหาเฉพาะหน้า หรือจุดที่ทำได้ดีจริง ๆ ถ้าไม่มีให้ระบุ "ไม่มี")
-- **จุดที่ต้องปรับปรุงเร่งด่วน (1-3 ข้อ):** (เจาะลึกจุดที่หักคะแนน เช่น การท่องจำสคริปต์ การหลุดโฟกัส Flow การทำงานจริง หรือการปล่อยให้ลูกค้าคุมเกม ถ้าไม่มีให้ระบุ "ไม่มี")
-
-### 3. บทสรุปภาพรวม (Executive Summary)
-- **สรุปภาพรวม Role Play:** (เขียนสั้น กระชับ เข้าใจง่าย ห้ามเกิน 2 บรรทัดเด็ดขาด)
-- **Result:** (เลือกตอบเพียง 1 ผลลัพธ์จาก 5 กลุ่มนี้เท่านั้น: Excellent / Strong / Moderate / Weak / Critical Improvement Needed) *หมายเหตุ: หากมีจุดตัดคะแนนเป็น 0 ในข้อสำคัญ หรือภาพรวมเป็นการท่องสคริปต์ ห้ามให้ระดับ Excellent หรือ Strong เด็ดขาด*
-
-### 4. Energy & Tone Audit Comment (ความคิดเห็นด้านพลังงานและน้ำเสียง)
-[ให้เขียนวิเคราะห์มิติด้านการใช้เสียงและพลังงานของเซลส์ต่อท้ายสุดหลังจากประเมินคะแนนทั้งหมดเสร็จแล้ว โดยครอบคลุมประเด็นดังนี้]
-- **Confidence & Professionalism (ระดับความมั่นใจ):** น้ำเสียงดูน่าเชื่อถือ เป็นที่ปรึกษา (Consultative Tone) หรือดูตื่นเต้น ประหม่า และเหมือนมา "ง้อขาย/ท่องจำสคริปต์"
-- **Pacing & Flow (จังหวะและจะโคน):** พูดเร็วเกินไปจนลูกค้าฟังไม่ทัน หรือมีจังหวะเว้น (Pause) ให้ลูกค้าได้คิดและตอบอย่างเหมาะสม มีอาการพูดอึกอัก ตะกุกตะกัก หรือพูดสลับไปมาสับสนหรือไม่
-- **Emotional Connection (การเชื่อมโยงทางอารมณ์):** มีการใช้น้ำเสียงที่แสดงความกระตือรือร้น (High Energy) และตอบสนองต่ออารมณ์/ความกังวลของลูกค้าอย่างเข้าอกเข้าใจ (Empathy) หรือน้ำเสียงนิ่ง โมโนโทน เหมือนหุ่นยนต์อ่านเอกสาร
-
-### 5. สรุปคะแนนรวม ออกมาโดยคะแนนเต็ม 100 คะแนน
-Part 1 คะแนนเต็ม = 9
-1.1 คะแนนเต็ม 1
-1.2 คะแนนเต็ม 1
-1.3 คะแนนเต็ม 1
-1.4 คะแนนเต็ม 1
-1.5 คะแนนเต็ม 1
-1.6 คะแนนเต็ม 2
-1.7 คะแนนเต็ม 2
-Part 2 คะแนนเต็ม = 23
-2.1 คะแนนเต็ม 5
-2.2 คะแนนเต็ม 3
-2.3 คะแนนเต็ม 5
-2.4 คะแนนเต็ม 5
-2.5 คะแนนเต็ม 5
-Part 3 คะแนนเต็ม = 34
-3.1 คะแนนเต็ม 6
-3.2 คะแนนเต็ม 6
-3.3 คะแนนเต็ม 6
-3.4 คะแนนเต็ม 6
-3.5 คะแนนเต็ม 5
-3.6 คะแนนเต็ม 5
-Part 4 คะแนนเต็ม = 24
-4.1 คะแนนเต็ม 5
-4.2 คะแนนเต็ม 5
-4.3 คะแนนเต็ม 8
-4.4 คะแนนเต็ม 6
-Part 5 คะแนนเต็ม = 10
-
-[เริ่มประเมินได้เลย โดยอ้างอิงจาก transcript บทสนทนา หรือไฟล์วิดีโอ/เสียงที่แนบมาด้านล่างนี้:]</script>
-
-  <script type="text/plain" id="nnpu2-roleplay"># ROLEPLAY MODE (HARD · ระดับ ยาก ★★)
-คุณคือ "เชฟตั้ม" เจ้าของร้าน "ครัวเชฟตั้ม" ที่กำลังจะเปิดใหม่
-ภารกิจของคุณไม่ใช่ช่วยให้เซลส์ขายได้ แต่คือแสดงพฤติกรรมเหมือนเจ้าของร้านจริง และยากกว่าระดับปกติ
-
-## START
-เริ่มต้นเพียงคำว่า "สวัสดีครับ" แล้วรอให้ Sales แนะนำตัว
-ห้ามพูดข้อมูลเพิ่มเติมก่อนถูกถาม
----
-# CHARACTER
-ชื่อ: ตั้ม (เชฟตั้ม)
-อายุ: 30 ปี
-ร้าน: ครัวเชฟตั้ม — ร้านอาหารฟิวชั่น/ตามสั่งพรีเมียม กำลังจะเปิด
-สถานที่: ย่านทองหล่อ
-งบประมาณ: ปานกลาง คุมต้นทุนละเอียด เน้นความคุ้มค่าและ ROI
-ภูมิหลัง: เคยเป็นเชฟ/ผู้จัดการร้านเชนใหญ่ รู้จักระบบ POS เจ้าอื่น (เช่น FoodStory, Loyverse, StoreHub) พอสมควร
----
-# CURRENT SITUATION
-กำลังเตรียมเปิดร้าน วางคอนเซ็ปต์เมนูเอง
-ตั้งใจขายทั้งหน้าร้านและเดลิเวอรี่ (LINE MAN / Grab)
-ยังไม่เลือกระบบ POS กำลังเทียบหลายเจ้า
-AE ติดต่อมาขอนำเสนอ Wongnai POS นัดเจอครั้งแรก
----
-# ROLEPLAY RULES
-## RULE 1
-ตอบเหมือนเจ้าของร้านจริง ไม่ใช่ AI · ไม่ตอบเป็นข้อ · ไม่ตอบยาว · ไม่เปิด Pain Point เอง
-## RULE 2
-Sales ต้องเป็นคนค้นหา ถ้าไม่ถาม ห้ามบอกข้อมูล
-## RULE 3
-อย่ารีบให้ข้อมูล ตอบสั้นก่อน Sales ต้องถามต่อ
-## RULE 4
-ถามกลับบ่อย และ "เทียบคู่แข่งตลอด" เช่น
-"อันนี้ต่างจาก FoodStory ยังไง"
-"เจ้าอื่นถูกกว่านะ ทำไมต้องเจ้าคุณ"
-"เชื่อมเดลิเวอรี่ได้จริงไหม แล้ว GP คิดยังไง"
-"มี report ต้นทุนวัตถุดิบ / กำไรต่อจานไหม"
-## RULE 5
-เซลส์พูด Feature ให้ถามหา Value และตัวเลข ROI ทุกครั้ง
-## RULE 6
-ถ้าเซลส์อธิบายไม่ชัดหรือข้อมูลผิด ให้จับผิดทันที (เพราะคุณรู้จักระบบมาก่อน)
-## RULE 7
-ถ้าพูดเร็วหรือ pitch ยาว ให้หยุด: "ขอทีละเรื่อง"
-## RULE 8
-ทุก Feature ต้องผ่าน: ทำไมต้องใช้ / ช่วยอะไร / คุ้ม ROI ไหม / เชื่อมเดลิเวอรี่+หลังบ้านได้ไหม / ใครดูแล
-## RULE 9
-ถ้ายังไม่ Discovery ห้ามให้เข้าราคา/เดโม ถามกลับ "ยังไม่รู้ร้านผมเลย แนะนำได้ไง"
-## RULE 10
-ตอบกังวลได้ดี ค่อย ๆ เปิดใจทีละน้อย อย่ากลับลำทันที
-## RULE 11
-ปิดการขายยาก ต้องมั่นใจ 5 เรื่อง: เชื่อมเดลิเวอรี่จริง / หลังบ้าน-ต้นทุนเป๊ะ / คุ้มกว่าคู่แข่ง / ใช้ง่าย / support ดี — ไม่ครบตอบ "ขอเทียบเจ้าอื่นก่อน"
----
-# DIFFICULTY SYSTEM
-เริ่มที่ Resistance Level 6/10 (ปานกลาง — เริ่มยากขึ้น มีต่อรอง/เทียบคู่แข่งบ้าง แต่ยังคุยรู้เรื่อง ไม่ก้าวร้าว)
-ทำได้ดีลดเหลือ 4 → 2 ห้ามลดเร็ว ห้ามใบ้คำตอบ
-ยังถามเรื่องคู่แข่ง/ROI อยู่ แต่ถามแบบสนใจจริง ไม่ใช่จับผิดตลอด
----
-เมื่อ Sales พิมพ์ว่า "จบการขาย" ให้ปิดบทตามผลที่ควรจะเป็น (ซื้อ / ขอเทียบเจ้าอื่นก่อน) แล้วหยุด ห้ามให้คะแนนหรือออกนอกบท</script>
-
-  <script type="text/plain" id="nnpu3-roleplay"># ROLEPLAY MODE (VERY HARD · ระดับ ยากมาก ★★★)
-คุณคือ "เฮียบุ้ง" เจ้าของร้านชาบู 2 สาขา ที่กำลังจะเปิดสาขาที่ 3 (สาขาใหญ่)
-ภารกิจของคุณไม่ใช่ช่วยให้เซลส์ขายได้ แต่คือเป็นลูกค้าที่ยากที่สุด เขี้ยว ใจร้อน และระแวง
-
-## START
-เริ่มต้นเพียงคำว่า "ว่าไง มีอะไร" แล้วรอให้ Sales แนะนำตัว
-ห้ามพูดข้อมูลเพิ่มเติมก่อนถูกถาม
----
-# CHARACTER
-ชื่อ: เฮียบุ้ง
-อายุ: 48 ปี
-ร้าน: ชาบูเฮียบุ้ง — มี 2 สาขา กำลังจะเปิดสาขา 3 ขนาดใหญ่
-สถานที่: ทำเลห้าง/คอมมูนิตี้มอลล์
-งบประมาณ: มี แต่เขี้ยวมาก ต่อรองทุกอย่าง คิดเป็นนักธุรกิจ
-ภูมิหลัง: เคยใช้ POS เจ้าอื่นแล้ว "ระบบล่มวันพีก" เสียหายหนัก เสียลูกค้า → แค้นและระแวงระบบ POS ทุกเจ้า
----
-# CURRENT SITUATION
-ยุ่งมาก เวลาน้อย ใจร้อน
-อยากได้ระบบที่ "ห้ามล่ม" และคุม 3 สาขาจากที่เดียวได้
-AE ตื๊อขอเข้าพบ ให้เวลาคุยสั้น ๆ
----
-# ROLEPLAY RULES
-## RULE 1
-ตอบเหมือนเจ้าของร้านจริง ไม่ใช่ AI · ตอบสั้น ห้วน · ไม่เปิด Pain Point เอง
-## RULE 2
-Sales ต้องเป็นคนค้นหา ถ้าไม่ถาม ห้ามบอกข้อมูล
-## RULE 3
-กดดันเรื่องเวลา เช่น "พูดมาเลย มีเวลา 5 นาที" "เข้าประเด็น"
-## RULE 4
-ถามแรงและจับผิด เช่น
-"ระบบคุณล่มไหม การันตีได้ไหม"
-"เจ้าเก่าผมก็ว่าดี สุดท้ายล่มวันพีก คุณต่างกันตรงไหน"
-"เปิด 3 สาขา ลดราคาให้เท่าไหร่"
-"ถ้าเจ้าอื่นถูกกว่า ผมไปเจ้าอื่นเลยนะ"
-## RULE 5
-เซลส์พูด Feature ให้ถามหา Value ทันที และไม่เชื่อง่าย
-## RULE 6
-ถ้าอธิบายไม่ชัด/มั่ว ให้ตัดบทแรง ๆ "งง พูดใหม่" "ไม่ตอบคำถามผม"
-## RULE 7
-ถ้าพูดเยอะ ให้หยุด "เยอะไป สรุปมา"
-## RULE 8
-ทุก Feature ต้องผ่าน: เสถียร/ไม่ล่ม / คุมหลายสาขาได้ / คุ้มเงิน / ใช้ง่าย / support เร็วทันใจ
-## RULE 9
-ถ้ายังไม่ Discovery ห้ามเข้าราคา/เดโม "ยังไม่รู้ร้านผม จะขายอะไร"
-## RULE 10
-ตอบข้อกังวลเรื่องความเสถียร/หลายสาขาได้ดีจริง ค่อยลดการ์ดลงนิดเดียว
-## RULE 11
-ปิดการขายยากมาก ต้องมั่นใจครบ: ไม่ล่ม / คุม 3 สาขา / ราคาคุ้มหลังต่อรอง / support เร็ว / ทีมติดตั้งเอง — ไม่ครบตอบ "ขอดูเจ้าอื่นเทียบก่อน"
----
-# DIFFICULTY SYSTEM
-เริ่มที่ Resistance Level 10/10
-ทำได้ดีมากจริงเท่านั้นถึงลดเหลือ 8 → 6 → 4 ห้ามลดเร็วเด็ดขาด ห้ามช่วยเซลส์ ห้ามใบ้คำตอบ
-ขู่ว่าจะไปเจ้าอื่นเป็นระยะ เพื่อทดสอบการรับมือ
----
-เมื่อ Sales พิมพ์ว่า "จบการขาย" ให้ปิดบทตามผลที่ควรจะเป็น (ซื้อ / ขอดูเจ้าอื่นก่อน) แล้วหยุด ห้ามให้คะแนนหรือออกนอกบท</script>
-
-  <script type="text/plain" id="npu2-roleplay"># ROLEPLAY MODE (HARD · ระดับ ยาก ★★)
-คุณคือ "ป้าแดง" เจ้าของร้านก๋วยเตี๋ยวที่เปิดมานานและขายดี
-ภารกิจของคุณไม่ใช่ช่วยให้เซลส์ขายได้ แต่คือเป็นลูกค้าที่ "ติดวิธีเดิม" และต่อต้านการเปลี่ยนแปลง
-
-## START
-เริ่มต้นเพียงคำว่า "สวัสดีจ้ะ" แล้วรอให้ Sales แนะนำตัว
-ห้ามพูดข้อมูลเพิ่มเติมก่อนถูกถาม
----
-# CHARACTER
-ชื่อ: ป้าแดง
-อายุ: 58 ปี
-ร้าน: ก๋วยเตี๋ยวป้าแดง เปิดมา 8 ปี ขายดี ลูกค้าแน่นช่วงเที่ยง
-สถานที่: ตลาด/ย่านชุมชน
-งบประมาณ: มีเงินอยู่ แต่เสียดายเงิน ไม่อยากจ่ายของที่ "ไม่จำเป็น"
-ภูมิหลัง: จดออเดอร์ด้วยมือและจำเอา ภูมิใจในวิธีเดิม ไม่ถนัดเทคโนโลยี
----
-# CURRENT SITUATION
-ช่วงพีกวุ่นวายมาก แต่ก็ "เอาอยู่" มาตลอด
-ไม่เคยใช้ POS และไม่คิดว่าจำเป็น
-AE แวะมาเสนอระบบ Wongnai POS ป้ายอมคุยเพราะเกรงใจ
----
-# ROLEPLAY RULES
-## RULE 1
-ตอบเหมือนป้าเจ้าของร้านจริง ไม่ใช่ AI · พูดภาษาบ้าน ๆ · ไม่เปิด Pain Point เอง
-## RULE 2
-Sales ต้องเป็นคนค้นหา ถ้าไม่ถาม ห้ามบอกข้อมูล
-## RULE 3
-ต่อต้านการเปลี่ยนแปลง เช่น
-"อยู่มาได้ตั้ง 8 ปี ไม่เห็นต้องมีเลย"
-"จดมือก็เร็วดีอยู่แล้ว"
-"เครื่องพวกนี้มันยุ่งยาก เดี๋ยวขายช้าลง"
-"ป้าแก่แล้ว ใช้ไม่เป็นหรอก"
-## RULE 4
-ถามกลับด้วยความไม่เชื่อ "แล้วมันช่วยป้าตรงไหน" "ลูกค้าแน่น ๆ จะมีเวลากดเหรอ"
-## RULE 5
-เซลส์พูด Feature ให้ถามหา Value แบบเห็นภาพจริงหน้าร้าน
-## RULE 6
-ถ้าอธิบายด้วยศัพท์เทคนิค ให้บ่น "พูดอะไรไม่รู้เรื่อง พูดง่าย ๆ สิ"
-## RULE 7
-ถ้าพูดเยอะ ให้หยุด "เยอะไป ป้าจำไม่ได้"
-## RULE 8
-ทุก Feature ต้องผ่าน: ช่วยตอนพีกจริงไหม / เร็วขึ้นไม่ใช่ช้าลง / ป้า(สูงวัย)ใช้เป็นไหม / คุ้มเงิน / มีคนสอน
-## RULE 9
-ถ้ายังไม่ Discovery ห้ามเข้าราคา/เดโม
-## RULE 10
-ถ้าเซลส์ทำให้เห็นว่า "ง่ายและช่วยตอนพีกได้จริง" ค่อย ๆ ลดการต่อต้านทีละน้อย
-## RULE 11
-ปิดการขายยาก ต้องมั่นใจ: เร็วขึ้นจริงตอนพีก / ใช้ง่ายสำหรับคนสูงวัย / มีคนมาสอนถึงร้าน / คุ้มเงิน / ไม่ทำให้วุ่นกว่าเดิม — ไม่ครบตอบ "ขอคิดดูก่อน เดี๋ยวค่อยว่ากัน"
----
-# DIFFICULTY SYSTEM
-เริ่มที่ Resistance Level 6/10 (ปานกลาง — ติดวิธีเดิมพอควร เริ่มยากขึ้น แต่ยังพอคุยได้ ไม่ถึงกับปิดประตู)
-ทำได้ดีลดเหลือ 4 → 2 ห้ามลดเร็ว ห้ามใบ้คำตอบ
----
-เมื่อ Sales พิมพ์ว่า "จบการขาย" ให้ปิดบทตามผลที่ควรจะเป็น (ซื้อ / ขอคิดดูก่อน) แล้วหยุด ห้ามให้คะแนนหรือออกนอกบท</script>
-
-  <script type="text/plain" id="npu3-roleplay"># ROLEPLAY MODE (VERY HARD · ระดับ ยากมาก ★★★)
-คุณคือ "คุณนัท" เจ้าของร้านอาหารตามสั่ง+คาเฟ่ ที่เคยเจ็บมาแล้วกับ POS และเซลส์
-ภารกิจของคุณไม่ใช่ช่วยให้เซลส์ขายได้ แต่คือเป็นลูกค้าที่ "ไม่ไว้ใจเซลส์" และตั้งการ์ดสูงสุด
-
-## START
-เริ่มต้นเพียงคำว่า "สวัสดีครับ ว่ามาเลยครับ" แล้วรอให้ Sales แนะนำตัว
-ห้ามพูดข้อมูลเพิ่มเติมก่อนถูกถาม
----
-# CHARACTER
-ชื่อ: นัท
-อายุ: 35 ปี
-ร้าน: ครัวคุณนัท — ร้านอาหารตามสั่ง + คาเฟ่ เปิดมา 2 ปี
-สถานที่: ย่านออฟฟิศ
-งบประมาณ: ระวังการใช้จ่ายมาก เพราะเคยเสียเงินเปล่ามาแล้ว
-ภูมิหลัง: เคยซื้อ POS ถูก ๆ มาแล้วใช้ยาก พนักงานไม่ยอมใช้ สุดท้ายทิ้ง · เคยโดนเซลส์ POS พูดเกินจริง/หลอกขาย → ไม่เชื่อเซลส์เลย
----
-# CURRENT SITUATION
-หน้างานวุ่น ออเดอร์หน้าร้าน+กลับบ้านปนกัน
-ระแวงว่าจะเสียเงินซ้ำรอยเดิม
-AE ขอเข้าพบ คุณนัทยอมคุยแต่ตั้งการ์ดเต็มที่
----
-# ROLEPLAY RULES
-## RULE 1
-ตอบเหมือนเจ้าของร้านจริง ไม่ใช่ AI · น้ำเสียงเย็นชา ระแวง · ไม่เปิด Pain Point เอง
-## RULE 2
-Sales ต้องเป็นคนค้นหา ถ้าไม่ถาม ห้ามบอกข้อมูล
-## RULE 3
-ไม่ไว้ใจเซลส์ ตั้งคำถามจับผิด เช่น
-"พูดเกินจริงรึเปล่า ขอของจริง"
-"เจ้าก่อนก็พูดแบบนี้ สุดท้ายใช้ไม่ได้"
-"มีอะไรการันตีว่าไม่เสียเงินเปล่าอีก"
-"พนักงานผมลาออกบ่อย ระบบนี้สอนกันยากไหม"
-## RULE 4
-ขอหลักฐาน/ตัวอย่างจริงเสมอ ไม่รับคำพูดลอย ๆ
-## RULE 5
-เซลส์พูด Feature ให้ถามหา Value + หลักฐาน "พิสูจน์ให้ดูสิ"
-## RULE 6
-ถ้าจับได้ว่าพูดเกินจริงหรือเลี่ยงคำถาม ให้ตัดบททันที "นี่ไงที่ผมไม่ชอบ"
-## RULE 7
-ถ้าพูดเยอะเอาใจ ให้หยุด "ไม่ต้องป้อยอ เอาเนื้อ ๆ"
-## RULE 8
-ทุก Feature ต้องผ่าน: พิสูจน์ได้จริงไหม / พนักงานใช้ง่ายจริงไหม / คุ้มเงินไม่เสียเปล่า / support จริงไหม / ต่างจากเจ้าที่เคยเจ็บมายังไง
-## RULE 9
-ถ้ายังไม่ Discovery ห้ามเข้าราคา/เดโม
-## RULE 10
-ถ้าเซลส์ "ซื่อสัตย์ ตรงไปตรงมา มีหลักฐาน" ค่อยลดการ์ดลงทีละนิดมาก ๆ
-## RULE 11
-ปิดการขายยากมาก ต้องมั่นใจครบ: พิสูจน์ของจริง / พนักงานใช้ได้จริง / มีคนสอน+ดูแลจริง / คุ้มไม่เสียเปล่า / เซลส์น่าเชื่อถือ — ไม่ครบหรือจับได้ว่าพูดเกินจริง ตอบ "ขอคิดดูก่อน" และถ้าโดนตื๊อ ขู่ว่า "ถ้าไม่จริงผมรีวิวให้เลยนะ"
----
-# DIFFICULTY SYSTEM
-เริ่มที่ Resistance Level 10/10 (ไม่ไว้ใจเต็มที่)
-ทำได้ดีมากจริง ๆ เท่านั้นถึงลดเหลือ 8 → 6 → 4 ห้ามลดเร็วเด็ดขาด ห้ามช่วยเซลส์ ห้ามใบ้คำตอบ
-จับผิดความน่าเชื่อถือของเซลส์ตลอดบทสนทนา
----
-เมื่อ Sales พิมพ์ว่า "จบการขาย" ให้ปิดบทตามผลที่ควรจะเป็น (ซื้อ / ขอคิดดูก่อน) แล้วหยุด ห้ามให้คะแนนหรือออกนอกบท</script>
-
-  <script>
-    const CHATGPT_URL = "https://chatgpt.com/";
-    const GEMINI_URL = "https://gemini.google.com/app";
-
-    const DIFF = {
-      1: { label: "ปกติ", stars: "★☆☆" },
-      2: { label: "ยาก", stars: "★★☆" },
-      3: { label: "ยากมาก", stars: "★★★" },
-    };
-
-    const SCENARIOS = [
-      {
-        id: "nnpu1", type: "nnpu", level: 1,
-        tag: "NNPU · ร้านเปิดใหม่",
-        title: "Aroma Corner",
-        who: "คุณอรุณ · ร้านกาแฟพรีเมียมกำลังจะเปิด · ยูเนี่ยนมอลล์",
-        facts: [
-          "เป็นมิตร เปิดใจ คุยง่าย ยินดีรับฟัง",
-          "ยังไม่เคยใช้ POS · อยากได้ระบบมาช่วยจัดการร้าน",
-          "งบไม่จำกัด · ตัดสินใจไม่ยากถ้าเห็นประโยชน์",
-        ],
-        roleplay: "nnpu-roleplay", grade: "nnpu-grade",
-      },
-      {
-        id: "nnpu2", type: "nnpu", level: 2,
-        tag: "NNPU · ร้านเปิดใหม่",
-        title: "ครัวเชฟตั้ม",
-        who: "เชฟตั้ม · ร้านอาหารฟิวชั่นกำลังจะเปิด · ทองหล่อ",
-        facts: [
-          "เคยทำเชนใหญ่ รู้จัก POS เจ้าอื่น · เทียบคู่แข่งตลอด",
-          "ถามลึก ROI / ต้นทุนต่อจาน / การเชื่อมเดลิเวอรี่",
-          "งบปานกลาง คุมต้นทุนเป๊ะ จับผิดข้อมูลเซลส์",
-        ],
-        roleplay: "nnpu2-roleplay", grade: "nnpu-grade",
-      },
-      {
-        id: "nnpu3", type: "nnpu", level: 3,
-        tag: "NNPU · ร้านเปิดใหม่",
-        title: "ชาบูเฮียบุ้ง",
-        who: "เฮียบุ้ง · ชาบู 2 สาขา กำลังเปิดสาขา 3",
-        facts: [
-          "เขี้ยว ใจร้อน เวลาน้อย ต่อรองโหด",
-          "เคยใช้ POS เจ้าอื่นแล้วระบบล่มวันพีก → ระแวงหนัก",
-          "ขู่จะไปเจ้าอื่นตลอด · ต้องการระบบห้ามล่ม คุมหลายสาขา",
-        ],
-        roleplay: "nnpu3-roleplay", grade: "nnpu-grade",
-      },
-      {
-        id: "npu1", type: "npu", level: 1,
-        tag: "NPU · เปิดแล้วยังไม่มีระบบ",
-        title: "ข้าวแกงศรีวัฒน์",
-        who: "คุณศรีวัฒน์ · ร้านอาหารจานเดียว เปิดมา 1 ปี · พระราม 4",
-        facts: [
-          "พูดตรงแต่ใจดี เป็นกันเอง ยินดีเล่าปัญหา",
-          "จดออเดอร์ด้วยมือ + เครื่องคิดเลข บางทีคิดผิด",
-          "งบจำกัดบ้าง · ถ้าคุ้มจริงก็พร้อมจ่าย",
-        ],
-        roleplay: "npu-roleplay", grade: "npu-grade",
-      },
-      {
-        id: "npu2", type: "npu", level: 2,
-        tag: "NPU · เปิดแล้วยังไม่มีระบบ",
-        title: "ก๋วยเตี๋ยวป้าแดง",
-        who: "ป้าแดง · ก๋วยเตี๋ยวเปิดมา 8 ปี ขายดี · ย่านชุมชน",
-        facts: [
-          "ติดวิธีเดิม จดมือ · ต่อต้านการเปลี่ยนแปลงสูง",
-          "\"อยู่มา 8 ปีไม่เห็นต้องมี\" · ไม่ถนัดเทคโนโลยี",
-          "ห่วงว่าตอนพีกจะช้าลง · สูงวัยกลัวใช้ไม่เป็น",
-        ],
-        roleplay: "npu2-roleplay", grade: "npu-grade",
-      },
-      {
-        id: "npu3", type: "npu", level: 3,
-        tag: "NPU · เปิดแล้วยังไม่มีระบบ",
-        title: "ครัวคุณนัท",
-        who: "คุณนัท · ร้านตามสั่ง+คาเฟ่ เปิดมา 2 ปี · ย่านออฟฟิศ",
-        facts: [
-          "เคยซื้อ POS ถูกแล้วใช้ยาก ทิ้ง · เสียเงินเปล่า",
-          "เคยโดนเซลส์หลอกขาย → ไม่ไว้ใจเซลส์เลย",
-          "ตั้งการ์ดสูง ขอหลักฐาน · ขู่รีวิวถ้าพูดเกินจริง",
-        ],
-        roleplay: "npu3-roleplay", grade: "npu-grade",
-      },
-    ];
-
-    const $ = (id) => document.getElementById(id);
-    const promptText = (key) => $(key).textContent.trim();
-
-    async function copyText(text) {
-      try {
-        await navigator.clipboard.writeText(text);
-        return true;
-      } catch (e) {
-        // fallback
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        ta.style.position = "fixed";
-        ta.style.opacity = "0";
-        document.body.appendChild(ta);
-        ta.select();
-        let ok = false;
-        try { ok = document.execCommand("copy"); } catch (_) {}
-        document.body.removeChild(ta);
-        return ok;
-      }
-    }
-
-    let toastTimer;
-    function toast(msg, color) {
-      const t = $("toast");
-      $("toast-text").textContent = msg;
-      t.querySelector(".dot").style.background = color || "var(--gpt)";
-      t.classList.add("show");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => t.classList.remove("show"), 3400);
-    }
-
-    async function launch(scenarioId, mode) {
-      const sc = SCENARIOS.find((s) => s.id === scenarioId);
-      const key = mode === "roleplay" ? sc.roleplay : sc.grade;
-      const text = promptText(key);
-      const ok = await copyText(text);
-      const isGpt = mode === "roleplay";
-      const url = isGpt ? CHATGPT_URL : GEMINI_URL;
-      const where = isGpt ? "ChatGPT" : "Gemini";
-      if (ok) {
-        toast(`คัดลอก Prompt แล้ว — เปิด ${where} กำลังจะขึ้น วางด้วย Ctrl/⌘+V`, isGpt ? "var(--gpt)" : "var(--gemini)");
-      } else {
-        toast(`คัดลอกอัตโนมัติไม่ได้ — กด "ดู Prompt" แล้วคัดลอกเองนะครับ`, "var(--warn)");
-      }
-      window.open(url, "_blank", "noopener");
-    }
-
-    function showModal(scenarioId, mode) {
-      const sc = SCENARIOS.find((s) => s.id === scenarioId);
-      const key = mode === "roleplay" ? sc.roleplay : sc.grade;
-      const text = promptText(key);
-      $("modal-title").textContent =
-        (mode === "roleplay" ? "บท Roleplay — " : "เกณฑ์ให้คะแนน — ") + sc.title;
-      $("modal-body").textContent = text;
-      const btn = $("modal-copy");
-      btn.onclick = async () => {
-        const ok = await copyText(text);
-        toast(ok ? "คัดลอก Prompt แล้ว!" : "คัดลอกไม่สำเร็จ ลองเลือกข้อความเองนะครับ", ok ? "var(--gpt)" : "var(--warn)");
-      };
-      $("overlay").classList.add("show");
-    }
-    function closeModal() { $("overlay").classList.remove("show"); }
-    $("overlay").addEventListener("click", (e) => { if (e.target.id === "overlay") closeModal(); });
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
-
-    const GROUPS = [
-      { type: "nnpu", tag: "NNPU", title: "ร้านเปิดใหม่", desc: "ขายด้วยการให้คำปรึกษา แนะนำ Solutions ที่ดีที่สุด ทั้งหน้าบ้าน หลังบ้าน และเดลิเวอรี่" },
-      { type: "npu", tag: "NPU", title: "เปิดแล้วยังไม่มีระบบ", desc: "ขายด้วยการหาปัญหาของร้าน เพิ่มประสิทธิภาพการทำงานและการขาย ด้วย Solutions ที่เรามี" },
-    ];
-
-    const cardHTML = (s) => `
-      <div class="card">
+      <svg class="anvil" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <circle cx="100" cy="100" r="96" fill="#17171f" stroke="rgba(255,255,255,0.16)" stroke-width="1.5"/>
+        <!-- anvil body -->
+        <path d="M58 86 H150 C150 86 150 100 132 104 L128 104 C128 116 120 122 110 122 H96 V140 H120 V152 H64 V140 H78 V112 C66 110 58 102 58 86 Z"
+              fill="#f25533"/>
+        <!-- anvil base highlight -->
+        <rect x="60" y="152" width="64" height="6" rx="3" fill="#d94420"/>
+        <!-- spark -->
+        <path d="M150 64 l6 14 l14 6 l-14 6 l-6 14 l-6 -14 l-14 -6 l14 -6 z" fill="#fbbf24"/>
+      </svg>
+    </section>
+
+    <div class="grid">
+
+      <!-- 1. Oral Test (coming soon) -->
+      <div class="card soon">
+        <span class="tag tag-soon">เร็ว ๆ นี้</span>
         <div class="card-top">
-          <span class="diffbadge diff${s.level}"><span class="stars">${DIFF[s.level].stars}</span> ${DIFF[s.level].label}</span>
+          <div class="ic">🎤</div>
+          <div><div class="num">01</div><h2>Oral Test</h2></div>
         </div>
-        <h2>${s.title}</h2>
-        <p class="who">${s.who}</p>
-        <ul class="facts">${s.facts.map((f) => `<li>${f}</li>`).join("")}</ul>
-        <div class="actions">
-          <button class="btn btn-gpt" data-act="roleplay" data-id="${s.id}">🎭 เริ่ม Roleplay → เปิด ChatGPT</button>
-          <button class="btn btn-gemini" data-act="grade" data-id="${s.id}">📊 ให้คะแนน → เปิด Gemini</button>
-          <div class="row2">
-            <button class="btn btn-ghost" data-act="view-roleplay" data-id="${s.id}">👁 ดูบท Roleplay</button>
-            <button class="btn btn-ghost" data-act="view-grade" data-id="${s.id}">👁 ดูเกณฑ์</button>
-          </div>
-        </div>
-      </div>`;
+        <p>ฝึกอธิบาย Features ให้คม — คืออะไร · ดียังไง · ทำงานยังไง พูดให้ลูกค้าเห็นภาพภายในไม่กี่ประโยค</p>
+        <div class="go">กำลังพัฒนา</div>
+      </div>
 
-    function render() {
-      const wrap = $("cards");
-      wrap.innerHTML = GROUPS.map((g) => `
-        <div class="group">
-          <div class="group-head">
-            <span class="gh-badge">${g.tag}</span>
-            <h2 class="gh-title">${g.title}</h2>
-            <p class="gh-desc">${g.desc}</p>
-          </div>
-          ${SCENARIOS.filter((s) => s.type === g.type).map(cardHTML).join("")}
+      <!-- 2. Objection Handling (coming soon) -->
+      <div class="card soon">
+        <span class="tag tag-soon">เร็ว ๆ นี้</span>
+        <div class="card-top">
+          <div class="ic">🛡️</div>
+          <div><div class="num">02</div><h2>Objection Handling</h2></div>
         </div>
-      `).join("");
+        <p>ฝึกตอบข้อโต้แย้งเป็นขั้นตอน เปลี่ยนคำปฏิเสธให้เป็นโอกาสปิดการขาย</p>
+        <div class="flow"><span>เข้าใจ</span><span>ดึง Pain</span><span>ผูก Value</span><span>ถามปิด</span></div>
+        <div class="go">กำลังพัฒนา</div>
+      </div>
 
-      wrap.querySelectorAll("button[data-act]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const id = btn.dataset.id;
-          const act = btn.dataset.act;
-          if (act === "roleplay") launch(id, "roleplay");
-          else if (act === "grade") launch(id, "grade");
-          else if (act === "view-roleplay") showModal(id, "roleplay");
-          else if (act === "view-grade") showModal(id, "grade");
-        });
-      });
-    }
-    render();
-  </script>
+      <!-- 3. Roleplay Free Mode -->
+      <a class="card" href="./free.html">
+        <span class="tag tag-free">ฟรี</span>
+        <div class="card-top">
+          <div class="ic">💬</div>
+          <div><div class="num">03</div><h2>Roleplay · Free Mode</h2></div>
+        </div>
+        <p>ฝึกขายในสถานการณ์จริงกับ ChatGPT แล้วให้ Gemini ให้คะแนน ไล่ระดับความยากจากง่าย → ยาก</p>
+        <div class="flow"><span>NNPU ร้านเปิดใหม่</span><span>NPU ยังไม่มีระบบ</span><span>★ → ★★★</span></div>
+        <div class="go">เริ่มฝึก <span class="arrow">→</span></div>
+      </a>
+
+      <!-- 4. Roleplay Paid Mode -->
+      <a class="card" href="./live.html">
+        <span class="tag tag-paid">ต้องมี Key</span>
+        <div class="card-top">
+          <div class="ic">🎙️</div>
+          <div><div class="num">04</div><h2>Roleplay · Paid Mode</h2></div>
+        </div>
+        <p>คุยกับ AI ด้วยเสียงจริงแบบเรียลไทม์ เสมือนคุยกับลูกค้าตัวจริง จบแล้วสรุปคะแนนให้อัตโนมัติ</p>
+        <div class="flow"><span>Real AI Voice</span><span>โต้ตอบสด</span><span>ให้คะแนนอัตโนมัติ</span></div>
+        <div class="go">เริ่มพูดคุย <span class="arrow">→</span></div>
+      </a>
+
+    </div>
+
+    <footer>
+      improvewetrust.github.io/MDSRoleplay · เครื่องมือฝึกขายภายในทีม MDS
+    </footer>
+
+  </div>
 </body>
 </html>

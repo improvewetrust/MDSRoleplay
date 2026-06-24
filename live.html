@@ -97,7 +97,8 @@
     <h1>Sales Roleplay <span>โหมดเสียงสด</span></h1>
     <p class="sub">กดเริ่ม → AI ทักทายด้วยเสียงเอง → พูดคุยขายแบบเรียลไทม์ → กด "จบการขาย" แล้วระบบสรุปคะแนนให้อัตโนมัติ (ไม่ต้องคัดลอก/วาง)</p>
     <div class="topnav">
-      <a class="pill" href="./index.html">← กลับโหมดพิมพ์ (ChatGPT/Gemini)</a>
+      <a class="pill" href="./index.html">← หน้าแรก</a>
+      <a class="pill" href="./free.html">โหมดพิมพ์ (ChatGPT/Gemini)</a>
     </div>
   </header>
 
@@ -181,7 +182,7 @@
     let PROMPTS = null;
     async function loadPrompts(){
       if (PROMPTS) return PROMPTS;
-      const html = await (await fetch("./index.html", { cache:"no-store" })).text();
+      const html = await (await fetch("./free.html", { cache:"no-store" })).text();
       const doc = new DOMParser().parseFromString(html, "text/html");
       PROMPTS = {};
       doc.querySelectorAll('script[type="text/plain"]').forEach(s => { PROMPTS[s.id] = s.textContent.trim(); });
