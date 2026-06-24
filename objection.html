@@ -219,17 +219,20 @@
 
     // ---------- instructions builder ----------
     function buildInstructions(o){
-      return "[โหมดสนทนาด้วยเสียงแบบเรียลไทม์] คุณเล่นเป็น \"เจ้าของร้านอาหาร\" ที่กำลังคุยกับพนักงานขายระบบ POS (Wongnai POS) พูดภาษาไทยเท่านั้น\n\n" +
-        "บทของคุณ: คุณมีข้อกังวล/ข้อโต้แย้ง 1 เรื่อง และจะพูดข้อโต้แย้งนี้ออกมาเป็นประโยคแรกเพื่อเริ่มบทสนทนาทันที:\n" +
+      return "[โหมดสนทนาด้วยเสียงแบบเรียลไทม์] คุณรับบทเป็น \"ลูกค้า\" คือเจ้าของร้านอาหารที่กำลังพิจารณาจะซื้อระบบ POS (Wongnai POS) คู่สนทนาของคุณคือ \"พนักงานขาย\" พูดภาษาไทยเท่านั้น\n\n" +
+        "⛔ กฎเหล็ก (ห้ามฝ่าฝืนเด็ดขาด):\n" +
+        "- คุณคือ 'ผู้ซื้อ' ที่มีข้อกังวล ไม่ใช่พนักงานขาย และคุณไม่รู้รายละเอียดของระบบ\n" +
+        "- ห้ามอธิบายข้อดี วิธีการทำงาน หรือข้อมูลใด ๆ ของระบบ POS โดยเด็ดขาด (นั่นเป็นหน้าที่ของพนักงานขาย ไม่ใช่ของคุณ)\n" +
+        "- หน้าที่ของคุณคือ 'ตั้งคำถาม / บ่นข้อกังวล' แล้วฟังคำตอบ และตอบโต้ในฐานะลูกค้าเท่านั้น\n\n" +
+        "ประโยคแรกของคุณ: พูดข้อกังวลนี้ออกมาทันที (ห้ามเติมคำอธิบายระบบ):\n" +
         "\"" + o.objection + "\"\n\n" +
-        "วิธีเล่นให้เป็นธรรมชาติ (สำคัญมาก):\n" +
-        "- พูดเหมือนคนจริง มีน้ำเสียง อารมณ์ มีคำลังเลได้ (เช่น 'เออ', 'คือ', 'อืม...') ไม่ใช่หุ่นยนต์อ่านสคริปต์\n" +
-        "- หลังพูดข้อโต้แย้งแล้ว หยุดรอให้พนักงานขายตอบ ห้ามพูดยาวเป็นย่อหน้า\n" +
-        "- ถ้าพนักงานขายตอบได้ดี มีเหตุผล โน้มน้าวได้ ให้ค่อย ๆ คล้อยตามอย่างสมจริง สุดท้ายถ้าเขาถามปิดดี ๆ ก็ตกลงได้\n" +
-        "- ถ้าพนักงานขายตอบไม่ตรงประเด็น หรือข้อมูลผิด ให้ยังลังเลและย้อนถาม/ค้านต่ออีกครั้งตามสมจริง\n" +
-        "- ห้ามเฉลยหรือบอกวิธีตอบที่ถูกต้องให้พนักงานขายเอง ห้ามหลุดบทไปเป็น AI\n" +
-        "- คุยกระชับ ปกติจบใน 2-4 ตาสนทนา\n" +
-        "- สำคัญ: เมื่อใดที่คุณตัดสินใจ 'ตกลงซื้อ/ปิดการขาย' แล้ว ให้พูดตอบรับตามธรรมชาติ แล้วปิดท้ายประโยคด้วยวลีนี้เป๊ะ ๆ เสมอ: \"ตกลงครับ เริ่มเลยครับ\" (ใช้วลีนี้เฉพาะตอนตกลงซื้อจริงเท่านั้น ห้ามพูดถ้ายังไม่ตกลง)";
+        "วิธีเล่นให้สมจริง:\n" +
+        "- พูดเหมือนคนจริง มีน้ำเสียง อารมณ์ มีคำลังเลได้ (เช่น 'เออ', 'คือ', 'อืม...') กระชับ ไม่ยืดยาว\n" +
+        "- หลังพูดข้อกังวลแล้ว หยุดรอให้พนักงานขายตอบ\n" +
+        "- ถ้าพนักงานขายตอบได้ดี มีเหตุผล โน้มน้าวได้ ให้ค่อย ๆ คล้อยตามอย่างสมจริง จนตกลงซื้อ\n" +
+        "- ถ้าตอบไม่ตรงประเด็น หรือข้อมูลผิด ให้ยังลังเลและย้อนถาม/ค้านต่ออีกครั้ง\n" +
+        "- ห้ามเฉลยวิธีตอบที่ถูกต้องให้พนักงานขาย ห้ามหลุดบทไปเป็น AI\n" +
+        "- เมื่อตัดสินใจ 'ตกลงซื้อ' จริง ให้ตอบรับตามธรรมชาติ แล้วปิดท้ายด้วยวลีนี้เป๊ะ ๆ เสมอ: \"ตกลงครับ เริ่มเลยครับ\" (พูดวลีนี้เฉพาะตอนตกลงซื้อจริงเท่านั้น)";
     }
 
     const RESULT_FORMAT =
@@ -268,16 +271,15 @@
     // ---------- realtime session ----------
     let pc=null, dc=null, micStream=null, current=null;
     let transcript=[];
-    let finished=false, salesHasSpoken=false, silenceTimer=null;
-    const SILENCE_MS = 3000;          // เซลส์เงียบเกินเท่านี้ -> จบอัตโนมัติ
-    const DEAL_PHRASE = "ตกลงครับ เริ่มเลยครับ"; // วลีปิดการขายที่สั่งให้ AI พูด
+    let finished=false, silenceTimer=null;
+    const SILENCE_MS = 3000;          // เงียบเกินเท่านี้ (ไม่มีใครพูด) -> จบอัตโนมัติ
     const DEAL_RE = /ตกลงครับ\s*เริ่มเลยครับ/;
 
     function clearSilence(){ if(silenceTimer){ clearTimeout(silenceTimer); silenceTimer=null; } }
     function armSilence(){
       clearSilence();
-      if (finished || !salesHasSpoken) return;
-      silenceTimer = setTimeout(()=>{ autoFinish("เซลส์เงียบเกิน 3 วินาที"); }, SILENCE_MS);
+      if (finished) return;
+      silenceTimer = setTimeout(()=>{ autoFinish("เงียบเกิน 3 วินาที (ไม่มีการตอบต่อ)"); }, SILENCE_MS);
     }
     function autoFinish(reason){
       if (finished) return;
@@ -298,7 +300,7 @@
       current = OBJECTIONS.find(o=>o.id===id);
       if (!WORKER_URL){ alert("กรุณาตั้งค่า Worker URL ก่อน (ช่องด้านบน)"); return; }
       transcript=[]; renderTranscript();
-      finished=false; salesHasSpoken=false; clearSilence();
+      finished=false; clearSilence();
       $("p-result").style.display="none"; $("p-trans").style.display="flex";
       $("p-end").disabled=false; $("p-hint").classList.remove("err");
       $("p-title").textContent = `ข้อโต้แย้ง · ${current.title}`;
@@ -330,7 +332,13 @@
         micStream.getTracks().forEach(t=> pc.addTrack(t, micStream));
 
         dc = pc.createDataChannel("oai-events");
-        dc.onopen = ()=>{ setStatus("กำลังคุย — พูดได้เลย", true); dc.send(JSON.stringify({type:"response.create"})); };
+        dc.onopen = ()=>{
+          setStatus("กำลังคุย — พูดได้เลย", true);
+          dc.send(JSON.stringify({
+            type:"response.create",
+            response:{ instructions: "พูดข้อกังวลของคุณออกมาเป็นประโยคแรกทันที คำต่อคำตามนี้ ในฐานะลูกค้า ห้ามอธิบายระบบหรือเติมคำตอบใด ๆ: \"" + current.objection + "\"" }
+          }));
+        };
         dc.onmessage = (ev)=> handleEvent(JSON.parse(ev.data));
 
         const offer = await pc.createOffer();
@@ -347,13 +355,15 @@
 
     function handleEvent(msg){
       const t = msg.type || "";
-      // เซลส์เริ่มพูด -> ยกเลิกตัวจับเวลาเงียบ
-      if (t === "input_audio_buffer.speech_started"){
+      // มีคนเริ่มพูด (เซลส์) หรือ AI เริ่มสร้าง/พูดคำตอบ -> ยกเลิกตัวจับเวลาเงียบ
+      if (t === "input_audio_buffer.speech_started" ||
+          t === "output_audio_buffer.started" ||
+          t === "response.created"){
         clearSilence();
       }
       // เซลส์พูดจบ (ถอดเสียงเสร็จ)
       else if (t === "conversation.item.input_audio_transcription.completed"){
-        if (msg.transcript){ addLine("sales", msg.transcript.trim()); salesHasSpoken = true; }
+        if (msg.transcript) addLine("sales", msg.transcript.trim());
       }
       // ลูกค้า (AI) พูดจบ
       else if (t === "response.audio_transcript.done" || t === "response.output_audio_transcript.done"){
@@ -364,12 +374,14 @@
           if (DEAL_RE.test(text)){
             clearSilence();
             setTimeout(()=> autoFinish("ลูกค้าตกลงซื้อ / ปิดการขายสำเร็จ"), 1500);
+            return;
           }
         }
       }
-      // AI พูดเสียงจบ (เริ่มนับเวลาเงียบของเซลส์)
-      else if (t === "output_audio_buffer.stopped" || t === "response.done"){
-        if (!finished) armSilence();
+      // AI พูดเสียงจบ หรือ เซลส์พูดจบ -> เริ่มนับเวลาเงียบ (ถ้าเงียบครบ 3 วิ = จบ)
+      else if (t === "output_audio_buffer.stopped" ||
+               t === "input_audio_buffer.speech_stopped"){
+        armSilence();
       }
     }
 
