@@ -67,9 +67,31 @@ export default {
       }
 
       // ---- ให้คะแนนจาก transcript ----
+      // รองรับ 2 โหมด:
+      //   1) Roleplay (live.html)  : ส่ง { rubric, transcript } -> ใช้ system/format มาตรฐาน (100 คะแนน)
+      //   2) แบบกำหนดเอง (objection.html) : ส่ง { rubric, transcript, context, systemPrompt, outputFormat }
       if (url.pathname === "/score" && req.method === "POST") {
-        const { rubric, transcript } = await req.json();
+        const { rubric, transcript, context, systemPrompt, outputFormat } = await req.json();
         if (!transcript || !transcript.trim()) return json({ error: "ไม่มี transcript" }, 400);
+
+        const DEFAULT_SYSTEM =
+          "คุณเป็น Sales Coach ผู้เชี่ยวชาญ ประเมินการ roleplay ขายระบบ POS อย่างเข้มงวดตามเกณฑ์ที่ให้ แล้วสรุปผลแบบกระชับ ได้ใจความสำคัญ เป็นภาษาไทย";
+        const DEFAULT_FORMAT =
+          "🎯 คะแนนรวม: X/100\n" +
+          "รายหมวด: Trust _/9 · Understand _/23 · Solution _/34 · Value & Objection _/24 · Close _/10\n\n" +
+          "✅ ทำได้ดี\n- (2-3 ข้อ สั้น ๆ อ้างอิงสิ่งที่เซลส์พูดจริง)\n\n" +
+          "⚠️ ต้องปรับ\n- (2-3 ข้อ สั้น ๆ พร้อมบอกวิธีแก้ที่ทำได้จริง)\n\n" +
+          "💡 ครั้งหน้า: (1 ประโยคเด็ดที่นำไปใช้ได้ทันที)";
+
+        const userContent =
+          (context ? "===== โจทย์/ข้อโต้แย้งของลูกค้า =====\n" + context + "\n\n" : "") +
+          "===== เกณฑ์/เฉลย (ใช้เป็น 'มาตรฐานการประเมิน' เท่านั้น — ห้ามลอกรูปแบบรายงาน/ตารางในเกณฑ์มาแสดง) =====\n" +
+          rubric +
+          "\n\n===== TRANSCRIPT (บรรทัด 'เซลส์:' = พนักงานขายที่ต้องประเมิน, 'ลูกค้า:' = AI ที่เล่นเป็นลูกค้า) =====\n" +
+          transcript +
+          "\n\n===== สรุปผลตามรูปแบบนี้เท่านั้น (กระชับ ห้ามทำตารางยาว) =====\n" +
+          (outputFormat || DEFAULT_FORMAT);
+
         const r = await fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
           headers: {
@@ -80,25 +102,8 @@ export default {
             model: SCORING_MODEL,
             temperature: 0.2,
             messages: [
-              {
-                role: "system",
-                content:
-                  "คุณเป็น Sales Coach ผู้เชี่ยวชาญ ประเมินการ roleplay ขายระบบ POS อย่างเข้มงวดตามเกณฑ์ที่ให้ แล้วสรุปผลแบบกระชับ ได้ใจความสำคัญ เป็นภาษาไทย",
-              },
-              {
-                role: "user",
-                content:
-                  "===== เกณฑ์การให้คะแนน (ใช้เป็น 'มาตรฐานการประเมิน' เท่านั้น — ห้ามลอกรูปแบบรายงาน/ตาราง/รายการคะแนนเต็มในเกณฑ์มาแสดง) =====\n" +
-                  rubric +
-                  "\n\n===== TRANSCRIPT (บรรทัด 'เซลส์:' = พนักงานขายที่ต้องประเมิน, 'ลูกค้า:' = AI ที่เล่นเป็นลูกค้า) =====\n" +
-                  transcript +
-                  "\n\n===== สรุปผลตามรูปแบบนี้เท่านั้น (กระชับ ห้ามทำตารางยาว ห้ามไล่ทีละข้อย่อย) =====\n" +
-                  "🎯 คะแนนรวม: X/100\n" +
-                  "รายหมวด: Trust _/9 · Understand _/23 · Solution _/34 · Value & Objection _/24 · Close _/10\n\n" +
-                  "✅ ทำได้ดี\n- (2-3 ข้อ สั้น ๆ อ้างอิงสิ่งที่เซลส์พูดจริง)\n\n" +
-                  "⚠️ ต้องปรับ\n- (2-3 ข้อ สั้น ๆ พร้อมบอกวิธีแก้ที่ทำได้จริง)\n\n" +
-                  "💡 ครั้งหน้า: (1 ประโยคเด็ดที่นำไปใช้ได้ทันที)",
-              },
+              { role: "system", content: systemPrompt || DEFAULT_SYSTEM },
+              { role: "user", content: userContent },
             ],
           }),
         });

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Objection Handling — ฝึกตอบข้อโต้แย้ง (เสียงสด) · Wongnai POS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --brand:#f25533; --brand-light:rgba(242,85,51,.10); --brand-dark:#d94420;
+      --gpt:#10a37f; --gpt-light:rgba(16,163,127,.12);
+      --surface:#17171f; --surface-2:#1e1e28; --bg:#0f0f14;
+      --border:rgba(255,255,255,.075); --border-h:rgba(255,255,255,.16);
+      --text:#ececf1; --text-2:#8a8a9c; --radius:14px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Sarabun','Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.55}
+    a{color:inherit}
+    header{max-width:1040px;margin:0 auto;padding:40px 24px 8px}
+    .badge{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--brand);background:var(--brand-light);padding:6px 14px;border-radius:999px;margin-bottom:18px}
+    h1{font-size:30px;font-weight:700;letter-spacing:-.5px}
+    h1 span{color:var(--brand)}
+    .sub{color:var(--text-2);font-size:16px;margin-top:8px;max-width:760px}
+    .formula{display:inline-flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+    .formula span{font-size:13px;font-weight:600;color:var(--brand);background:var(--brand-light);border:1px solid rgba(242,85,51,.2);padding:5px 12px;border-radius:8px}
+    .topnav{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+    .pill{font-size:13.5px;font-weight:600;text-decoration:none;background:var(--surface-2);border:1px solid var(--border);padding:8px 14px;border-radius:10px}
+    .pill:hover{border-color:var(--border-h)}
+    main{max-width:1040px;margin:0 auto;padding:24px 24px 80px}
+
+    .cfg{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:24px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .cfg label{font-size:14px;color:var(--text-2);font-weight:600}
+    .cfg input{flex:1;min-width:240px;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:10px 12px;color:var(--text);font-family:inherit;font-size:14px}
+    .cfg button{background:var(--brand);color:#fff;border:none;border-radius:9px;padding:10px 16px;font-family:inherit;font-weight:600;cursor:pointer}
+    .cfg .ok{color:var(--gpt);font-size:13.5px;font-weight:600}
+
+    .cards{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    @media(max-width:820px){.cards{grid-template-columns:1fr}}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;display:flex;flex-direction:column;transition:border-color .15s,transform .15s}
+    .card:hover{border-color:var(--border-h);transform:translateY(-2px)}
+    .otag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;margin-bottom:14px;align-self:flex-start;color:var(--brand);background:var(--brand-light)}
+    .card h2{font-size:19px;font-weight:700;letter-spacing:-.3px}
+    .card .obj{color:var(--text-2);font-size:14.5px;margin:10px 0 20px;font-style:italic;border-left:3px solid var(--border-h);padding-left:12px}
+    .btn{display:flex;align-items:center;justify-content:center;gap:9px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;padding:13px 16px;border-radius:11px;border:1px solid transparent;width:100%;margin-top:auto}
+    .btn-go{background:var(--gpt);color:#fff}
+    .btn-go:hover{filter:brightness(1.08)}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+
+    /* session overlay */
+    #ov{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:24px;z-index:90}
+    #ov.show{display:flex}
+    .panel{background:var(--surface);border:1px solid var(--border-h);border-radius:var(--radius);width:720px;max-width:100%;max-height:88vh;display:flex;flex-direction:column;overflow:hidden}
+    .panel-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .panel-head h3{font-size:17px;font-weight:700}
+    .panel-head .x{background:none;border:none;color:var(--text-2);font-size:22px;cursor:pointer;line-height:1}
+    .status{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text-2);padding:14px 22px;border-bottom:1px solid var(--border)}
+    .dot{width:10px;height:10px;border-radius:50%;background:#666}
+    .dot.live{background:var(--gpt);animation:pulse 1.4s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+    .transcript{flex:1;overflow:auto;padding:18px 22px;display:flex;flex-direction:column;gap:12px;min-height:200px}
+    .line{max-width:85%;padding:10px 14px;border-radius:14px;font-size:14.5px;line-height:1.5;white-space:pre-wrap}
+    .line.sales{align-self:flex-end;background:var(--gpt-light);border:1px solid rgba(16,163,127,.3)}
+    .line.cust{align-self:flex-start;background:var(--surface-2);border:1px solid var(--border)}
+    .line .who{font-size:12px;font-weight:700;color:var(--text-2);margin-bottom:3px}
+    .panel-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end}
+    .panel-foot .btn{width:auto;margin:0;padding:11px 20px}
+    .btn-stop{background:#f87171;color:#111}
+    .btn-ghost{background:transparent;color:var(--text-2);border-color:var(--border)}
+    .btn-ghost:hover{color:var(--text);border-color:var(--border-h)}
+    .result{padding:18px 22px;overflow:auto;flex:1;white-space:pre-wrap;font-size:13.5px;line-height:1.6;color:#d2d2dd;font-family:'Sarabun',monospace}
+    .hint{font-size:12.5px;color:var(--text-2);padding:0 22px 14px}
+    .err{color:#f87171}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="badge">🛡️ Objection Handling · Beta</div>
+    <h1>ฝึกตอบ<span>ข้อโต้แย้ง</span> (เสียงสด)</h1>
+    <p class="sub">เลือกข้อโต้แย้ง → AI เล่นเป็นเจ้าของร้านโยนคำค้านมาด้วยเสียง → คุณตอบกลับเป็นพนักงานขาย → กด "จบ" แล้วระบบประเมินว่าตอบได้ระดับไหน พร้อมเฉลยแนวทางที่ถูกต้อง</p>
+    <div class="formula"><span>1 เข้าใจ</span><span>2 ดึง Pain</span><span>3 ผูก Value</span><span>4 ถามปิด</span></div>
+    <div class="topnav">
+      <a class="pill" href="./index.html">← หน้าแรก</a>
+      <a class="pill" href="./live.html">Roleplay เสียงสด</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="cfg" id="cfg">
+      <label for="wurl">Worker URL:</label>
+      <input id="wurl" type="text" placeholder="https://mds-roleplay-voice.xxx.workers.dev" />
+      <button id="wsave">บันทึก</button>
+      <span class="ok" id="wok"></span>
+    </div>
+
+    <div class="cards" id="cards"></div>
+  </main>
+
+  <audio id="aud" autoplay></audio>
+
+  <div id="ov">
+    <div class="panel">
+      <div class="panel-head">
+        <h3 id="p-title">Objection</h3>
+        <button class="x" onclick="endAndClose()">×</button>
+      </div>
+      <div class="status"><span class="dot" id="p-dot"></span><span id="p-status">กำลังเชื่อมต่อ…</span></div>
+      <div class="transcript" id="p-trans"></div>
+      <div class="result" id="p-result" style="display:none"></div>
+      <div class="hint" id="p-hint">รอ AI พูดข้อโต้แย้งก่อน แล้วตอบกลับเป็นพนักงานขาย</div>
+      <div class="panel-foot">
+        <button class="btn btn-ghost" onclick="endAndClose()">ปิด</button>
+        <button class="btn btn-stop" id="p-end" onclick="finish()">⏹ จบ + ประเมินผล</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const REALTIME_MODEL = "gpt-realtime";
+    const $ = (id) => document.getElementById(id);
+
+    // ---------- Worker URL config ----------
+    let WORKER_URL = localStorage.getItem("mds_worker_url") || "";
+    function refreshCfg(){
+      $("wurl").value = WORKER_URL;
+      $("wok").textContent = WORKER_URL ? "✓ ตั้งค่าแล้ว" : "ยังไม่ได้ตั้งค่า — กรอก URL ของ Cloudflare Worker";
+    }
+    $("wsave").onclick = () => {
+      WORKER_URL = $("wurl").value.trim().replace(/\/$/,"");
+      localStorage.setItem("mds_worker_url", WORKER_URL);
+      refreshCfg();
+    };
+    refreshCfg();
+
+    // ---------- objection data + เฉลย ----------
+    const OBJECTIONS = [
+      {
+        id:"o1", title:"ความเสถียรของระบบ", hint:"กลัวเน็ตล่มในห้าง",
+        objection:"ในห้างคนเยอะ สัญญาณเน็ตไม่ค่อยนิ่ง ถ้าเน็ตหลุดระบบล่มจะทำยังไง?",
+        key:[
+          "เข้าใจ: เข้าใจเลยครับ เรื่องสัญญาณเน็ตในห้างที่คนหนาแน่นเป็นเรื่องต้องระวังจริง ๆ",
+          "ดึง Pain: ถ้าเน็ตล่มช่วงคนเยอะ ออเดอร์ค้าง ลูกค้ารอนาน เสียภาพลักษณ์ร้านตั้งแต่สัปดาห์แรก",
+          "ผูก Value: เราขาย iPad POS คู่กับ Router ที่ออกแบบมาเพื่อร้านอาหารโดยเฉพาะ แยกวงสัญญาณให้เสถียร + ทีม Support ดูแล 24 ชม.",
+          "ถามปิด: เพื่อให้วันเปิดร้านลื่นไหล ผมแนะนำชุดที่มาพร้อม Router และ Dongle ไปด้วยเลยดีไหมครับ?"
+        ]
+      },
+      {
+        id:"o2", title:"ขอใช้ของฟรีไปก่อน", hint:"เทียบกับแอปฟรี/เครื่องคิดเงินธรรมดา",
+        objection:"เพิ่งเริ่มเปิดร้าน งบจุกจิกเยอะ ขอลองใช้แอปฟรีไปก่อนละกัน",
+        key:[
+          "เข้าใจ: เข้าใจเลยครับ ช่วงเปิดร้านใหม่ใคร ๆ ก็อยากเซฟงบ",
+          "ดึง Pain: แต่แอปฟรีส่วนใหญ่เก็บ Data ลูกค้าไม่ได้ ไม่มี Ecosystem และไม่เสถียรเท่าระบบที่ทำมานาน",
+          "ผูก Value: ระบบเราเป็น One-stop Solution เชื่อมคนใช้ Wongnai 14 ล้านคน/เดือนช่วยโปรโมทฟรี รับทุกการจ่ายผ่าน EDC ปิดบิลอัตโนมัติ เชื่อม LINE MAN / LINE",
+          "ถามปิด: ลงทุนเพิ่มวันละไม่กี่สิบบาทเพื่อให้ร้านโตอย่างเป็นระบบตั้งแต่วันแรก คุ้มกว่าดีไหมครับ?"
+        ]
+      },
+      {
+        id:"o3", title:"ยังไม่พร้อม / ไม่มีเวลา", hint:"ยุ่งกับก่อสร้าง/หาคน",
+        objection:"ตอนนี้ยุ่งเรื่องตรวจรับเหมากับเทรนลูกน้องมากเลย ไว้ร้านเปิดค่อยเข้ามาคุยใหม่ได้ไหม?",
+        key:[
+          "เข้าใจ: เข้าใจสุด ๆ ครับ ช่วงโค้งสุดท้ายก่อนเปิดร้านงานล้นมือแน่นอน",
+          "ดึง Pain: แต่ถ้ารอเปิดร้านก่อนค่อยวางระบบ วันแรกที่ลูกค้าแห่เข้ามา พนักงานอาจวุ่นจนรับออเดอร์ผิด คิวยาวจนลูกค้าเดินหนี",
+          "ผูก Value: ฟีเจอร์ Order & Pay ช่วยลดภาระพนักงานทันที ลูกค้าสั่ง+จ่ายเองได้ พนักงานใช้เป็นภายใน 1 วัน",
+          "ถามปิด: วันนี้สรุปเลือกระบบก่อนเลย เพื่อให้ผมส่งช่างเข้าไปติดตั้งและเทรนน้องให้จบก่อนวันเปิดจริง ดีไหมครับ?"
+        ]
+      },
+      {
+        id:"o4", title:"EDC ค่าธรรมเนียม/ขั้นต่ำ", hint:"กลัวยอดไม่ถึงขั้นต่ำ",
+        objection:"เครื่อง EDC มีค่าธรรมเนียมรูดบัตรและมีขั้นต่ำต่อเดือน กลัวเปิดใหม่ยอดจะไม่ถึง?",
+        key:[
+          "เข้าใจ: เข้าใจความกังวลเรื่องต้นทุนแฝงครับ เป็นเรื่องที่เจ้าของร้านต้องคำนวณละเอียดจริง ๆ",
+          "ดึง Pain: คนเดินห้างสมัยนี้พกบัตร/E-Wallet มากกว่าเงินสด ถ้าไม่มีเครื่องรองรับ อาจเสียลูกค้ากำลังซื้อสูงไปอย่างน่าเสียดาย",
+          "ผูก Value: EDC ช่วยเพิ่มโอกาสขายได้ถึง 32% รองรับ QR/บัตรเครดิต/E-Wallet ครบในเครื่องเดียว และยอดขั้นต่ำอยู่ในระดับที่ร้านในห้างทำถึงได้ไม่ยาก",
+          "ถามปิด: เพื่อไม่พลาดโอกาสปิดการขายแม้แต่บาทเดียว รับ EDC ไปวางคู่ POS เลยดีไหมครับ?"
+        ]
+      },
+      {
+        id:"o5", title:"EDC เทียบ MDR Rate", hint:"ธนาคารอื่นให้ 1.8%",
+        objection:"มีอีกธนาคารให้ MDR Rate แค่ 1.8% เอง ทำไมที่นี่คิดสูงจัง?",
+        key:[
+          "เข้าใจ: เข้าใจเลยครับ เรื่อง MDR เป็นต้นทุนที่ต้องเทียบให้ละเอียดเพราะกระทบกำไรทุกบาท",
+          "ดึง Pain: Rate 1.8% มักเป็นบัตร Non-Premium ที่แทบไม่มีในตลาดแล้ว หรือเป็น On-us (ต้องใช้บัตรกับเครื่องของธนาคารเจ้าของบัตรเท่านั้น) ถ้าลูกค้าใช้บัตรธนาคารอื่นจะไม่ได้ 1.8% สุดท้ายอาจเจอ Rate จริงสูงกว่าที่คิด",
+          "ผูก Value: EDC LINE Pay ของเราเฉลี่ยทุกประเภทบัตรอยู่ที่ประมาณ 2.3% เป็น Rate เดียวใช้ได้กับบัตรทุกประเภททุกธนาคาร ไม่มีเงื่อนไขซ่อน เฉลี่ยจริงทั้งร้านยังต่ำกว่าเจ้าอื่น",
+          "ถามปิด: ถ้าลองคิดเฉลี่ยการรับบัตรทั้งร้าน ของเรายังคุ้มกว่าครับ พร้อมเริ่มเลยไหมครับ?"
+        ]
+      },
+      {
+        id:"o6", title:"ระบบสมาชิกยังไม่จำเป็น", hint:"เพิ่งเปิด/คนยังไม่เยอะ",
+        objection:"ระบบสมาชิกน่าจะยังไม่จำเป็นหรอก เพิ่งเปิดร้าน คนยังไม่เยอะ",
+        key:[
+          "เข้าใจ: เข้าใจครับ ช่วงเริ่มต้นอยากโฟกัสรสชาติอาหารและบริการหน้าร้านให้ลงตัวก่อน",
+          "ดึง Pain: ร้านที่ไม่ทำระบบสมาชิกตั้งแต่แรกมักเสียโอกาสรู้จักลูกค้าจริง ๆ ไม่รู้ว่าใครเข้ามา ชอบเมนูไหน จะกลับมาอีกไหม สุดท้ายได้แค่ยอดขายแต่ไม่ได้ฐานข้อมูล",
+          "ผูก Value: Wongnai CRM เปลี่ยนลูกค้าขาจรเป็นลูกค้าประจำ แค่แจ้งเบอร์ตอนจ่ายเงินก็สะสมแต้มอัตโนมัติ เพิ่มยอดต่อบิล กระตุ้นซื้อซ้ำ และส่งโปรผ่าน LINE OA ได้ตรง",
+          "ถามปิด: เพื่อสร้างฐานแฟนพันธุ์แท้ตั้งแต่วันแรก เริ่มใช้ CRM พร้อม POS ไปเลยดีกว่าไหมครับ?"
+        ]
+      },
+      {
+        id:"o7", title:"แพง", hint:"ลงทุนก้อนแรกสูง",
+        objection:"ระบบนี้แพงไปนะ ลงทุนทีแรกก็เยอะอยู่",
+        key:[
+          "เข้าใจ: เข้าใจครับ การลงทุนก้อนแรกอาจดูเป็นเงินจำนวนหนึ่งที่ต้องพิจารณาละเอียด",
+          "ดึง Pain: ลองมองโอกาสที่อาจเสียไปจาก 'ออเดอร์หลุด' หรือ 'ยอดเงินหาย' เพราะตรวจสลิปไม่ได้ เป็นรอยรั่วเล็ก ๆ ที่ทำให้กำไรหายโดยไม่รู้ตัว",
+          "ผูก Value: POS เราช่วยอุดรอยรั่วทันที ลดความผิดพลาดได้ถึง 80-90% ตรวจยอดเงินแม่นยำ 100% คืนทุนได้ในเวลาไม่นาน",
+          "ถามปิด: เพื่อให้ร้านเริ่มต้นมั่นคงไม่มีเงินรั่วไหลตั้งแต่วันแรก รับเป็นชุดนี้ไปเลยดีไหมครับ?"
+        ]
+      },
+      {
+        id:"o8", title:"รู้สึกว่าใช้ยาก", hint:"กลัวพนักงานใช้ไม่เป็น",
+        objection:"ดูแล้วรู้สึกว่าใช้ยากนะ กลัวพนักงานใช้ไม่เป็น",
+        key:[
+          "เข้าใจ: เรื่องกังวลใจกับระบบใหม่ ๆ เข้าใจที่สุดครับ หลายคนกังวลแบบนี้ตอนแรก",
+          "ดึง Pain: ถ้าพนักงานใช้เครื่องไม่เป็น นอกจากงานช้า ยังกระทบบริการลูกค้าจนเขาไม่อยากกลับมาซ้ำ",
+          "ผูก Value: ระบบออกแบบให้ใช้ง่ายมาก เมนูภาษาไทยปุ่มใหญ่ พนักงานส่วนใหญ่ใช้เป็นภายใน 1 วัน และมีทีม Support 24 ชม. เหมือนมีที่ปรึกษาอยู่ข้าง ๆ",
+          "ถามปิด: ผมแนะนำวางระบบก่อนเปิดร้านสัก 7-14 วัน เพื่อเข้าไปติดตั้งและเทรนน้องให้คล่องก่อนวันเปิดจริง ดีไหมครับ?"
+        ]
+      }
+    ];
+
+    // ---------- instructions builder ----------
+    function buildInstructions(o){
+      return "[โหมดสนทนาด้วยเสียงแบบเรียลไทม์] คุณเล่นเป็น \"เจ้าของร้านอาหาร\" ที่กำลังคุยกับพนักงานขายระบบ POS (Wongnai POS) พูดภาษาไทยเท่านั้น\n\n" +
+        "บทของคุณ: คุณมีข้อกังวล/ข้อโต้แย้ง 1 เรื่อง และจะพูดข้อโต้แย้งนี้ออกมาเป็นประโยคแรกเพื่อเริ่มบทสนทนาทันที:\n" +
+        "\"" + o.objection + "\"\n\n" +
+        "วิธีเล่นให้เป็นธรรมชาติ (สำคัญมาก):\n" +
+        "- พูดเหมือนคนจริง มีน้ำเสียง อารมณ์ มีคำลังเลได้ (เช่น 'เออ', 'คือ', 'อืม...') ไม่ใช่หุ่นยนต์อ่านสคริปต์\n" +
+        "- หลังพูดข้อโต้แย้งแล้ว หยุดรอให้พนักงานขายตอบ ห้ามพูดยาวเป็นย่อหน้า\n" +
+        "- ถ้าพนักงานขายตอบได้ดี มีเหตุผล โน้มน้าวได้ ให้ค่อย ๆ คล้อยตามอย่างสมจริง สุดท้ายถ้าเขาถามปิดดี ๆ ก็ตกลงได้\n" +
+        "- ถ้าพนักงานขายตอบไม่ตรงประเด็น หรือข้อมูลผิด ให้ยังลังเลและย้อนถาม/ค้านต่ออีกครั้งตามสมจริง\n" +
+        "- ห้ามเฉลยหรือบอกวิธีตอบที่ถูกต้องให้พนักงานขายเอง ห้ามหลุดบทไปเป็น AI\n" +
+        "- คุยกระชับ ปกติจบใน 2-4 ตาสนทนา";
+    }
+
+    const RESULT_FORMAT =
+      "🏅 ผลประเมิน: <เลือก 1 ระดับ: ตอบได้ยอดเยี่ยม / ตอบได้ตามหลักการ / ปรับปรุงเพิ่ม>\n" +
+      "(เกณฑ์ตัดสิน: \n" +
+      "• ตอบได้ยอดเยี่ยม = น้ำเสียงโน้มน้าว แก้ข้อโต้แย้งได้เห็นภาพ ตรงกับเฉลย ครบทั้ง 4 สเต็ป\n" +
+      "• ตอบได้ตามหลักการ = ตอบตรงกับเฉลยแบบกลาง ๆ ครบสูตรแต่ยังไม่โน้มน้าวเท่าที่ควร\n" +
+      "• ปรับปรุงเพิ่ม = ยังไม่ตรงหลักการ ขาดสเต็ป หรือมีข้อมูลบางส่วนไม่ถูก)\n\n" +
+      "📋 ตามสูตร (สั้น ๆ บอกว่าทำหรือไม่ทำ):\n" +
+      "- เข้าใจ: ...\n- ดึง Pain: ...\n- ผูก Value: ...\n- ถามปิด: ...\n\n" +
+      "✅ ทำได้ดี: (1-2 ข้อ อ้างอิงสิ่งที่เซลส์พูดจริง)\n" +
+      "⚠️ ควรปรับ: (1-2 ข้อ ถ้ามี — โดยเฉพาะข้อมูลที่ผิดต้องชี้ให้ชัด)\n\n" +
+      "💡 แนวทางที่ถูกต้อง (ตามเฉลย): สรุปคำตอบที่ดีตามสูตรแบบกระชับ พร้อมประโยคตัวอย่างที่ควรพูด";
+
+    const SCORE_SYSTEM =
+      "คุณเป็น Sales Coach ผู้เชี่ยวชาญด้านการรับมือข้อโต้แย้ง (Objection Handling) ของการขายระบบ POS " +
+      "ประเมินคำตอบของพนักงานขายเทียบกับ 'แนวทางที่ถูกต้อง (เฉลย)' ที่ให้มา อย่างเข้มงวดและยุติธรรม ตอบเป็นภาษาไทย กระชับ";
+
+    // ---------- render cards ----------
+    function cardHTML(o, idx){
+      return `<div class="card">
+        <span class="otag">ข้อโต้แย้งที่ ${idx+1} · ${o.hint}</span>
+        <h2>${o.title}</h2>
+        <p class="obj">“${o.objection}”</p>
+        <button class="btn btn-go" data-go="${o.id}">🎙️ เริ่มฝึกตอบ (เสียงสด)</button>
+      </div>`;
+    }
+    function render(){
+      $("cards").innerHTML = OBJECTIONS.map((o,i)=>cardHTML(o,i)).join("");
+      $("cards").querySelectorAll("button[data-go]").forEach(b=>{
+        b.addEventListener("click", ()=> start(b.dataset.go));
+      });
+    }
+    render();
+
+    // ---------- realtime session ----------
+    let pc=null, dc=null, micStream=null, current=null;
+    let transcript=[];
+
+    function setStatus(txt, live){ $("p-status").textContent=txt; $("p-dot").classList.toggle("live", !!live); }
+    function renderTranscript(){
+      $("p-trans").innerHTML = transcript.map(l=>
+        `<div class="line ${l.role}"><div class="who">${l.role==='sales'?'เซลส์ (คุณ)':'ลูกค้า (AI)'}</div>${l.text||''}</div>`
+      ).join("");
+      $("p-trans").scrollTop = $("p-trans").scrollHeight;
+    }
+    function addLine(role, text){ transcript.push({role, text}); renderTranscript(); }
+
+    async function start(id){
+      current = OBJECTIONS.find(o=>o.id===id);
+      if (!WORKER_URL){ alert("กรุณาตั้งค่า Worker URL ก่อน (ช่องด้านบน)"); return; }
+      transcript=[]; renderTranscript();
+      $("p-result").style.display="none"; $("p-trans").style.display="flex";
+      $("p-end").disabled=false; $("p-hint").classList.remove("err");
+      $("p-title").textContent = `ข้อโต้แย้ง · ${current.title}`;
+      $("p-hint").textContent = 'รอ AI พูดข้อโต้แย้งก่อน แล้วตอบกลับเป็นพนักงานขายได้เลย';
+      $("ov").classList.add("show");
+      setStatus("กำลังขออนุญาตไมโครโฟน…", false);
+
+      try{
+        micStream = await navigator.mediaDevices.getUserMedia({ audio:true });
+      }catch(e){ setStatus("เข้าถึงไมโครโฟนไม่ได้: "+e, false); return; }
+
+      setStatus("กำลังสร้างเซสชัน…", false);
+      let session;
+      try{
+        const r = await fetch(WORKER_URL+"/session", {
+          method:"POST", headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({ instructions: buildInstructions(current) })
+        });
+        session = await r.json();
+        if (session.error) throw new Error(JSON.stringify(session));
+      }catch(e){ setStatus("สร้างเซสชันไม่สำเร็จ: "+e, false); return; }
+
+      const ephemeral = session.value || (session.client_secret && session.client_secret.value);
+      if (!ephemeral){ setStatus("ไม่ได้ token จาก Worker (เช็ค OPENAI_API_KEY)", false); return; }
+
+      try{
+        pc = new RTCPeerConnection();
+        pc.ontrack = (e)=>{ $("aud").srcObject = e.streams[0]; };
+        micStream.getTracks().forEach(t=> pc.addTrack(t, micStream));
+
+        dc = pc.createDataChannel("oai-events");
+        dc.onopen = ()=>{ setStatus("กำลังคุย — พูดได้เลย", true); dc.send(JSON.stringify({type:"response.create"})); };
+        dc.onmessage = (ev)=> handleEvent(JSON.parse(ev.data));
+
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        const sdpRes = await fetch(`https://api.openai.com/v1/realtime/calls?model=${REALTIME_MODEL}`,{
+          method:"POST", body: offer.sdp,
+          headers:{ Authorization:`Bearer ${ephemeral}`, "Content-Type":"application/sdp" }
+        });
+        const answer = { type:"answer", sdp: await sdpRes.text() };
+        await pc.setRemoteDescription(answer);
+        setStatus("เชื่อมต่อแล้ว กำลังเริ่ม…", true);
+      }catch(e){ setStatus("เชื่อมต่อเสียงไม่สำเร็จ: "+e, false); }
+    }
+
+    function handleEvent(msg){
+      const t = msg.type || "";
+      if (t === "conversation.item.input_audio_transcription.completed"){
+        if (msg.transcript) addLine("sales", msg.transcript.trim());
+      } else if (t === "response.audio_transcript.done" || t === "response.output_audio_transcript.done"){
+        if (msg.transcript) addLine("cust", msg.transcript.trim());
+      }
+    }
+
+    async function finish(){
+      $("p-end").disabled=true;
+      stopMedia();
+      setStatus("จบบทสนทนา — กำลังประเมินผล…", false);
+      const lines = transcript.filter(l=>l.text).map(l=> (l.role==='sales'?'เซลส์: ':'ลูกค้า: ')+l.text).join("\n");
+      const count = transcript.filter(l=>l.text).length;
+      const tBlock = "\n\n———————————————\n📝 บทสนทนาที่ระบบบันทึกได้ (" + count + " บรรทัด):\n" +
+                     (lines || "(ระบบไม่ได้บันทึกข้อความเลย — อาจเป็นปัญหาการถอดเสียงเป็นข้อความ)");
+      if (!lines.trim()){ showResult("⚠️ ยังไม่มีบทสนทนาให้ประเมิน — ระบบถอดเสียงเป็นข้อความไม่ได้ ลองพูดให้ชัดขึ้น/นานขึ้น แล้วค่อยกดจบ" + tBlock, true); return; }
+      const keyText = current.key.join("\n");
+      try{
+        const r = await fetch(WORKER_URL+"/score",{
+          method:"POST", headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({
+            context: current.objection,
+            rubric: keyText,
+            transcript: lines,
+            systemPrompt: SCORE_SYSTEM,
+            outputFormat: RESULT_FORMAT
+          })
+        });
+        const data = await r.json();
+        if (data.error) throw new Error(JSON.stringify(data));
+        showResult(data.result + tBlock, false);
+      }catch(e){ showResult("ประเมินไม่สำเร็จ: "+e + tBlock, true); }
+    }
+
+    function showResult(text, isErr){
+      $("p-trans").style.display="none";
+      const el = $("p-result"); el.style.display="block"; el.textContent=text;
+      el.classList.toggle("err", !!isErr);
+      setStatus("ประเมินเสร็จแล้ว", false);
+      $("p-hint").textContent = "ปิดหน้าต่างนี้เพื่อเลือกข้อโต้แย้งใหม่";
+    }
+
+    function stopMedia(){
+      try{ if(dc) dc.close(); }catch(e){}
+      try{ if(pc) pc.close(); }catch(e){}
+      try{ if(micStream) micStream.getTracks().forEach(t=>t.stop()); }catch(e){}
+      dc=null; pc=null; micStream=null;
+    }
+    function endAndClose(){ stopMedia(); $("ov").classList.remove("show"); }
+  </script>
+</body>
+</html>
