@@ -53,7 +53,8 @@ export default {
               instructions: instructions || "",
               audio: {
                 input: {
-                  transcription: { model: "whisper-1", language: "th" },
+                  // gpt-4o-transcribe ถอดภาษาไทยแม่น/ครบประโยคกว่า whisper-1 มาก
+                  transcription: { model: "gpt-4o-transcribe", language: "th" },
                   // threshold สูงขึ้น = ไวต่อเสียงรบกวน/เสียงสะท้อนน้อยลง (กัน AI ตอบเองจากเสียงหลอน)
                   turn_detection: {
                     type: "server_vad",
