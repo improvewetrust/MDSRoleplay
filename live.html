@@ -150,8 +150,7 @@
     const $ = (id) => document.getElementById(id);
 
     // ---------- Worker URL config ----------
-    const DEFAULT_WORKER_URL = "https://mds-roleplay-voice.mdslearnanddevelop.workers.dev";
-    let WORKER_URL = localStorage.getItem("mds_worker_url") || DEFAULT_WORKER_URL;
+    let WORKER_URL = localStorage.getItem("mds_worker_url") || "";
     function refreshCfg(){
       $("wurl").value = WORKER_URL;
       $("wok").textContent = WORKER_URL ? "✓ ตั้งค่าแล้ว" : "ยังไม่ได้ตั้งค่า — กรอก URL ของ Cloudflare Worker";
