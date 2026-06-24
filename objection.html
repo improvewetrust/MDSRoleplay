@@ -108,7 +108,7 @@
       <div class="status"><span class="dot" id="p-dot"></span><span id="p-status">กำลังเชื่อมต่อ…</span></div>
       <div class="transcript" id="p-trans"></div>
       <div class="result" id="p-result" style="display:none"></div>
-      <div class="hint" id="p-hint">รอ AI พูดข้อโต้แย้งก่อน แล้วตอบกลับเป็นพนักงานขาย</div>
+      <div class="hint" id="p-hint">รอ AI พูดข้อโต้แย้งก่อน แล้วตอบกลับเป็นพนักงานขาย — ระบบจะจบให้เองเมื่อลูกค้าตกลงซื้อ หรือเมื่อเงียบเกิน 3 วิ</div>
       <div class="panel-foot">
         <button class="btn btn-ghost" onclick="endAndClose()">ปิด</button>
         <button class="btn btn-stop" id="p-end" onclick="finish()">⏹ จบ + ประเมินผล</button>
@@ -228,7 +228,8 @@
         "- ถ้าพนักงานขายตอบได้ดี มีเหตุผล โน้มน้าวได้ ให้ค่อย ๆ คล้อยตามอย่างสมจริง สุดท้ายถ้าเขาถามปิดดี ๆ ก็ตกลงได้\n" +
         "- ถ้าพนักงานขายตอบไม่ตรงประเด็น หรือข้อมูลผิด ให้ยังลังเลและย้อนถาม/ค้านต่ออีกครั้งตามสมจริง\n" +
         "- ห้ามเฉลยหรือบอกวิธีตอบที่ถูกต้องให้พนักงานขายเอง ห้ามหลุดบทไปเป็น AI\n" +
-        "- คุยกระชับ ปกติจบใน 2-4 ตาสนทนา";
+        "- คุยกระชับ ปกติจบใน 2-4 ตาสนทนา\n" +
+        "- สำคัญ: เมื่อใดที่คุณตัดสินใจ 'ตกลงซื้อ/ปิดการขาย' แล้ว ให้พูดตอบรับตามธรรมชาติ แล้วปิดท้ายประโยคด้วยวลีนี้เป๊ะ ๆ เสมอ: \"ตกลงครับ เริ่มเลยครับ\" (ใช้วลีนี้เฉพาะตอนตกลงซื้อจริงเท่านั้น ห้ามพูดถ้ายังไม่ตกลง)";
     }
 
     const RESULT_FORMAT =
@@ -267,6 +268,22 @@
     // ---------- realtime session ----------
     let pc=null, dc=null, micStream=null, current=null;
     let transcript=[];
+    let finished=false, salesHasSpoken=false, silenceTimer=null;
+    const SILENCE_MS = 3000;          // เซลส์เงียบเกินเท่านี้ -> จบอัตโนมัติ
+    const DEAL_PHRASE = "ตกลงครับ เริ่มเลยครับ"; // วลีปิดการขายที่สั่งให้ AI พูด
+    const DEAL_RE = /ตกลงครับ\s*เริ่มเลยครับ/;
+
+    function clearSilence(){ if(silenceTimer){ clearTimeout(silenceTimer); silenceTimer=null; } }
+    function armSilence(){
+      clearSilence();
+      if (finished || !salesHasSpoken) return;
+      silenceTimer = setTimeout(()=>{ autoFinish("เซลส์เงียบเกิน 3 วินาที"); }, SILENCE_MS);
+    }
+    function autoFinish(reason){
+      if (finished) return;
+      $("p-hint").textContent = "จบอัตโนมัติ: " + reason;
+      finish();
+    }
 
     function setStatus(txt, live){ $("p-status").textContent=txt; $("p-dot").classList.toggle("live", !!live); }
     function renderTranscript(){
@@ -281,6 +298,7 @@
       current = OBJECTIONS.find(o=>o.id===id);
       if (!WORKER_URL){ alert("กรุณาตั้งค่า Worker URL ก่อน (ช่องด้านบน)"); return; }
       transcript=[]; renderTranscript();
+      finished=false; salesHasSpoken=false; clearSilence();
       $("p-result").style.display="none"; $("p-trans").style.display="flex";
       $("p-end").disabled=false; $("p-hint").classList.remove("err");
       $("p-title").textContent = `ข้อโต้แย้ง · ${current.title}`;
@@ -329,14 +347,35 @@
 
     function handleEvent(msg){
       const t = msg.type || "";
-      if (t === "conversation.item.input_audio_transcription.completed"){
-        if (msg.transcript) addLine("sales", msg.transcript.trim());
-      } else if (t === "response.audio_transcript.done" || t === "response.output_audio_transcript.done"){
-        if (msg.transcript) addLine("cust", msg.transcript.trim());
+      // เซลส์เริ่มพูด -> ยกเลิกตัวจับเวลาเงียบ
+      if (t === "input_audio_buffer.speech_started"){
+        clearSilence();
+      }
+      // เซลส์พูดจบ (ถอดเสียงเสร็จ)
+      else if (t === "conversation.item.input_audio_transcription.completed"){
+        if (msg.transcript){ addLine("sales", msg.transcript.trim()); salesHasSpoken = true; }
+      }
+      // ลูกค้า (AI) พูดจบ
+      else if (t === "response.audio_transcript.done" || t === "response.output_audio_transcript.done"){
+        if (msg.transcript){
+          const text = msg.transcript.trim();
+          addLine("cust", text);
+          // ถ้าลูกค้าตกลงซื้อ -> รอพูดจบสักครู่แล้วประเมิน
+          if (DEAL_RE.test(text)){
+            clearSilence();
+            setTimeout(()=> autoFinish("ลูกค้าตกลงซื้อ / ปิดการขายสำเร็จ"), 1500);
+          }
+        }
+      }
+      // AI พูดเสียงจบ (เริ่มนับเวลาเงียบของเซลส์)
+      else if (t === "output_audio_buffer.stopped" || t === "response.done"){
+        if (!finished) armSilence();
       }
     }
 
     async function finish(){
+      if (finished) return;
+      finished=true; clearSilence();
       $("p-end").disabled=true;
       stopMedia();
       setStatus("จบบทสนทนา — กำลังประเมินผล…", false);
@@ -372,12 +411,13 @@
     }
 
     function stopMedia(){
+      clearSilence();
       try{ if(dc) dc.close(); }catch(e){}
       try{ if(pc) pc.close(); }catch(e){}
       try{ if(micStream) micStream.getTracks().forEach(t=>t.stop()); }catch(e){}
       dc=null; pc=null; micStream=null;
     }
-    function endAndClose(){ stopMedia(); $("ov").classList.remove("show"); }
+    function endAndClose(){ finished=true; clearSilence(); stopMedia(); $("ov").classList.remove("show"); }
   </script>
 </body>
 </html>
