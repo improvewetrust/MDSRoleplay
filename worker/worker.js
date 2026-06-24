@@ -39,7 +39,7 @@ export default {
     try {
       // ---- ออก ephemeral token สำหรับ Realtime (GA: /v1/realtime/client_secrets) ----
       if (url.pathname === "/session" && req.method === "POST") {
-        const { instructions, voice } = await req.json();
+        const { instructions, voice, autoResponse } = await req.json();
         const r = await fetch("https://api.openai.com/v1/realtime/client_secrets", {
           method: "POST",
           headers: {
@@ -60,7 +60,10 @@ export default {
                     type: "server_vad",
                     threshold: 0.62,
                     prefix_padding_ms: 300,
-                    silence_duration_ms: 900,
+                    silence_duration_ms: 1000,
+                    // autoResponse:false (objection.html) -> ให้ frontend สั่งสร้างคำตอบเองพร้อมย้ำบททุกตา
+                    // ค่า default (live.html) ยังเป็น true เหมือนเดิม
+                    create_response: autoResponse === false ? false : true,
                   },
                 },
                 output: { voice: voice || DEFAULT_VOICE },

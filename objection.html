@@ -238,6 +238,16 @@
         "- เมื่อคุณพอใจกับคำตอบและตัดสินใจซื้อ ให้ตอบรับสั้น ๆ แล้วปิดท้ายด้วยวลีนี้เป๊ะ ๆ เสมอ: \"ตกลงครับ เริ่มเลยครับ\"";
     }
 
+    // คำสั่งย้ำบท ใช้สั่งสร้างคำตอบ AI ทุกตา (กันหลุดบทไปเล่นเป็นเซลส์)
+    function buildTurnInstructions(o){
+      return "คุณคือ 'ลูกค้า' (เจ้าของร้าน) กำลังคุยกับพนักงานขายระบบ POS ข้อกังวลของคุณคือ: \"" + o.objection + "\"\n" +
+        "ตอบโต้พนักงานขายในฐานะลูกค้าเท่านั้น สั้น ๆ 1-2 ประโยค\n" +
+        "⛔ ห้ามอธิบายข้อดี/วิธีการทำงานของระบบ ห้ามตอบแทนพนักงานขาย ห้ามเล่นบทผู้ขายเด็ดขาด\n" +
+        "- ถ้าคำตอบล่าสุดของพนักงานขาย 'ตรงประเด็น' และคลายข้อกังวลได้ ให้ยอมรับแล้วปิดท้ายด้วยวลีเป๊ะ ๆ: \"ตกลงครับ เริ่มเลยครับ\"\n" +
+        "- ถ้า 'ไม่ตรง' / เลี่ยง / ข้อมูลผิด ให้ถามย้ำสั้น ๆ ขอคำตอบที่ตรง (ห้ามอธิบายเอง)\n" +
+        "- ถ้าฟังไม่ชัด/ไม่ใช่คำตอบ (เช่น ได้ยินไม่ครบ) ให้พูดว่า 'ขอโทษครับ ไม่ค่อยได้ยิน ช่วยพูดอีกทีได้ไหมครับ' — ห้ามเดาหรือตอบแทน";
+    }
+
     const RESULT_FORMAT =
       "🏅 ผลประเมิน: <เลือก 1 ระดับ: ตอบได้ยอดเยี่ยม / ตอบได้ตามหลักการ / ปรับปรุงเพิ่ม>\n" +
       "(เกณฑ์ตัดสิน: \n" +
@@ -325,7 +335,7 @@
       try{
         const r = await fetch(WORKER_URL+"/session", {
           method:"POST", headers:{"Content-Type":"application/json"},
-          body: JSON.stringify({ instructions: buildInstructions(current) })
+          body: JSON.stringify({ instructions: buildInstructions(current), autoResponse: false })
         });
         session = await r.json();
         if (session.error) throw new Error(JSON.stringify(session));
@@ -374,6 +384,13 @@
       // เซลส์พูดจบ (ถอดเสียงเสร็จ)
       else if (t === "conversation.item.input_audio_transcription.completed"){
         if (msg.transcript){ addLine("sales", msg.transcript.trim()); salesHasSpoken = true; }
+        // สั่งให้ AI ตอบเอง พร้อมย้ำบทลูกค้าทุกตา (auto-response ปิดไว้ที่ฝั่ง server)
+        if (!finished && dc && dc.readyState === "open"){
+          dc.send(JSON.stringify({
+            type:"response.create",
+            response:{ instructions: buildTurnInstructions(current) }
+          }));
+        }
       }
       // ลูกค้า (AI) พูดจบ
       else if (t === "response.audio_transcript.done" || t === "response.output_audio_transcript.done"){
