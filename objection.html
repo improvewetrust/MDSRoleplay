@@ -272,14 +272,14 @@
     // ---------- realtime session ----------
     let pc=null, dc=null, micStream=null, current=null;
     let transcript=[];
-    let finished=false, silenceTimer=null;
+    let finished=false, silenceTimer=null, salesHasSpoken=false;
     const SILENCE_MS = 3000;          // เงียบเกินเท่านี้ (ไม่มีใครพูด) -> จบอัตโนมัติ
     const DEAL_RE = /ตกลงครับ\s*เริ่มเลยครับ/;
 
     function clearSilence(){ if(silenceTimer){ clearTimeout(silenceTimer); silenceTimer=null; } }
     function armSilence(){
       clearSilence();
-      if (finished) return;
+      if (finished || !salesHasSpoken) return;  // เริ่มจับเวลาเฉพาะหลังเซลส์พูดไปแล้วอย่างน้อย 1 ครั้ง
       silenceTimer = setTimeout(()=>{ autoFinish("เงียบเกิน 3 วินาที (ไม่มีการตอบต่อ)"); }, SILENCE_MS);
     }
     function autoFinish(reason){
@@ -301,7 +301,7 @@
       current = OBJECTIONS.find(o=>o.id===id);
       if (!WORKER_URL){ alert("กรุณาตั้งค่า Worker URL ก่อน (ช่องด้านบน)"); return; }
       transcript=[]; renderTranscript();
-      finished=false; clearSilence();
+      finished=false; salesHasSpoken=false; clearSilence();
       $("p-result").style.display="none"; $("p-trans").style.display="flex";
       $("p-end").disabled=false; $("p-hint").classList.remove("err");
       $("p-title").textContent = `ข้อโต้แย้ง · ${current.title}`;
@@ -340,8 +340,7 @@
           dc.send(JSON.stringify({
             type:"response.create",
             response:{
-              instructions: "คุณคือ 'ลูกค้า' (เจ้าของร้าน) พูดประโยคแสดงความกังวลนี้ออกมาคำต่อคำเพียงประโยคเดียว แล้วหยุดทันที — ⛔ ห้ามตอบคำถามของตัวเอง ห้ามอธิบายหรือแนะนำทางออกใด ๆ ห้ามพูดแทนพนักงานขาย รอให้พนักงานขายเป็นคนตอบ: \"" + current.objection + "\"",
-              max_output_tokens: 90
+              instructions: "คุณคือ 'ลูกค้า' (เจ้าของร้าน) พูดประโยคแสดงความกังวลนี้ออกมาคำต่อคำให้ครบทั้งประโยค แล้วหยุดทันที — ⛔ ห้ามตอบคำถามของตัวเอง ห้ามอธิบายหรือแนะนำทางออกใด ๆ ห้ามพูดแทนพนักงานขาย รอให้พนักงานขายเป็นคนตอบ: \"" + current.objection + "\""
             }
           }));
         };
@@ -369,7 +368,7 @@
       }
       // เซลส์พูดจบ (ถอดเสียงเสร็จ)
       else if (t === "conversation.item.input_audio_transcription.completed"){
-        if (msg.transcript) addLine("sales", msg.transcript.trim());
+        if (msg.transcript){ addLine("sales", msg.transcript.trim()); salesHasSpoken = true; }
       }
       // ลูกค้า (AI) พูดจบ
       else if (t === "response.audio_transcript.done" || t === "response.output_audio_transcript.done"){
