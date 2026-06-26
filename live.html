@@ -63,6 +63,19 @@
     .btn-info{background:transparent;color:var(--text-2);border-color:var(--border)}
     .btn-info:hover{color:var(--text);border-color:var(--border-h)}
 
+    .examples{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:24px}
+    .ex-head{font-size:16px;font-weight:700;margin-bottom:4px}
+    .ex-sub{font-size:13.5px;color:var(--text-2);margin-bottom:16px}
+    .ex-list{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:820px){.ex-list{grid-template-columns:1fr}}
+    .ex-item{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--text);background:var(--surface-2);border:1px solid var(--border);border-radius:11px;padding:14px 16px;transition:border-color .15s,transform .15s}
+    .ex-item:hover{border-color:var(--border-h);transform:translateY(-2px)}
+    .ex-n{flex:none;width:30px;height:30px;border-radius:8px;background:var(--brand-light);color:var(--brand);display:grid;place-items:center;font-weight:700;font-size:15px}
+    .ex-txt{flex:1;line-height:1.4}
+    .ex-txt b{font-size:15px}
+    .ex-txt small{color:var(--text-2);font-size:13px}
+    .ex-play{flex:none;color:var(--brand);font-size:16px}
+
     /* session overlay */
     #ov{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:24px;z-index:90}
     #ov.show{display:flex}
@@ -108,6 +121,23 @@
       <input id="wurl" type="text" placeholder="https://mds-roleplay-voice.xxx.workers.dev" />
       <button id="wsave">บันทึก</button>
       <span class="ok" id="wok"></span>
+    </div>
+
+    <div class="examples">
+      <div class="ex-head">📺 ตัวอย่าง VDO Roleplay</div>
+      <div class="ex-sub">แนะนำให้ดูก่อนเริ่มฝึก เพื่อเห็นภาพการ Roleplay จริงของแต่ละสถานการณ์</div>
+      <div class="ex-list">
+        <a class="ex-item" href="https://drive.google.com/file/d/15kUFIPi5yovFMXi1y_X1d5btx8oEE_L0/view" target="_blank" rel="noopener">
+          <span class="ex-n">1</span>
+          <span class="ex-txt"><b>NNPU · ร้านเปิดใหม่</b><br><small>The New Chapter — พี่เอ</small></span>
+          <span class="ex-play">▶</span>
+        </a>
+        <a class="ex-item" href="https://drive.google.com/file/d/12SXP0EFoQbjalkPWrZ3hyMDPa22eWiAq/view" target="_blank" rel="noopener">
+          <span class="ex-n">2</span>
+          <span class="ex-txt"><b>NPU · เปิดแล้วยังไม่มีระบบ</b><br><small>เจ๊หมวยข้าวต้มปลา — เจ๊หมวย</small></span>
+          <span class="ex-play">▶</span>
+        </a>
+      </div>
     </div>
 
     <div class="cards" id="cards"></div>
