@@ -99,6 +99,11 @@
       text-shadow: 0 0 60px rgba(255,140,40,0.35);
     }
     .hero h1 .forge { background: linear-gradient(180deg, var(--amber), var(--orange-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero-row { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .hero-text { min-width: 0; }
+    .anvil { flex: none; width: clamp(120px, 18vw, 180px); height: auto; filter: drop-shadow(0 0 26px rgba(255,140,40,0.45)); animation: float 5s ease-in-out infinite; }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    @media (max-width: 600px) { .hero-row { flex-direction: column; align-items: flex-start; gap: 10px; } .anvil { width: 110px; } }
     .hero .journey { font-family: 'Orbitron', sans-serif; font-size: clamp(13px,2.4vw,18px); letter-spacing: 5px; font-weight: 500; color: var(--amber); margin-top: 14px; text-transform: uppercase; }
     .hero .sub { color: var(--text-2); font-size: 17px; margin-top: 18px; max-width: 560px; }
 
@@ -194,16 +199,36 @@
 
     <div class="topbar">
       <div class="brand-lw"><span class="lm">LINEMAN</span><span class="wn">wong<b>nai</b></span></div>
-      <div class="mds-tag">
-        <div class="t1">MDS SPACESHIP</div>
-        <div class="t2">CHAMPION'S JOURNEY TO EXCELLENCE</div>
-      </div>
     </div>
 
     <section class="hero">
       <div class="eyebrow"><span class="pulse"></span> Sales Skill Lab · ทีม MDS</div>
-      <h1>Sales<span class="forge">Forge</span></h1>
-      <div class="journey">Champion's Journey to Excellence</div>
+      <div class="hero-row">
+        <div class="hero-text">
+          <h1>Sales<span class="forge">Forge</span></h1>
+          <div class="journey">Champion's Journey to Excellence</div>
+        </div>
+        <svg class="anvil" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="av" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffe7a0"/>
+              <stop offset="0.5" stop-color="#ff9a3a"/>
+              <stop offset="1" stop-color="#f25533"/>
+            </linearGradient>
+            <filter id="avg" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="5" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <g filter="url(#avg)">
+            <path d="M44 92 H156 C156 92 156 108 134 112 L130 112 C130 126 120 132 108 132 H94 V150 H122 V162 H58 V150 H78 V120 C58 118 44 110 44 92 Z" fill="url(#av)"/>
+            <rect x="54" y="162" width="72" height="7" rx="3.5" fill="#d94420"/>
+            <path d="M150 50 l7 17 l17 7 l-17 7 l-7 17 l-7 -17 l-17 -7 l17 -7 z" fill="#ffe7a0"/>
+            <circle cx="64" cy="78" r="3" fill="#ffd27a"/>
+            <circle cx="120" cy="64" r="2.4" fill="#ffd27a"/>
+          </g>
+        </svg>
+      </div>
       <p class="sub">สนามฝึกนักขายด้วย AI — หลอมประสบการณ์ ตีบทสนทนาให้คม ทะยานสู่การเป็นแชมป์ก่อนออกไปเจอหน้าร้านจริง</p>
     </section>
 
