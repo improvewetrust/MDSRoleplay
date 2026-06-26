@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oral Features — ฝึกอธิบายฟีเจอร์ (เสียงสด) · Wongnai POS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --brand:#f25533; --brand-light:rgba(242,85,51,.10); --brand-dark:#d94420;
+      --gpt:#10a37f; --gpt-light:rgba(16,163,127,.12);
+      --surface:#17171f; --surface-2:#1e1e28; --bg:#0f0f14;
+      --border:rgba(255,255,255,.075); --border-h:rgba(255,255,255,.16);
+      --text:#ececf1; --text-2:#8a8a9c; --radius:14px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Sarabun','Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.55}
+    a{color:inherit}
+    header{max-width:1040px;margin:0 auto;padding:40px 24px 8px}
+    .badge{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--brand);background:var(--brand-light);padding:6px 14px;border-radius:999px;margin-bottom:18px}
+    h1{font-size:30px;font-weight:700;letter-spacing:-.5px}
+    h1 span{color:var(--brand)}
+    .sub{color:var(--text-2);font-size:16px;margin-top:8px;max-width:760px}
+    .formula{display:inline-flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+    .formula span{font-size:13px;font-weight:600;color:var(--brand);background:var(--brand-light);border:1px solid rgba(242,85,51,.2);padding:5px 12px;border-radius:8px}
+    .topnav{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+    .pill{font-size:13.5px;font-weight:600;text-decoration:none;background:var(--surface-2);border:1px solid var(--border);padding:8px 14px;border-radius:10px}
+    .pill:hover{border-color:var(--border-h)}
+    main{max-width:1040px;margin:0 auto;padding:24px 24px 80px}
+
+    .cfg{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:24px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .cfg label{font-size:14px;color:var(--text-2);font-weight:600}
+    .cfg input{flex:1;min-width:240px;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:10px 12px;color:var(--text);font-family:inherit;font-size:14px}
+    .cfg button{background:var(--brand);color:#fff;border:none;border-radius:9px;padding:10px 16px;font-family:inherit;font-weight:600;cursor:pointer}
+    .cfg .ok{color:var(--gpt);font-size:13.5px;font-weight:600}
+
+    .cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+    @media(max-width:820px){.cards{grid-template-columns:1fr 1fr}}
+    @media(max-width:560px){.cards{grid-template-columns:1fr}}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;transition:border-color .15s,transform .15s}
+    .card:hover{border-color:var(--border-h);transform:translateY(-2px)}
+    .card-top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+    .tnum{flex:none;width:34px;height:34px;border-radius:9px;background:var(--brand-light);color:var(--brand);display:grid;place-items:center;font-weight:700;font-size:15px}
+    .card h2{font-size:17px;font-weight:700;letter-spacing:-.2px;line-height:1.25}
+    .subs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+    .subs span{font-size:11.5px;font-weight:600;color:var(--text-2);background:var(--surface-2);border:1px solid var(--border);padding:3px 8px;border-radius:6px}
+    .btn{display:flex;align-items:center;justify-content:center;gap:9px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;padding:12px 16px;border-radius:11px;border:1px solid transparent;width:100%;margin-top:auto}
+    .btn-go{background:var(--gpt);color:#fff}
+    .btn-go:hover{filter:brightness(1.08)}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+
+    /* session overlay */
+    #ov{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:24px;z-index:90}
+    #ov.show{display:flex}
+    .panel{background:var(--surface);border:1px solid var(--border-h);border-radius:var(--radius);width:720px;max-width:100%;max-height:88vh;display:flex;flex-direction:column;overflow:hidden}
+    .panel-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .panel-head h3{font-size:17px;font-weight:700}
+    .panel-head .x{background:none;border:none;color:var(--text-2);font-size:22px;cursor:pointer;line-height:1}
+    .quiz{padding:18px 22px;border-bottom:1px solid var(--border);background:var(--surface-2)}
+    .quiz .q-label{font-size:12.5px;font-weight:700;color:var(--brand);letter-spacing:.3px;margin-bottom:6px}
+    .quiz .q-title{font-size:20px;font-weight:700;letter-spacing:-.3px}
+    .quiz .q-asks{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .quiz .q-asks span{font-size:14px;font-weight:600;color:var(--text);background:var(--bg);border:1px solid var(--border-h);padding:6px 14px;border-radius:8px}
+    .status{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text-2);padding:12px 22px;border-bottom:1px solid var(--border)}
+    .dot{width:10px;height:10px;border-radius:50%;background:#666}
+    .dot.live{background:var(--gpt);animation:pulse 1.4s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+    .transcript{flex:1;overflow:auto;padding:18px 22px;min-height:140px;font-size:15px;line-height:1.7;white-space:pre-wrap;color:#e6e6ee}
+    .transcript .ph{color:var(--text-2);font-style:italic}
+    .result{padding:18px 22px;overflow:auto;flex:1;white-space:pre-wrap;font-size:13.5px;line-height:1.6;color:#d2d2dd;font-family:'Sarabun',monospace;min-height:140px}
+    .panel-foot{padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+    .panel-foot .btn{width:auto;margin:0;padding:11px 20px}
+    .btn-stop{background:#f87171;color:#111}
+    .btn-ghost{background:transparent;color:var(--text-2);border-color:var(--border)}
+    .btn-ghost:hover{color:var(--text);border-color:var(--border-h)}
+    .btn-next{background:var(--brand);color:#fff}
+    .btn-next:hover{filter:brightness(1.08)}
+    .hint{font-size:12.5px;color:var(--text-2);padding:0 22px 14px}
+    .err{color:#f87171}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="badge">🎤 Oral Features · Beta</div>
+    <h1>ฝึกอธิบาย<span>ฟีเจอร์</span> (เสียงสด)</h1>
+    <p class="sub">เลือกฟีเจอร์ → ระบบขึ้นโจทย์ให้ → คุณพูดอธิบายด้วยเสียง (คืออะไร · ดียังไง · ทำงานยังไง) → กด "จบ" แล้วระบบตรวจ Keyword ให้คะแนน Weight Score พร้อมบอก Keyword ที่ยังไม่ได้พูด</p>
+    <div class="formula"><span>คืออะไร</span><span>ดียังไง</span><span>ทำงานยังไง</span></div>
+    <div class="topnav">
+      <a class="pill" href="./index.html">← หน้าแรก</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="cfg" id="cfg">
+      <label for="wurl">Worker URL:</label>
+      <input id="wurl" type="text" placeholder="https://mds-roleplay-voice.xxx.workers.dev" />
+      <button id="wsave">บันทึก</button>
+      <span class="ok" id="wok"></span>
+    </div>
+
+    <div class="cards" id="cards"></div>
+  </main>
+
+  <audio id="aud" autoplay></audio>
+
+  <div id="ov">
+    <div class="panel">
+      <div class="panel-head">
+        <h3 id="p-title">Oral Features</h3>
+        <button class="x" onclick="endAndClose()">×</button>
+      </div>
+      <div class="quiz">
+        <div class="q-label">📋 โจทย์ — อธิบายให้ครบทุกมุม</div>
+        <div class="q-title" id="q-title"></div>
+        <div class="q-asks" id="q-asks"></div>
+      </div>
+      <div class="status"><span class="dot" id="p-dot"></span><span id="p-status">กำลังเชื่อมต่อ…</span></div>
+      <div class="transcript" id="p-trans"></div>
+      <div class="result" id="p-result" style="display:none"></div>
+      <div class="hint" id="p-hint">พูดอธิบายได้เลยเมื่อสถานะเป็น "กำลังฟัง" — พูดให้ครบทั้ง 3 มุม</div>
+      <div class="panel-foot">
+        <button class="btn btn-ghost" onclick="endAndClose()">ปิด</button>
+        <button class="btn btn-stop" id="p-end" onclick="finish()">⏹ จบ + ประเมิน</button>
+        <button class="btn btn-next" id="p-next" style="display:none">ข้อถัดไป →</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const REALTIME_MODEL = "gpt-realtime";
+    const $ = (id) => document.getElementById(id);
+
+    // ---------- Worker URL config (ใช้ร่วมกับโหมดอื่น) ----------
+    let WORKER_URL = localStorage.getItem("mds_worker_url") || "";
+    function refreshCfg(){
+      $("wurl").value = WORKER_URL;
+      $("wok").textContent = WORKER_URL ? "✓ ตั้งค่าแล้ว" : "ยังไม่ได้ตั้งค่า — กรอก URL ของ Cloudflare Worker";
+    }
+    $("wsave").onclick = () => {
+      WORKER_URL = $("wurl").value.trim().replace(/\/$/,"");
+      localStorage.setItem("mds_worker_url", WORKER_URL);
+      refreshCfg();
+    };
+    refreshCfg();
+
+    // ---------- หัวข้อ + เฉลย Keyword (จากเอกสารเกณฑ์ของทีม) ----------
+    const TOPICS = [
+      { id:"t1", name:"Wongnai POS", subs:[
+        { q:"คืออะไร", keywords:["จัดการ","ร้านอาหาร","Restaurant Ecosystem"] },
+        { q:"ดียังไง", keywords:["One-Stop Solution","อันดับ 1","มากกว่า 60,000 ร้าน","กว่า 12 ปี","24 ชั่วโมง","LINE MAN","Wongnai","LINE PAY","Google","ครบวงจร","จัดการง่าย","ครบ","จบ"] },
+      ]},
+      { id:"t2", name:"Wongnai Reservations", subs:[
+        { q:"คืออะไร", keywords:["จองโต๊ะ","จัดการ","การจอง"] },
+        { q:"ดียังไง", keywords:["รับจอง","24 ชั่วโมง","Online","เพิ่มโอกาส","เชื่อม","อัตโนมัติ","ลดปัญหา"] },
+        { q:"ทำงานยังไง", keywords:["24 ชั่วโมง","Online","Google","ปุ่ม Reservation","เลือกเวลา","Offline","โทรจอง","หน้าเครื่อง","ร้าน","ได้ Confirm","Email","ลูกค้า","Email Confirm","มาถึง","ระบบจอง","เปิดโต๊ะ"] },
+      ]},
+      { id:"t3", name:"Wongnai Order & Pay", subs:[
+        { q:"คืออะไร", keywords:["QR Code","ชำระเงิน"] },
+        { q:"ดียังไง", keywords:["สแกนสั่ง","QR Code","ลดคิว","หน้าร้าน","เพิ่มออเดอร์","ประหยัดเวลา"] },
+        { q:"ทำงานยังไง", keywords:["QR Code","สแกน","สั่งอาหาร","แอพธนาคาร","ชำระ","Order","POS","อัตโนมัติ","สถานะ","LINE OA","กำลังเตรียม","ทำเสร็จ","Order พร้อม","รับเรียบร้อย","กดยืนยัน"] },
+      ]},
+      { id:"t4", name:"Queue Display & Checker", subs:[
+        { q:"คืออะไร", keywords:["จัดการ","คิว","Order"] },
+        { q:"ดียังไง", keywords:["เห็นคิว","ไม่ต้องเรียก","รันคิว","ไวขึ้น","บริการ","เพิ่มโอกาส"] },
+        { q:"ทำงานยังไง", keywords:["Display","หน้าจอ","สถานะออเดอร์","Checker","แอพ","พนักงาน","ส่งออเดอร์","เรียกคิว","รับ","สั่ง","ชำระ","แสดงบนจอ","กำลังเตรียม","อาหารเสร็จ","กดเรียกคิว","รับออเดอร์ได้เลย","รับอาหาร","เรียกแล้ว","ไม่มา","ไม่ได้ยิน","เรียกคิวซ้ำ"] },
+      ]},
+      { id:"t5", name:"Mobile Order (Dynamic)", subs:[
+        { q:"คืออะไร", keywords:["สั่ง","QR Code","โต๊ะ","รายครั้ง"] },
+        { q:"ดียังไง", keywords:["เมนู","ด้วยตนเอง","เพิ่มยอดต่อบิล","ลดเวลา","ความผิดพลาด","ส่งออเดอร์","จัดการ","แม่นยำ","พนักงาน","เพิ่มประสิทธิภาพ"] },
+        { q:"ทำงานยังไง", keywords:["พิมพ์","QR Code","รายครั้ง","สแกน","เลือกเมนู","สั่งอาหาร","ข้อมูล","ครัว","ทันที","ความช่วยเหลือ","กดเรียกพนักงาน","เรียกคิดเงิน"] },
+      ]},
+      { id:"t6", name:"Wongnai POS Staff", subs:[
+        { q:"คืออะไร", keywords:["สั่ง","พนักงาน"] },
+        { q:"ดียังไง", keywords:["รับออเดอร์","ไว","ลูกค้า","ประทับใจ","Order","ครัว","ทันที","ลดความผิดพลาด","จดมือ","บริการ","รวดเร็ว","ประสิทธิภาพ","มากขึ้น"] },
+        { q:"ทำงานยังไง", keywords:["เปิดโต๊ะ","สั่งอาหาร","ข้อมูล","ครัว","ทันที","สั่งเพิ่ม","แจ้งพนักงาน","กดเรียกคิดเงิน","แคชเชียร์"] },
+      ]},
+      { id:"t7", name:"POS PAY (Dual Screen)", subs:[
+        { q:"คืออะไร", keywords:["ชำระเงิน","QR Code"] },
+        { q:"ดียังไง", keywords:["ล็อคยอด","สแกนจ่าย","ปิดบิล","สลิปปลอม","สะดวก","รวดเร็ว","ลดความผิดพลาด","Manual"] },
+        { q:"ทำงานยังไง", keywords:["รายการ","ปุ่มชำระเงิน","เลือกวิธี","สแกน","QR Code","บน POS","ตรวจสอบ","ปิดบิล","อัตโนมัติ","ตรงตามบิล"] },
+      ]},
+      { id:"t8", name:"EDC", subs:[
+        { q:"คืออะไร", keywords:["ชำระ","อัตโนมัติ"] },
+        { q:"ดียังไง", keywords:["เชื่อม","อัตโนมัติ","แจ้งเตือน","สำเร็จ","สลิปปลอม","รองรับ","ทุกช่องทาง","QR Promptpay","Credit Card","E-Wallet","เพิ่ม","โอกาส","ยอดขาย","ขยายฐานลูกค้า","ไทย","ต่างชาติ"] },
+        { q:"ทำงานยังไง", keywords:["เลือก","ชำระ","ผ่าน EDC","ระบบ","ส่งยอด","ไม่ต้องคีย์เอง","บัตร","แตะ","รูด","เสียบ","E-Wallet","สแกน","แจ้งเตือน","ปิดบิล","อัตโนมัติ"] },
+      ]},
+      { id:"t9", name:"Wongnai CRM", subs:[
+        { q:"คืออะไร", keywords:["บริหาร","จัดการ","สมาชิก"] },
+        { q:"ดียังไง", keywords:["เปลี่ยน","ทั่วไป","ประจำ","สมาชิก","สะสมแต้ม","เก็บข้อมูล","การตลาด","แม่นยำ","เพิ่ม","ยอดขาย","ต่อบิล"] },
+        { q:"ทำงานยังไง", keywords:["ตั้งค่า","ซื้อขั้นต่ำ","คะแนน","กำหนด","Tier","ระดับ","สมาชิก","สินค้า","ฟรี","ทุกครั้ง","โปรโมชั่น","ส่วนลด","ท้ายบิล","สิทธิพิเศษ","วันเกิด","เพิ่มเพื่อน","การสมัคร","5 จุด","POS","ท้ายใบเสร็จ","QR Code","Order & Pay","LINE MAN"] },
+      ]},
+    ];
+
+    const SCORE_SYSTEM =
+      "คุณเป็นผู้ตรวจข้อสอบพูด (Oral Test) ของพนักงานขาย Wongnai POS หน้าที่คือตรวจว่าคำอธิบายของผู้ตอบครอบคลุม 'Keyword' ที่กำหนดในแต่ละข้อย่อยหรือไม่ แล้วให้ Weight Score ตามเกณฑ์ อย่างเข้มงวดและแม่นยำ ตอบเป็นภาษาไทย\n" +
+      "วิธีตรวจ (ทำตามนี้เคร่งครัด):\n" +
+      "1) สำหรับแต่ละข้อย่อย ให้ไล่ทีละ keyword ว่าผู้ตอบ 'พูดถึง' หรือไม่ (transcript มาจากการถอดเสียง อาจมีคำเพี้ยน/ตกหล่น ถ้าสื่อความหมายเดียวกันแม้คำไม่เป๊ะให้นับว่าพูดแล้ว)\n" +
+      "2) นับจำนวน keyword ที่พูดได้ = a, จำนวน keyword ทั้งหมด = b แล้วคิดสัดส่วน a/b\n" +
+      "3) ให้ Weight Score ตามสัดส่วนจริงเท่านั้น — ห้ามให้คะแนนเกินกว่าสัดส่วนที่นับได้";
+
+    const RESULT_FORMAT =
+      "ประเมินทีละข้อย่อยตามรูปแบบนี้เป๊ะ ๆ:\n" +
+      "📌 <ชื่อข้อย่อย เช่น 'Wongnai POS คืออะไร'>\n" +
+      "   พูดได้ <a>/<b> keyword\n" +
+      "   Weight Score: X  (อิงสัดส่วน a/b: ครบ100%=2 · >80%=1.5 · ตอบแต่ไม่ครบ=1 · ตอบแต่ไม่ตรง keyword=0.5 · ไม่ตอบ=0)\n" +
+      "   Keyword ที่ยังไม่ได้พูด: <ถ้ามี ให้ขึ้นต้นว่า 'มี: ' แล้วไล่ keyword ที่ขาด, ถ้าพูดครบแล้วใส่ 'ไม่มี'>\n\n" +
+      "(ทำให้ครบทุกข้อย่อยของหัวข้อนี้) จากนั้นปิดท้ายด้วย:\n" +
+      "🏆 รวม Weight Score: <ผลรวม> / <คะแนนเต็ม = จำนวนข้อย่อย × 2>\n" +
+      "💡 สรุปสั้น ๆ: จุดที่ควรเสริมให้ครบ keyword";
+
+    function buildRubric(topic){
+      const body = topic.subs.map(s =>
+        "• " + topic.name + " " + s.q + "\n   Keyword ที่ต้องมี: " + s.keywords.join(", ")
+      ).join("\n");
+      return "หัวข้อ: " + topic.name + " (มี " + topic.subs.length + " ข้อย่อย)\n" + body +
+        "\n\nเกณฑ์ Weight Score (ต่อข้อย่อย):\n" +
+        "- 2 = ตอบครบทุก keyword\n- 1.5 = ได้มากกว่า 80% ของ keyword\n- 1 = ตอบได้แต่ไม่ครบทุก keyword\n- 0.5 = ตอบแต่ไม่ตรงกับ keyword ที่ระบุ\n- 0 = ไม่ได้ตอบ";
+    }
+
+    // ---------- render cards ----------
+    function cardHTML(t, idx){
+      return `<div class="card">
+        <div class="card-top">
+          <div class="tnum">${idx+1}</div>
+          <h2>${t.name}</h2>
+        </div>
+        <div class="subs">${t.subs.map(s=>`<span>${s.q}</span>`).join("")}</div>
+        <button class="btn btn-go" data-go="${t.id}">🎤 เริ่มอธิบาย</button>
+      </div>`;
+    }
+    function render(){
+      $("cards").innerHTML = TOPICS.map((t,i)=>cardHTML(t,i)).join("");
+      $("cards").querySelectorAll("button[data-go]").forEach(b=>{
+        b.addEventListener("click", ()=> start(b.dataset.go));
+      });
+    }
+    render();
+
+    // ---------- realtime session (ถอดเสียงอย่างเดียว ไม่มี AI โต้ตอบ) ----------
+    let pc=null, dc=null, micStream=null, current=null, finished=false;
+    let transcript=[];
+
+    function setStatus(txt, live){ $("p-status").textContent=txt; $("p-dot").classList.toggle("live", !!live); }
+    function renderTranscript(){
+      const text = transcript.filter(x=>x).join(" ");
+      $("p-trans").innerHTML = text ? text : '<span class="ph">(ยังไม่มีข้อความ — พูดอธิบายได้เลย)</span>';
+      $("p-trans").scrollTop = $("p-trans").scrollHeight;
+    }
+
+    function showQuiz(t){
+      $("q-title").textContent = t.name;
+      $("q-asks").innerHTML = t.subs.map(s=>`<span>${s.q}?</span>`).join("");
+    }
+
+    async function start(id){
+      current = TOPICS.find(t=>t.id===id);
+      if (!WORKER_URL){ alert("กรุณาตั้งค่า Worker URL ก่อน (ช่องด้านบน)"); return; }
+      transcript=[]; finished=false; renderTranscript();
+      $("p-result").style.display="none"; $("p-trans").style.display="block";
+      $("p-end").style.display=""; $("p-end").disabled=false;
+      $("p-next").style.display="none";
+      $("p-hint").classList.remove("err");
+      $("p-title").textContent = `Oral Features · ${current.name}`;
+      $("p-hint").textContent = 'พูดอธิบายได้เลยเมื่อสถานะเป็น "กำลังฟัง" — พูดให้ครบทั้ง ' + current.subs.length + ' มุม';
+      showQuiz(current);
+      $("ov").classList.add("show");
+      setStatus("กำลังขออนุญาตไมโครโฟน…", false);
+
+      try{
+        micStream = await navigator.mediaDevices.getUserMedia({
+          audio:{ echoCancellation:true, noiseSuppression:true, autoGainControl:true }
+        });
+      }catch(e){ setStatus("เข้าถึงไมโครโฟนไม่ได้: "+e, false); return; }
+
+      setStatus("กำลังสร้างเซสชัน…", false);
+      let session;
+      try{
+        const r = await fetch(WORKER_URL+"/session", {
+          method:"POST", headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({ instructions: "ถอดเสียงเป็นข้อความเท่านั้น ไม่ต้องพูดตอบ", autoResponse: false })
+        });
+        session = await r.json();
+        if (session.error) throw new Error(JSON.stringify(session));
+      }catch(e){ setStatus("สร้างเซสชันไม่สำเร็จ: "+e, false); return; }
+
+      const ephemeral = session.value || (session.client_secret && session.client_secret.value);
+      if (!ephemeral){ setStatus("ไม่ได้ token จาก Worker (เช็ค OPENAI_API_KEY)", false); return; }
+
+      try{
+        pc = new RTCPeerConnection();
+        pc.ontrack = (e)=>{ $("aud").srcObject = e.streams[0]; };
+        micStream.getTracks().forEach(t=> pc.addTrack(t, micStream));
+
+        dc = pc.createDataChannel("oai-events");
+        dc.onopen = ()=>{ setStatus("กำลังฟัง — พูดอธิบายได้เลย", true); };
+        dc.onmessage = (ev)=> handleEvent(JSON.parse(ev.data));
+
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
+        const sdpRes = await fetch(`https://api.openai.com/v1/realtime/calls?model=${REALTIME_MODEL}`,{
+          method:"POST", body: offer.sdp,
+          headers:{ Authorization:`Bearer ${ephemeral}`, "Content-Type":"application/sdp" }
+        });
+        const answer = { type:"answer", sdp: await sdpRes.text() };
+        await pc.setRemoteDescription(answer);
+        setStatus("เชื่อมต่อแล้ว กำลังฟัง…", true);
+      }catch(e){ setStatus("เชื่อมต่อเสียงไม่สำเร็จ: "+e, false); }
+    }
+
+    function handleEvent(msg){
+      const t = msg.type || "";
+      if (t === "conversation.item.input_audio_transcription.completed"){
+        if (msg.transcript){ transcript.push(msg.transcript.trim()); renderTranscript(); }
+      }
+    }
+
+    async function finish(){
+      if (finished) return;
+      finished=true;
+      $("p-end").disabled=true;
+      stopMedia();
+      setStatus("จบการพูด — กำลังตรวจ Keyword…", false);
+      const answer = transcript.filter(x=>x).join(" ");
+      const tBlock = "\n\n———————————————\n📝 สิ่งที่ระบบถอดเสียงได้:\n" + (answer || "(ไม่มี)");
+      if (!answer.trim()){ showResult("⚠️ ยังไม่มีคำอธิบายให้ตรวจ — ระบบถอดเสียงเป็นข้อความไม่ได้ ลองพูดให้ชัด/นานขึ้น แล้วค่อยกดจบ" + tBlock, true); return; }
+      try{
+        const r = await fetch(WORKER_URL+"/score",{
+          method:"POST", headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({
+            context: "ผู้ตอบกำลังอธิบายฟีเจอร์ \"" + current.name + "\" ครอบคลุม " + current.subs.length + " ข้อย่อย: " + current.subs.map(s=>s.q).join(", "),
+            rubric: buildRubric(current),
+            transcript: answer,
+            systemPrompt: SCORE_SYSTEM,
+            outputFormat: RESULT_FORMAT
+          })
+        });
+        const data = await r.json();
+        if (data.error) throw new Error(JSON.stringify(data));
+        showResult(data.result + tBlock, false);
+      }catch(e){ showResult("ประเมินไม่สำเร็จ: "+e + tBlock, true); }
+    }
+
+    function showResult(text, isErr){
+      $("p-trans").style.display="none";
+      const el = $("p-result"); el.style.display="block"; el.textContent=text;
+      el.classList.toggle("err", !!isErr);
+      setStatus("ตรวจเสร็จแล้ว", false);
+      $("p-end").style.display="none";
+      // ปุ่มข้อถัดไป (ถ้ายังมีหัวข้อต่อ)
+      const idx = TOPICS.findIndex(t=>t.id===current.id);
+      const next = TOPICS[idx+1];
+      if (next){
+        $("p-next").style.display="";
+        $("p-next").textContent = "ข้อถัดไป: " + next.name + " →";
+        $("p-next").onclick = ()=> start(next.id);
+        $("p-hint").textContent = "กด 'ข้อถัดไป' เพื่อทำหัวข้อต่อไป หรือปิดเพื่อเลือกเอง";
+      } else {
+        $("p-next").style.display="none";
+        $("p-hint").textContent = "ครบทุกหัวข้อแล้ว 🎉 ปิดเพื่อกลับไปเลือกใหม่";
+      }
+    }
+
+    function stopMedia(){
+      try{ if(dc) dc.close(); }catch(e){}
+      try{ if(pc) pc.close(); }catch(e){}
+      try{ if(micStream) micStream.getTracks().forEach(t=>t.stop()); }catch(e){}
+      dc=null; pc=null; micStream=null;
+    }
+    function endAndClose(){ finished=true; stopMedia(); $("ov").classList.remove("show"); }
+  </script>
+</body>
+</html>
