@@ -3,215 +3,252 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SalesForge — สนามฝึกนักขายด้วย AI · Wongnai POS</title>
+  <title>SalesForge — Champion's Journey to Excellence · Wongnai POS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --brand: #f25533;
-      --brand-light: rgba(242,85,51,0.10);
-      --brand-dark: #d94420;
-      --surface: #17171f;
-      --surface-2: #1e1e28;
-      --bg: #0f0f14;
-      --border: rgba(255,255,255,0.075);
-      --border-h: rgba(255,255,255,0.16);
-      --text: #ececf1;
-      --text-2: #8a8a9c;
-      --radius: 16px;
+      --orange: #ff7a1f;
+      --orange-2: #f25533;
+      --amber: #ffc24d;
+      --bg: #05060c;
+      --bg-2: #0a0b16;
+      --glass: rgba(18,20,32,0.55);
+      --glass-2: rgba(26,28,44,0.55);
+      --border: rgba(255,255,255,0.09);
+      --border-glow: rgba(255,138,40,0.55);
+      --text: #eef0f8;
+      --text-2: #9aa1b8;
+      --radius: 18px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
     body {
       font-family: 'Sarabun', 'Segoe UI', sans-serif;
       background: var(--bg); color: var(--text);
-      min-height: 100vh; line-height: 1.55;
+      min-height: 100vh; line-height: 1.55; overflow-x: hidden;
     }
     a { color: inherit; text-decoration: none; }
-    .wrap { max-width: 1080px; margin: 0 auto; padding: 56px 24px 80px; }
+
+    /* ---------- cosmic background ---------- */
+    .space { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+    .space .neb {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(1200px 700px at 88% 8%, rgba(255,122,31,0.20), transparent 60%),
+        radial-gradient(900px 600px at 95% 30%, rgba(242,85,51,0.16), transparent 55%),
+        radial-gradient(700px 500px at 12% 95%, rgba(255,140,40,0.10), transparent 60%),
+        linear-gradient(180deg, #05060c 0%, #07091a 50%, #05060c 100%);
+    }
+    .space .horizon {
+      position: absolute; left: -10%; right: -10%; top: 42%; height: 320px;
+      background: radial-gradient(120% 100% at 90% 0%, rgba(255,165,60,0.30), rgba(255,120,30,0.06) 45%, transparent 70%);
+      filter: blur(6px); transform: rotate(-7deg);
+    }
+    .space .sun {
+      position: absolute; right: 6%; top: 30%; width: 220px; height: 220px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,220,140,0.95), rgba(255,150,40,0.55) 35%, transparent 70%);
+      filter: blur(4px);
+    }
+    .space .planet {
+      position: absolute; right: 9%; top: 16%; width: 230px; height: 230px; border-radius: 50%;
+      background:
+        radial-gradient(circle at 72% 30%, #6a5440, #2c2230 60%, #14101c 100%);
+      box-shadow: inset -26px -16px 60px rgba(0,0,0,0.7), 0 0 80px rgba(255,140,40,0.18);
+    }
+    .space .planet::after {
+      content: ""; position: absolute; left: -14%; top: -14%; width: 128%; height: 128%;
+      border-radius: 50%;
+      box-shadow: inset 18px 10px 40px rgba(255,180,90,0.35);
+      -webkit-mask: radial-gradient(circle, transparent 64%, #000 66%);
+              mask: radial-gradient(circle, transparent 64%, #000 66%);
+    }
+    #stars { position: absolute; inset: 0; }
+    #stars span { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #fff; opacity: .8; }
+    .trails { position: absolute; inset: 0; width: 100%; height: 100%; }
+    @keyframes twinkle { 0%,100% { opacity: .25; } 50% { opacity: .9; } }
+
+    /* ---------- layout ---------- */
+    .wrap { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; padding: 26px 26px 80px; }
+
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 54px; }
+    .brand-lw { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; letter-spacing: .3px; }
+    .brand-lw .lm { background: #06c755; color: #04130a; padding: 3px 8px; border-radius: 7px; font-weight: 800; font-size: 13px; }
+    .brand-lw .wn { color: var(--text); }
+    .brand-lw .wn b { color: var(--orange); }
+    .mds-tag { text-align: right; line-height: 1.25; }
+    .mds-tag .t1 { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 15px; letter-spacing: 3px; color: #fff; }
+    .mds-tag .t2 { font-size: 10.5px; letter-spacing: 2.5px; color: var(--amber); font-weight: 600; }
+    @media (max-width: 620px){ .mds-tag .t2 { display: none; } .topbar { margin-bottom: 36px; } }
 
     /* ---------- hero ---------- */
-    .hero {
-      position: relative; overflow: hidden;
-      background: linear-gradient(135deg, rgba(242,85,51,.14), rgba(242,85,51,.02));
-      border: 1px solid var(--border);
-      border-radius: 24px; padding: 48px 44px;
-      display: flex; align-items: center; gap: 40px;
-      margin-bottom: 44px;
+    .hero { position: relative; padding: 14px 0 46px; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 9px; font-size: 12.5px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase; color: var(--amber);
+      border: 1px solid rgba(255,194,77,0.3); background: rgba(255,194,77,0.07);
+      padding: 7px 16px; border-radius: 999px; margin-bottom: 26px;
     }
-    .hero-text { flex: 1; min-width: 0; }
-    .badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-size: 13px; font-weight: 600; color: var(--brand);
-      background: var(--brand-light); padding: 6px 14px;
-      border-radius: 999px; margin-bottom: 20px;
-    }
+    .eyebrow .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 12px var(--amber); animation: twinkle 1.6s infinite; }
     .hero h1 {
-      font-size: 52px; font-weight: 700; letter-spacing: -1.5px; line-height: 1.05;
+      font-family: 'Orbitron', sans-serif; font-weight: 900;
+      font-size: clamp(46px, 9vw, 96px); line-height: .98; letter-spacing: -1px;
+      background: linear-gradient(180deg, #fff 30%, #ffd9a8 75%, var(--orange) 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      text-shadow: 0 0 60px rgba(255,140,40,0.35);
     }
-    .hero h1 .fire { color: var(--brand); }
-    .hero .sub {
-      color: var(--text-2); font-size: 17px; margin-top: 16px; max-width: 520px;
-    }
-    .anvil { flex: none; width: 180px; height: 180px; }
-    @media (max-width: 760px) {
-      .hero { flex-direction: column-reverse; text-align: center; padding: 40px 26px; gap: 24px; }
-      .hero h1 { font-size: 40px; }
-      .hero .sub { margin-left: auto; margin-right: auto; }
-      .anvil { width: 130px; height: 130px; }
-    }
+    .hero h1 .forge { background: linear-gradient(180deg, var(--amber), var(--orange-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero .journey { font-family: 'Orbitron', sans-serif; font-size: clamp(13px,2.4vw,18px); letter-spacing: 5px; font-weight: 500; color: var(--amber); margin-top: 14px; text-transform: uppercase; }
+    .hero .sub { color: var(--text-2); font-size: 17px; margin-top: 18px; max-width: 560px; }
 
-    /* ---------- cards ---------- */
+    /* ---------- mission cards ---------- */
+    .section-label { display: flex; align-items: center; gap: 14px; margin: 12px 0 22px; font-family: 'Orbitron',sans-serif; font-size: 13px; letter-spacing: 3px; color: var(--text-2); text-transform: uppercase; }
+    .section-label::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
 
     .card {
       position: relative; display: flex; flex-direction: column;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 28px;
-      transition: border-color .15s, transform .15s, box-shadow .15s;
+      background: var(--glass); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border); border-radius: var(--radius); padding: 28px;
+      overflow: hidden; transition: transform .18s, border-color .18s, box-shadow .18s;
     }
-    a.card:hover {
-      border-color: var(--border-h); transform: translateY(-3px);
-      box-shadow: 0 14px 40px rgba(0,0,0,.35);
+    .card::before {
+      content: ""; position: absolute; inset: 0; border-radius: var(--radius); padding: 1px;
+      background: linear-gradient(140deg, rgba(255,140,40,0.0), rgba(255,140,40,0.0));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: opacity .18s;
     }
-    .card-top { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    a.card:hover { transform: translateY(-4px); border-color: var(--border-glow); box-shadow: 0 18px 50px rgba(0,0,0,0.5), 0 0 36px rgba(255,122,31,0.18); }
+    a.card:hover::before { opacity: 1; background: linear-gradient(140deg, rgba(255,140,40,0.6), transparent 50%); }
+
+    .card-top { display: flex; align-items: center; gap: 15px; margin-bottom: 16px; }
     .ic {
-      flex: none; width: 52px; height: 52px; border-radius: 13px;
-      display: grid; place-items: center; font-size: 26px;
-      background: var(--brand-light);
+      flex: none; width: 54px; height: 54px; border-radius: 14px; display: grid; place-items: center; font-size: 26px;
+      background: rgba(255,122,31,0.12); border: 1px solid rgba(255,122,31,0.28);
+      box-shadow: inset 0 0 18px rgba(255,122,31,0.18);
     }
-    .num {
-      font-size: 13px; font-weight: 700; color: var(--text-2);
-      letter-spacing: .5px;
-    }
-    .card h2 { font-size: 21px; font-weight: 700; letter-spacing: -.3px; }
-    .card p { color: var(--text-2); font-size: 14.5px; margin-top: 8px; flex: 1; }
-    .flow {
-      display: inline-flex; flex-wrap: wrap; gap: 6px; margin-top: 14px;
-    }
-    .flow span {
-      font-size: 12px; font-weight: 600; color: var(--text-2);
-      background: var(--surface-2); border: 1px solid var(--border);
-      padding: 4px 9px; border-radius: 7px;
-    }
-    .go {
-      display: inline-flex; align-items: center; gap: 8px;
-      margin-top: 22px; font-size: 15px; font-weight: 700; color: var(--brand);
-    }
+    .mission { font-family: 'Orbitron',sans-serif; font-size: 12px; font-weight: 700; color: var(--orange); letter-spacing: 2px; }
+    .card h2 { font-size: 22px; font-weight: 700; letter-spacing: -.3px; }
+    .card p { color: var(--text-2); font-size: 14.5px; margin-top: 9px; flex: 1; }
+    .flow { display: inline-flex; flex-wrap: wrap; gap: 7px; margin-top: 15px; }
+    .flow span { font-size: 12px; font-weight: 600; color: #ffd9b0; background: rgba(255,122,31,0.08); border: 1px solid rgba(255,122,31,0.2); padding: 4px 10px; border-radius: 7px; }
+    .go { display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; font-size: 15px; font-weight: 700; color: var(--amber); }
     .go .arrow { transition: transform .15s; }
     a.card:hover .go .arrow { transform: translateX(4px); }
 
-    .tag {
-      position: absolute; top: 20px; right: 20px;
-      font-size: 11px; font-weight: 700; letter-spacing: .4px;
-      padding: 4px 10px; border-radius: 7px;
-    }
-    .tag-free { color: #34d399; background: rgba(52,211,153,.12); }
-    .tag-paid { color: #fbbf24; background: rgba(251,191,36,.12); }
-    .tag-soon { color: var(--text-2); background: var(--surface-2); }
+    .tag { position: absolute; top: 20px; right: 20px; font-family: 'Orbitron',sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1px; padding: 5px 11px; border-radius: 7px; }
+    .tag-free { color: #7dffc4; background: rgba(16,200,120,.12); border: 1px solid rgba(16,200,120,.3); }
+    .tag-key { color: var(--amber); background: rgba(255,194,77,.1); border: 1px solid rgba(255,194,77,.3); }
 
-    /* coming soon */
-    .card.soon { opacity: .58; cursor: not-allowed; }
-    .card.soon .ic { background: var(--surface-2); }
-    .card.soon .go { color: var(--text-2); }
-
-    /* wide tool banner */
+    /* ---------- wide banner ---------- */
     .tool-banner {
-      display: flex; align-items: center; gap: 20px;
-      margin-top: 20px; padding: 24px 28px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius);
-      transition: border-color .15s, transform .15s, box-shadow .15s;
+      display: flex; align-items: center; gap: 20px; margin-top: 20px; padding: 24px 28px;
+      background: var(--glass); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      transition: transform .18s, border-color .18s, box-shadow .18s;
     }
-    .tool-banner:hover {
-      border-color: var(--border-h); transform: translateY(-3px);
-      box-shadow: 0 14px 40px rgba(0,0,0,.35);
-    }
+    .tool-banner:hover { transform: translateY(-3px); border-color: var(--border-glow); box-shadow: 0 16px 44px rgba(0,0,0,0.5), 0 0 30px rgba(255,122,31,0.16); }
     .tool-banner .ic { flex: none; }
     .tool-banner .tb-text { flex: 1; min-width: 0; }
-    .tool-banner h2 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
+    .tool-banner h2 { font-size: 20px; font-weight: 700; }
     .tool-banner p { color: var(--text-2); font-size: 14.5px; margin-top: 5px; }
     .tool-banner .go { margin-top: 0; flex: none; }
-    .tool-banner .tag { position: static; }
-    @media (max-width: 560px) {
-      .tool-banner { flex-wrap: wrap; }
-      .tool-banner .go { width: 100%; }
-    }
+    @media (max-width: 560px) { .tool-banner { flex-wrap: wrap; } .tool-banner .go { width: 100%; } }
 
-    footer {
-      margin-top: 48px; text-align: center;
-      font-size: 13px; color: var(--text-2);
-    }
+    footer { margin-top: 50px; text-align: center; font-size: 12.5px; letter-spacing: .5px; color: var(--text-2); }
     footer a { color: var(--text-2); }
-    footer a:hover { color: var(--text); }
+    footer a:hover { color: var(--amber); }
   </style>
 </head>
 <body>
+  <div class="space" aria-hidden="true">
+    <div class="neb"></div>
+    <div class="horizon"></div>
+    <div class="sun"></div>
+    <div class="planet"></div>
+    <div id="stars"></div>
+    <svg class="trails" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="tg" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0" stop-color="#ff7a1f" stop-opacity="0"/>
+          <stop offset="0.55" stop-color="#ff9a3a" stop-opacity="0.7"/>
+          <stop offset="1" stop-color="#ffd27a" stop-opacity="1"/>
+        </linearGradient>
+        <filter id="gl" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <g filter="url(#gl)" fill="none" stroke="url(#tg)" stroke-linecap="round">
+        <path d="M120 880 C 520 720, 900 640, 1300 360" stroke-width="3" opacity="0.9"/>
+        <path d="M60 900 C 520 780, 940 700, 1320 380" stroke-width="2" opacity="0.6"/>
+        <path d="M240 860 C 600 700, 1000 560, 1300 350" stroke-width="2.4" opacity="0.5" stroke-dasharray="2 14"/>
+      </g>
+      <circle cx="1300" cy="355" r="6" fill="#fff" filter="url(#gl)"/>
+    </svg>
+  </div>
+
   <div class="wrap">
 
-    <section class="hero">
-      <div class="hero-text">
-        <div class="badge">🎯 Sales Skill Lab · ทีม MDS</div>
-        <h1>Sales<span class="fire">Forge</span></h1>
-        <p class="sub">สนามฝึกนักขายด้วย AI — หลอมประสบการณ์ ตีบทสนทนาให้คม ก่อนออกไปเจอหน้าร้านจริง</p>
+    <div class="topbar">
+      <div class="brand-lw"><span class="lm">LINEMAN</span><span class="wn">wong<b>nai</b></span></div>
+      <div class="mds-tag">
+        <div class="t1">MDS SPACESHIP</div>
+        <div class="t2">CHAMPION'S JOURNEY TO EXCELLENCE</div>
       </div>
-      <svg class="anvil" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" fill="none">
-        <circle cx="100" cy="100" r="96" fill="#17171f" stroke="rgba(255,255,255,0.16)" stroke-width="1.5"/>
-        <!-- anvil body -->
-        <path d="M58 86 H150 C150 86 150 100 132 104 L128 104 C128 116 120 122 110 122 H96 V140 H120 V152 H64 V140 H78 V112 C66 110 58 102 58 86 Z"
-              fill="#f25533"/>
-        <!-- anvil base highlight -->
-        <rect x="60" y="152" width="64" height="6" rx="3" fill="#d94420"/>
-        <!-- spark -->
-        <path d="M150 64 l6 14 l14 6 l-14 6 l-6 14 l-6 -14 l-14 -6 l14 -6 z" fill="#fbbf24"/>
-      </svg>
+    </div>
+
+    <section class="hero">
+      <div class="eyebrow"><span class="pulse"></span> Sales Skill Lab · ทีม MDS</div>
+      <h1>Sales<span class="forge">Forge</span></h1>
+      <div class="journey">Champion's Journey to Excellence</div>
+      <p class="sub">สนามฝึกนักขายด้วย AI — หลอมประสบการณ์ ตีบทสนทนาให้คม ทะยานสู่การเป็นแชมป์ก่อนออกไปเจอหน้าร้านจริง</p>
     </section>
+
+    <div class="section-label">เลือกภารกิจ · Choose your mission</div>
 
     <div class="grid">
 
-      <!-- 1. Oral Features -->
       <a class="card" href="./oral.html">
-        <span class="tag tag-paid">ต้องมี Key</span>
+        <span class="tag tag-key">KEY</span>
         <div class="card-top">
           <div class="ic">🎤</div>
-          <div><div class="num">01</div><h2>Oral Features</h2></div>
+          <div><div class="mission">MISSION 01</div><h2>Oral Features</h2></div>
         </div>
         <p>ฝึกอธิบาย Features ให้คม — คืออะไร · ดียังไง · ทำงานยังไง พูดด้วยเสียง แล้วระบบตรวจ Keyword ให้คะแนน</p>
         <div class="flow"><span>9 ฟีเจอร์</span><span>ตรวจ Keyword</span><span>Weight Score</span></div>
         <div class="go">เริ่มฝึก <span class="arrow">→</span></div>
       </a>
 
-      <!-- 2. Objection Handling -->
       <a class="card" href="./objection.html">
-        <span class="tag tag-paid">ต้องมี Key</span>
+        <span class="tag tag-key">KEY</span>
         <div class="card-top">
           <div class="ic">🛡️</div>
-          <div><div class="num">02</div><h2>Objection Handling</h2></div>
+          <div><div class="mission">MISSION 02</div><h2>Objection Handling</h2></div>
         </div>
         <p>ฝึกตอบข้อโต้แย้งด้วยเสียงจริง AI เล่นเป็นเจ้าของร้านโยนคำค้านมา แล้วประเมินว่าตอบได้ระดับไหน พร้อมเฉลย</p>
         <div class="flow"><span>เข้าใจ</span><span>ดึง Pain</span><span>ผูก Value</span><span>ถามปิด</span></div>
         <div class="go">เริ่มฝึก <span class="arrow">→</span></div>
       </a>
 
-      <!-- 3. Roleplay Free Mode -->
       <a class="card" href="./free.html">
-        <span class="tag tag-free">ฟรี</span>
+        <span class="tag tag-free">FREE</span>
         <div class="card-top">
           <div class="ic">💬</div>
-          <div><div class="num">03</div><h2>Roleplay · Free Mode</h2></div>
+          <div><div class="mission">MISSION 03</div><h2>Roleplay · Free Mode</h2></div>
         </div>
         <p>ฝึกขายในสถานการณ์จริงกับ ChatGPT แล้วให้ Gemini ให้คะแนน ไล่ระดับความยากจากง่าย → ยาก</p>
         <div class="flow"><span>NNPU ร้านเปิดใหม่</span><span>NPU ยังไม่มีระบบ</span><span>★ → ★★★</span></div>
         <div class="go">เริ่มฝึก <span class="arrow">→</span></div>
       </a>
 
-      <!-- 4. Roleplay Paid Mode -->
       <a class="card" href="./live.html">
-        <span class="tag tag-paid">ต้องมี Key</span>
+        <span class="tag tag-key">KEY</span>
         <div class="card-top">
           <div class="ic">🎙️</div>
-          <div><div class="num">04</div><h2>Roleplay · Paid Mode</h2></div>
+          <div><div class="mission">MISSION 04</div><h2>Roleplay · Paid Mode</h2></div>
         </div>
         <p>คุยกับ AI ด้วยเสียงจริงแบบเรียลไทม์ เสมือนคุยกับลูกค้าตัวจริง จบแล้วสรุปคะแนนให้อัตโนมัติ</p>
         <div class="flow"><span>Real AI Voice</span><span>โต้ตอบสด</span><span>ให้คะแนนอัตโนมัติ</span></div>
@@ -229,10 +266,24 @@
       <span class="go">เปิดเครื่องมือ <span class="arrow">→</span></span>
     </a>
 
-    <footer>
-      improvewetrust.github.io/MDSRoleplay · เครื่องมือฝึกขายภายในทีม MDS
-    </footer>
+    <footer>improvewetrust.github.io/MDSRoleplay · เครื่องมือฝึกขายภายในทีม MDS</footer>
 
   </div>
+
+  <script>
+    (function(){
+      const box = document.getElementById('stars');
+      let html = '';
+      for (let i=0; i<140; i++){
+        const x = Math.random()*100, y = Math.random()*100;
+        const s = Math.random()*1.6 + 0.6;
+        const o = (Math.random()*0.6 + 0.3).toFixed(2);
+        const dur = (Math.random()*3 + 2).toFixed(1);
+        const dl = (Math.random()*3).toFixed(1);
+        html += '<span style="left:'+x+'%;top:'+y+'%;width:'+s+'px;height:'+s+'px;opacity:'+o+';animation:twinkle '+dur+'s infinite '+dl+'s"></span>';
+      }
+      box.innerHTML = html;
+    })();
+  </script>
 </body>
 </html>
