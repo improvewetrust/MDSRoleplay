@@ -349,7 +349,14 @@
         micStream.getTracks().forEach(t=> pc.addTrack(t, micStream));
 
         dc = pc.createDataChannel("oai-events");
-        dc.onopen = ()=>{ setStatus("กำลังคุย — พูดได้เลย", true); dc.send(JSON.stringify({type:"response.create"})); };
+        dc.onopen = ()=>{
+          setStatus("กำลังคุย — พูดได้เลย", true);
+          // บังคับประโยคเปิดให้ตายตัว: ลูกค้าทักสั้น ๆ แล้วหยุด (กันโมเดลเผลอเล่นเป็นพนักงานขาย)
+          dc.send(JSON.stringify({
+            type:"response.create",
+            response:{ instructions: "คุณคือ 'ลูกค้า/เจ้าของร้าน' (ไม่ใช่พนักงานขาย) พูดออกมาเพียงคำทักทายสั้น ๆ ในฐานะลูกค้าเท่านั้น: \"สวัสดีครับ\" (ถ้าตัวละครเป็นผู้หญิงใช้ \"สวัสดีค่ะ\") เพียงประโยคเดียวแล้วหยุดทันที — ⛔ ห้ามแนะนำตัว ห้ามบอกว่าเป็นพนักงานขาย/ทีมขาย ห้ามเปิดการขายหรือเสนอสินค้า รอให้พนักงานขาย (มนุษย์) เป็นฝ่ายพูดต่อ" }
+          }));
+        };
         dc.onmessage = (ev)=> handleEvent(JSON.parse(ev.data));
 
         const offer = await pc.createOffer();
