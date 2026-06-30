@@ -40,40 +40,49 @@ export default {
       // ---- ออก ephemeral token สำหรับ Realtime (GA: /v1/realtime/client_secrets) ----
       if (url.pathname === "/session" && req.method === "POST") {
         const { instructions, voice, autoResponse } = await req.json();
-        const r = await fetch("https://api.openai.com/v1/realtime/client_secrets", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${env.OPENAI_API_KEY}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            session: {
-              type: "realtime",
-              model: REALTIME_MODEL,
-              instructions: instructions || "",
-              audio: {
-                input: {
-                  // gpt-4o-transcribe ถอดภาษาไทยแม่น/ครบประโยคกว่า whisper-1 มาก
-                  transcription: { model: "gpt-4o-transcribe", language: "th" },
-                  // threshold สูงขึ้น = ไวต่อเสียงรบกวน/เสียงสะท้อนน้อยลง (กัน AI ตอบเองจากเสียงหลอน)
-                  turn_detection: {
-                    type: "server_vad",
-                    threshold: 0.62,
-                    prefix_padding_ms: 300,
-                    silence_duration_ms: 1000,
-                    // autoResponse:false (objection.html) -> ให้ frontend สั่งสร้างคำตอบเองพร้อมย้ำบททุกตา
-                    // ค่า default (live.html) ยังเป็น true เหมือนเดิม
-                    create_response: autoResponse === false ? false : true,
-                  },
+        const body = JSON.stringify({
+          session: {
+            type: "realtime",
+            model: REALTIME_MODEL,
+            instructions: instructions || "",
+            audio: {
+              input: {
+                // gpt-4o-transcribe ถอดภาษาไทยแม่น/ครบประโยคกว่า whisper-1 มาก
+                transcription: { model: "gpt-4o-transcribe", language: "th" },
+                // threshold สูงขึ้น = ไวต่อเสียงรบกวน/เสียงสะท้อนน้อยลง (กัน AI ตอบเองจากเสียงหลอน)
+                turn_detection: {
+                  type: "server_vad",
+                  threshold: 0.62,
+                  prefix_padding_ms: 300,
+                  silence_duration_ms: 1000,
+                  // autoResponse:false (objection.html) -> ให้ frontend สั่งสร้างคำตอบเองพร้อมย้ำบททุกตา
+                  // ค่า default (live.html) ยังเป็น true เหมือนเดิม
+                  create_response: autoResponse === false ? false : true,
                 },
-                output: { voice: voice || DEFAULT_VOICE },
               },
+              output: { voice: voice || DEFAULT_VOICE },
             },
-          }),
+          },
         });
-        const data = await r.json();
-        if (!r.ok) return json({ error: "OpenAI session error", detail: data }, r.status);
-        return json(data);
+
+        // retry กรณี OpenAI บล็อกตามภูมิภาค (egress สุ่มไป PoP ที่ไม่รองรับ)
+        let data, status = 500;
+        for (let attempt = 0; attempt < 3; attempt++) {
+          const r = await fetch("https://api.openai.com/v1/realtime/client_secrets", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${env.OPENAI_API_KEY}`,
+              "Content-Type": "application/json",
+            },
+            body,
+          });
+          data = await r.json();
+          status = r.status;
+          if (r.ok) return json(data);
+          const code = data && data.error && data.error.code;
+          if (code !== "unsupported_country_region_territory") break; // error อื่นไม่ต้อง retry
+        }
+        return json({ error: "OpenAI session error", detail: data }, status);
       }
 
       // ---- ให้คะแนนจาก transcript ----
