@@ -242,13 +242,15 @@
       "2) Understanding — เขาถามการทำงาน/แผนของร้าน เพื่อสรุปว่าร้านต้องการอะไร → คุณเล่าข้อมูลร้านเฉพาะที่เขาถาม อย่าชิงเล่าหมดทีเดียว\n" +
       "3) Offering — เขานำเสนอโซลูชันหน้าบ้าน (จอง/สั่ง/รับออเดอร์/ส่งออเดอร์/ชำระเงิน/คิดเงิน/สมาชิก) และหลังบ้าน (รายงาน/สต็อก/โปรโมชั่น/การตลาด) → คุณซักถามรายละเอียดและประโยชน์ของสิ่งที่เขากำลังเสนอ 'ทีละอย่าง' อย่าเร่งให้สรุป\n" +
       "4) Value & Objections — เขาบอกราคา → คุณมีคำถาม/ข้อกังวลเพิ่มเติมตามบุคลิก\n" +
-      "5) Closing — เขาปิดการขายและบอก action ต่อ → คุณตอบรับ/ต่อรองตามสมจริง\n\n" +
-      "เริ่มบทสนทนาด้วยการทักทายสั้น ๆ ตามบท แล้วรอให้พนักงานขายพูดก่อน นี่คือบทบาทและบุคลิกของคุณ:\n\n";
-    function buildInstructions(roleplayId){
+      "5) Closing — เขาปิดการขายและบอก action ต่อ → คุณตอบรับ/ต่อรองตามสมจริง\n\n";
+    const GREET_LINE = "เริ่มบทสนทนาด้วยการทักทายสั้น ๆ ตามบท แล้วรอให้พนักงานขายพูดก่อน นี่คือบทบาทและบุคลิกของคุณ:\n\n";
+    const CONTINUE_LINE = "ตอนนี้อยู่ระหว่างบทสนทนาแล้ว — ตอบโต้พนักงานขายต่อในฐานะลูกค้า (มุมมองบุรุษที่ 1) ตามกฎและบุคลิกด้านบน ห้ามทักทาย/แนะนำตัวซ้ำ ห้ามสลับเป็นตัวละครอื่น และให้ 'ยึดประเด็นที่กำลังคุยอยู่จนเคลียร์ก่อน' ค่อยให้เขาพาไปขั้นถัดไป นี่คือบทบาทและบุคลิกของคุณ:\n\n";
+    function personaText(roleplayId){
       let t = PROMPTS[roleplayId] || "";
-      t = t.split("เมื่อ Sales พิมพ์ว่า")[0].trim(); // ตัดส่วนที่เกี่ยวกับการพิมพ์ออก
-      return VOICE_PREAMBLE + t;
+      return t.split("เมื่อ Sales พิมพ์ว่า")[0].trim(); // ตัดส่วนที่เกี่ยวกับการพิมพ์ออก
     }
+    function buildInstructions(roleplayId){ return VOICE_PREAMBLE + GREET_LINE + personaText(roleplayId); }
+    function buildTurnInstructions(roleplayId){ return VOICE_PREAMBLE + CONTINUE_LINE + personaText(roleplayId); }
 
     // ---------- render cards ----------
     function cardHTML(s){
@@ -332,7 +334,7 @@
       try{
         const r = await fetch(WORKER_URL+"/session", {
           method:"POST", headers:{"Content-Type":"application/json"},
-          body: JSON.stringify({ instructions: buildInstructions(current.roleplay) })
+          body: JSON.stringify({ instructions: buildInstructions(current.roleplay), autoResponse: false })
         });
         session = await r.json();
         if (session.error) throw new Error(JSON.stringify(session));
@@ -367,6 +369,13 @@
       // ผู้ใช้ (เซลส์) พูด -> transcription เสร็จ
       if (t === "conversation.item.input_audio_transcription.completed"){
         if (msg.transcript) addLine("sales", msg.transcript.trim());
+        // สั่ง AI ตอบเอง พร้อมย้ำบท+กฎ 5-step ใหม่ทุกตา (auto-response ปิดไว้ที่ฝั่ง server)
+        if (current && dc && dc.readyState === "open"){
+          dc.send(JSON.stringify({
+            type:"response.create",
+            response:{ instructions: buildTurnInstructions(current.roleplay) }
+          }));
+        }
       }
       // ลูกค้า (AI) พูด -> assistant audio transcript เสร็จ
       else if (t === "response.audio_transcript.done" || t === "response.output_audio_transcript.done"){
