@@ -14,7 +14,11 @@ export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(404).json({ error: "Not found" });
   if (!process.env.OPENAI_API_KEY) return res.status(500).json({ error: "OPENAI_API_KEY ยังไม่ถูกตั้งค่า" });
 
-  const { instructions, voice, autoResponse } = req.body || {};
+  const { instructions, voice, autoResponse, accessCode } = req.body || {};
+
+  // ตรวจรหัสเข้าใช้งาน (ตั้งค่าใน Vercel env: ACCESS_CODE) — ถ้าไม่ได้ตั้ง env จะไม่บังคับ
+  if (process.env.ACCESS_CODE && accessCode !== process.env.ACCESS_CODE)
+    return res.status(401).json({ error: "รหัสเข้าใช้งานไม่ถูกต้อง" });
 
   const body = JSON.stringify({
     session: {

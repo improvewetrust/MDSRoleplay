@@ -76,6 +76,23 @@
     .ex-txt small{color:var(--text-2);font-size:13px}
     .ex-play{flex:none;color:var(--brand);font-size:16px}
 
+    /* registration gate */
+    #gateOv{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:24px;z-index:95}
+    #gateOv.show{display:flex}
+    .gpanel{background:var(--surface);border:1px solid var(--border-h);border-radius:var(--radius);width:460px;max-width:100%;max-height:92vh;overflow:auto;padding:24px;display:flex;flex-direction:column;gap:9px}
+    .gpanel h3{font-size:18px;font-weight:700;margin-bottom:2px}
+    .gpanel .gsub{font-size:13px;color:var(--text-2);margin-bottom:4px}
+    .gpanel label{font-size:13px;color:var(--text-2);font-weight:600;margin-top:4px}
+    .gpanel input{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:10px 12px;color:var(--text);font-family:inherit;font-size:14px}
+    .g-reasons{display:flex;flex-direction:column;gap:8px}
+    .g-reasons button{font-family:inherit;font-size:14px;font-weight:600;text-align:left;padding:11px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-2);cursor:pointer}
+    .g-reasons button.sel{border-color:var(--gpt);color:var(--text);background:rgba(16,163,127,.12)}
+    .g-err{color:#f87171;font-size:13px;min-height:16px}
+    .g-foot{display:flex;gap:10px;justify-content:flex-end;margin-top:4px}
+    .g-foot button{font-family:inherit;font-size:14.5px;font-weight:600;padding:11px 18px;border-radius:10px;border:1px solid transparent;cursor:pointer}
+    #g-cancel{background:transparent;color:var(--text-2);border-color:var(--border)}
+    #g-go{background:var(--gpt);color:#fff}
+
     /* session overlay */
     #ov{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:24px;z-index:90}
     #ov.show{display:flex}
@@ -145,6 +162,30 @@
 
   <audio id="aud" autoplay></audio>
 
+  <div id="gateOv">
+    <div class="gpanel">
+      <h3>📋 ลงทะเบียนก่อนเริ่มฝึก</h3>
+      <div class="gsub">กรอกข้อมูลทุกครั้งก่อนเริ่ม เพื่อบันทึกผลการฝึกของคุณ</div>
+      <label>รหัสเข้าใช้งาน</label>
+      <input id="g-code" type="password" placeholder="รหัสทีม" autocomplete="off" />
+      <label>ชื่อเล่น ชื่อ-นามสกุล</label>
+      <input id="g-name" type="text" placeholder="Aiew-Phagorn Adisaraluck" autocomplete="off" />
+      <label>Email บริษัท</label>
+      <input id="g-email" type="email" placeholder="phagorn.aiew@lmwn.com" autocomplete="off" />
+      <label>เหตุผลในการฝึก</label>
+      <div class="g-reasons">
+        <button type="button" data-r="New Joiner ฝึกซ้อมก่อนสอบ">🐣 New Joiner ฝึกซ้อมก่อนสอบ</button>
+        <button type="button" data-r="Existing ฝึกซ้อมสถานการณ์ใหม่ ๆ">💪 Existing ฝึกซ้อมสถานการณ์ใหม่ ๆ</button>
+        <button type="button" data-r="TL ฝึกซ้อม Recap">🧑‍🏫 TL ฝึกซ้อม Recap</button>
+      </div>
+      <div class="g-err" id="g-err"></div>
+      <div class="g-foot">
+        <button id="g-cancel">ยกเลิก</button>
+        <button id="g-go">เริ่มฝึก →</button>
+      </div>
+    </div>
+  </div>
+
   <div id="infoOv">
     <div class="panel">
       <div class="panel-head">
@@ -192,6 +233,48 @@
       refreshCfg();
     };
     refreshCfg();
+
+    // ---------- registration gate (กรอกใหม่ทุกครั้งก่อนเริ่ม) ----------
+    let PROFILE=null, pendingStart=null, gReason="";
+    function openGate(id){
+      pendingStart=id; gReason="";
+      ["g-code","g-name","g-email"].forEach(i=>$(i).value="");
+      document.querySelectorAll(".g-reasons button").forEach(b=>b.classList.remove("sel"));
+      $("g-err").textContent="";
+      $("gateOv").classList.add("show");
+    }
+    document.querySelectorAll(".g-reasons button").forEach(b=>{
+      b.addEventListener("click", ()=>{
+        document.querySelectorAll(".g-reasons button").forEach(x=>x.classList.remove("sel"));
+        b.classList.add("sel"); gReason=b.dataset.r;
+      });
+    });
+    $("g-cancel").onclick=()=>$("gateOv").classList.remove("show");
+    $("gateOv").addEventListener("click",(e)=>{ if(e.target.id==="gateOv") $("gateOv").classList.remove("show"); });
+    $("g-go").onclick=()=>{
+      const code=$("g-code").value.trim(), name=$("g-name").value.trim(), email=$("g-email").value.trim();
+      if(!code||!name||!email||!gReason){ $("g-err").textContent="กรอกให้ครบทุกช่อง และเลือกเหตุผลด้วยครับ"; return; }
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ $("g-err").textContent="รูปแบบ email ไม่ถูกต้อง"; return; }
+      PROFILE={code,name,email,reason:gReason};
+      $("gateOv").classList.remove("show");
+      startRoleplay(pendingStart);
+    };
+
+    // ---------- ส่งผลการฝึกไปบันทึกใน Google Sheet ----------
+    function grabSec(t, mark, ends){
+      const i=t.indexOf(mark); if(i<0) return "";
+      let j=t.length; ends.forEach(m=>{ const k=t.indexOf(m,i+2); if(k>-1&&k<j) j=k; });
+      return t.slice(i,j).trim();
+    }
+    function logResult(resultText, mission){
+      if(!PROFILE) return;
+      const score=(resultText.match(/(?:🎯 คะแนนรวม|🏅 ผลประเมิน|🏆 รวม Weight Score)[^\n]*/)||[""])[0].trim();
+      const good=grabSec(resultText,"✅",["⚠️","💡","🏆","———"]);
+      const fix=grabSec(resultText,"⚠️",["💡","🏆","———","📝"]) || grabSec(resultText,"💡",["———","📝"]);
+      fetch(WORKER_URL+"/log",{ method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ accessCode:PROFILE.code, name:PROFILE.name, email:PROFILE.email, reason:PROFILE.reason, mission, score, good, fix })
+      }).catch(()=>{});
+    }
 
     // ---------- scenario meta (ตรงกับ index.html) ----------
     const DIFF = { 1:{label:"ปกติ",stars:"★☆☆"}, 2:{label:"ยาก",stars:"★★☆"}, 3:{label:"ยากมาก",stars:"★★★"} };
@@ -273,7 +356,7 @@
           ${SCENARIOS.filter(s=>s.type===g.type).map(cardHTML).join("")}
         </div>`).join("");
       $("cards").querySelectorAll("button[data-go]").forEach(b=>{
-        b.addEventListener("click", ()=> startRoleplay(b.dataset.go));
+        b.addEventListener("click", ()=> openGate(b.dataset.go));
       });
       $("cards").querySelectorAll("button[data-info]").forEach(b=>{
         b.addEventListener("click", ()=> showInfo(b.dataset.info));
@@ -294,7 +377,7 @@
         const info = full.split("# ROLEPLAY RULES")[0].trim();
         $("i-body").textContent = info || full;
       }catch(e){ $("i-body").textContent = "โหลดข้อมูลไม่สำเร็จ: "+e; }
-      $("i-start").onclick = ()=>{ closeInfo(); startRoleplay(id); };
+      $("i-start").onclick = ()=>{ closeInfo(); openGate(id); };
     }
     function closeInfo(){ $("infoOv").classList.remove("show"); }
     $("infoOv").addEventListener("click", (e)=>{ if(e.target.id==="infoOv") closeInfo(); });
@@ -337,7 +420,7 @@
       try{
         const r = await fetch(WORKER_URL+"/session", {
           method:"POST", headers:{"Content-Type":"application/json"},
-          body: JSON.stringify({ instructions: buildInstructions(current.roleplay), autoResponse: false, voice })
+          body: JSON.stringify({ instructions: buildInstructions(current.roleplay), autoResponse: false, voice, accessCode: PROFILE && PROFILE.code })
         });
         session = await r.json();
         if (session.error) throw new Error(JSON.stringify(session));
@@ -405,10 +488,11 @@
       try{
         const r = await fetch(WORKER_URL+"/score",{
           method:"POST", headers:{"Content-Type":"application/json"},
-          body: JSON.stringify({ rubric: PROMPTS[current.grade], transcript: lines })
+          body: JSON.stringify({ rubric: PROMPTS[current.grade], transcript: lines, accessCode: PROFILE && PROFILE.code })
         });
         const data = await r.json();
         if (data.error) throw new Error(JSON.stringify(data));
+        logResult(data.result, `Roleplay Paid · ${current.title} (${DIFF[current.level].label})`);
         showResult(data.result + tBlock, false);
       }catch(e){ showResult("ประเมินไม่สำเร็จ: "+e + tBlock, true); }
     }

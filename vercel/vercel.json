@@ -2,6 +2,7 @@
   "regions": ["iad1"],
   "rewrites": [
     { "source": "/session", "destination": "/api/session" },
-    { "source": "/score", "destination": "/api/score" }
+    { "source": "/score", "destination": "/api/score" },
+    { "source": "/log", "destination": "/api/log" }
   ]
 }

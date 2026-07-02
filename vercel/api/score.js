@@ -14,7 +14,9 @@ export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(404).json({ error: "Not found" });
   if (!process.env.OPENAI_API_KEY) return res.status(500).json({ error: "OPENAI_API_KEY ยังไม่ถูกตั้งค่า" });
 
-  const { rubric, transcript, context, systemPrompt, outputFormat } = req.body || {};
+  const { rubric, transcript, context, systemPrompt, outputFormat, accessCode } = req.body || {};
+  if (process.env.ACCESS_CODE && accessCode !== process.env.ACCESS_CODE)
+    return res.status(401).json({ error: "รหัสเข้าใช้งานไม่ถูกต้อง" });
   if (!transcript || !transcript.trim()) return res.status(400).json({ error: "ไม่มี transcript" });
 
   const DEFAULT_SYSTEM =
