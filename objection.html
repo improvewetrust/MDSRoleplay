@@ -48,6 +48,9 @@
     .btn-go:hover{filter:brightness(1.08)}
     .btn:disabled{opacity:.5;cursor:not-allowed}
 
+    .hp-note{display:flex;align-items:center;gap:12px;background:rgba(255,194,77,.1);border:1px solid rgba(255,194,77,.4);color:#ffd98a;font-size:15px;font-weight:700;padding:14px 18px;border-radius:12px;margin-bottom:20px}
+    .hp-note .ic{font-size:22px}
+
     /* registration gate */
     #gateOv{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:24px;z-index:95}
     #gateOv.show{display:flex}
@@ -104,6 +107,7 @@
   </header>
 
   <main>
+    <div class="hp-note"><span class="ic">🎧</span> แนะนำให้ฝึกโดยการใส่หูฟัง เพื่อความคมชัดของเสียง</div>
     <div class="cfg" id="cfg">
       <label for="wurl">Worker URL:</label>
       <input id="wurl" type="text" placeholder="https://mds-roleplay-voice.xxx.workers.dev" />
