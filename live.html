@@ -343,6 +343,27 @@
     function buildInstructions(roleplayId){ return VOICE_PREAMBLE + GREET_LINE + personaText(roleplayId); }
     function buildTurnInstructions(roleplayId){ return VOICE_PREAMBLE + CONTINUE_LINE + personaText(roleplayId); }
 
+    // ---------- เกณฑ์ให้คะแนน Roleplay (คุมคะแนนเต็ม 100 ให้ถูก) ----------
+    const ROLE_SCORE_SYSTEM =
+      "คุณเป็น Sales Director ผู้ประเมินการ roleplay ขายระบบ POS อย่างเข้มงวดตามเกณฑ์ที่ให้ ตอบเป็นภาษาไทย กระชับ\n" +
+      "สำคัญ (transcript): มาจากการถอดเสียงพูด อาจไม่ครบ/มีคำเพี้ยน ให้ประเมินจากใจความ ไม่หักเพราะคำตกหล่น\n" +
+      "วิธีคิดคะแนน (ทำตามนี้เคร่งครัด ห้ามคำนวณผิด):\n" +
+      "1) ให้คะแนน 'รายพาร์ท' 5 พาร์ท ตามคะแนนเต็มของแต่ละพาร์ทเท่านั้น: Opening เต็ม 9 · Understanding เต็ม 23 · Solution เต็ม 34 · Value & Objection เต็ม 24 · Closing เต็ม 10\n" +
+      "2) คะแนนแต่ละพาร์ทห้ามเกินคะแนนเต็มของพาร์ทนั้น\n" +
+      "3) คะแนนรวม = ผลบวกของทั้ง 5 พาร์ทเป๊ะ ๆ (คะแนนเต็มรวม = 100 พอดี) ตรวจการบวกให้ถูกก่อนตอบ\n" +
+      "4) ถ้าพาร์ทไหนไม่มีในบทสนทนา (เช่น เซลส์ยังไม่ได้ปิดการขาย) ให้พาร์ทนั้นได้คะแนนน้อยหรือ 0 ตามจริง แต่คะแนนเต็มของพาร์ทยังคงเดิม";
+    const ROLE_RESULT_FORMAT =
+      "🎯 คะแนนรวม: X/100   (X = ผลบวกของ 5 พาร์ทด้านล่าง ต้องตรงกันเป๊ะ)\n" +
+      "รายพาร์ท:\n" +
+      "- Opening (เปิดการขาย): _/9\n" +
+      "- Understanding (เข้าใจ/วิเคราะห์ร้าน): _/23\n" +
+      "- Solution (นำเสนอโซลูชัน): _/34\n" +
+      "- Value & Objection (คุณค่า/ข้อโต้แย้ง): _/24\n" +
+      "- Closing (ปิดการขาย): _/10\n\n" +
+      "✅ ทำได้ดี\n- (2-3 ข้อ สั้น ๆ อ้างอิงสิ่งที่เซลส์พูดจริง)\n\n" +
+      "⚠️ ต้องปรับ\n- (2-3 ข้อ สั้น ๆ พร้อมวิธีแก้ที่ทำได้จริง)\n\n" +
+      "💡 ครั้งหน้า: (1 ประโยคเด็ดที่นำไปใช้ได้ทันที)";
+
     // ---------- render cards ----------
     function cardHTML(s){
       return `<div class="card">
@@ -495,7 +516,7 @@
       try{
         const r = await fetch(WORKER_URL+"/score",{
           method:"POST", headers:{"Content-Type":"application/json"},
-          body: JSON.stringify({ rubric: PROMPTS[current.grade], transcript: lines, accessCode: PROFILE && PROFILE.code })
+          body: JSON.stringify({ rubric: PROMPTS[current.grade], transcript: lines, systemPrompt: ROLE_SCORE_SYSTEM, outputFormat: ROLE_RESULT_FORMAT, accessCode: PROFILE && PROFILE.code })
         });
         const data = await r.json();
         if (data.error) throw new Error(JSON.stringify(data));
