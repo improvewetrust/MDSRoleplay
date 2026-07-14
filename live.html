@@ -49,6 +49,7 @@
     .diff1{color:#34d399;background:rgba(52,211,153,.12)}
     .diff2{color:#fbbf24;background:rgba(251,191,36,.12)}
     .diff3{color:#f87171;background:rgba(248,113,113,.12)}
+    .diff4{color:#c084fc;background:rgba(192,132,252,.14)}
     .card h2{font-size:21px;font-weight:700}
     .card .who{color:var(--text-2);font-size:14px;margin:4px 0 16px}
     .facts{list-style:none;display:grid;gap:8px;margin-bottom:22px}
@@ -281,7 +282,7 @@
     }
 
     // ---------- scenario meta (ตรงกับ index.html) ----------
-    const DIFF = { 1:{label:"ปกติ",stars:"★☆☆"}, 2:{label:"ยาก",stars:"★★☆"}, 3:{label:"ยากมาก",stars:"★★★"} };
+    const DIFF = { 1:{label:"ปกติ",stars:"★☆☆☆"}, 2:{label:"ยาก",stars:"★★☆☆"}, 3:{label:"ยากมาก",stars:"★★★☆"}, 4:{label:"ฉลาด·ถามเยอะ",stars:"★★★★"} };
     const GROUPS = [
       { type:"nnpu", tag:"NNPU", title:"ร้านเปิดใหม่", desc:"ขายด้วยการให้คำปรึกษา แนะนำ Solutions ที่ดีที่สุด ทั้งหน้าบ้าน หลังบ้าน และเดลิเวอรี่" },
       { type:"npu", tag:"NPU", title:"เปิดแล้วยังไม่มีระบบ", desc:"ขายด้วยการหาปัญหาของร้าน เพิ่มประสิทธิภาพการทำงานและการขาย ด้วย Solutions ที่เรามี" },
@@ -290,9 +291,11 @@
       { id:"nnpu1", type:"nnpu", level:1, title:"Aroma Corner", who:"คุณอรุณ · ร้านกาแฟพรีเมียมกำลังจะเปิด · ยูเนี่ยนมอลล์", facts:["เป็นมิตร เปิดใจ คุยง่าย ยินดีรับฟัง","ยังไม่เคยใช้ POS · อยากได้ระบบมาช่วยจัดการร้าน","งบไม่จำกัด · ตัดสินใจไม่ยากถ้าเห็นประโยชน์"], roleplay:"nnpu-roleplay", grade:"nnpu-grade" },
       { id:"nnpu2", type:"nnpu", level:2, title:"ครัวเชฟตั้ม", who:"เชฟตั้ม · ร้านอาหารฟิวชั่นกำลังจะเปิด · ทองหล่อ", facts:["เคยทำเชนใหญ่ รู้จัก POS เจ้าอื่น · เทียบคู่แข่งตลอด","ถามลึก ROI / ต้นทุนต่อจาน / เดลิเวอรี่","คุมต้นทุนเป๊ะ จับผิดข้อมูลเซลส์"], roleplay:"nnpu2-roleplay", grade:"nnpu-grade" },
       { id:"nnpu3", type:"nnpu", level:3, title:"ชาบูเฮียบุ้ง", who:"เฮียบุ้ง · ชาบู 2 สาขา กำลังเปิดสาขา 3", facts:["เขี้ยว ใจร้อน เวลาน้อย ต่อรองโหด","เคยใช้ POS เจ้าอื่นแล้วระบบล่ม → ระแวงหนัก","ขู่จะไปเจ้าอื่นตลอด · ต้องการระบบห้ามล่ม"], roleplay:"nnpu3-roleplay", grade:"nnpu-grade" },
+      { id:"nnpu4", type:"nnpu", level:4, title:"บุฟเฟ่คุณเจน", who:"คุณเจน · บุฟเฟ่ปิ้งย่าง+ชาบู กำลังจะเปิดสาขาแรก ~40 โต๊ะ", facts:["ฉลาด คิดเป็นระบบ ถามเยอะและละเอียดมาก","อยากได้ระบบบุฟเฟ่: Package หลายราคา + จับเวลาต่อโต๊ะ + คุมของแพง","มีงบ แต่ต้องเห็น ROI/รายงาน Food Cost ชัดถึงจ่าย"], roleplay:"nnpu4-roleplay", grade:"nnpu-grade" },
       { id:"npu1", type:"npu", level:1, title:"ข้าวแกงศรีวัฒน์", who:"คุณศรีวัฒน์ · ร้านอาหารจานเดียว เปิดมา 1 ปี · พระราม 4", facts:["พูดตรงแต่ใจดี เป็นกันเอง ยินดีเล่าปัญหา","จดออเดอร์ด้วยมือ + เครื่องคิดเลข บางทีคิดผิด","งบจำกัดบ้าง · ถ้าคุ้มจริงก็พร้อมจ่าย"], roleplay:"npu-roleplay", grade:"npu-grade" },
       { id:"npu2", type:"npu", level:2, title:"ก๋วยเตี๋ยวป้าแดง", who:"ป้าแดง · ก๋วยเตี๋ยวเปิดมา 8 ปี ขายดี · ย่านชุมชน", facts:["ติดวิธีเดิม จดมือ · ต่อต้านการเปลี่ยนแปลงสูง","\"อยู่มา 8 ปีไม่เห็นต้องมี\" · ไม่ถนัดเทคโนโลยี","ห่วงว่าตอนพีกจะช้าลง · กลัวใช้ไม่เป็น"], roleplay:"npu2-roleplay", grade:"npu-grade" },
       { id:"npu3", type:"npu", level:3, title:"ครัวคุณนัท", who:"คุณนัท · ตามสั่ง+คาเฟ่ เปิดมา 2 ปี · ย่านออฟฟิศ", facts:["เคยซื้อ POS ถูกแล้วใช้ยาก ทิ้ง · เสียเงินเปล่า","เคยโดนเซลส์หลอกขาย → ไม่ไว้ใจเซลส์เลย","ตั้งการ์ดสูง ขอหลักฐาน · ขู่รีวิวถ้าพูดเกินจริง"], roleplay:"npu3-roleplay", grade:"npu-grade" },
+      { id:"npu4", type:"npu", level:4, title:"บุฟเฟ่คุณโอ๊ต", who:"คุณโอ๊ต · บุฟเฟ่หมูกระทะ+ชาบู เปิดมา 2 ปี ~50 โต๊ะ ขายดี", facts:["ฉลาด คมมาก ถามเจาะจากปัญหาจริง ชอบยกเคสจริงลองภูมิ","จับเวลา/นับหัวด้วยมือ → พีคมั่ว ลืมเวลาโต๊ะ ของแพงหาย","พร้อมจ่ายถ้าแก้เรื่องบุฟเฟ่ได้จริง (จับเวลา/แพ็กเกจ/คุมของแพง)"], roleplay:"npu4-roleplay", grade:"npu-grade" },
     ];
 
     // ---------- โหลด persona/เกณฑ์ จาก index.html (แหล่งเดียว) ----------
@@ -426,7 +429,7 @@
     async function startRoleplay(id){
       current = SCENARIOS.find(s=>s.id===id);
       if (!WORKER_URL){ alert("กรุณาตั้งค่า Worker URL ก่อน (ช่องด้านบน)"); return; }
-      const isFemale = ["npu2"].includes(current.id);   // ป้าแดง = ตัวละครหญิง
+      const isFemale = ["npu2","nnpu4"].includes(current.id);   // ป้าแดง, คุณเจน = ตัวละครหญิง
       const voice = isFemale ? "marin" : "cedar";        // marin = เสียงหญิง, cedar = เสียงชาย
       transcript=[]; renderTranscript();
       $("p-result").style.display="none"; $("p-trans").style.display="flex";
