@@ -347,26 +347,50 @@
     function buildInstructions(roleplayId){ return VOICE_PREAMBLE + GREET_LINE + personaText(roleplayId); }
     function buildTurnInstructions(roleplayId){ return VOICE_PREAMBLE + CONTINUE_LINE + personaText(roleplayId); }
 
-    // ---------- เกณฑ์ให้คะแนน Roleplay (คุมคะแนนเต็ม 100 ให้ถูก) ----------
+    // ---------- เกณฑ์ให้คะแนน Roleplay ----------
+    // AI ตรวจแค่ Weight Score รายข้อ (0/1/2) — คะแนนจริงคำนวณด้วย JS ตามน้ำหนักข้อ (กัน AI บวกเลขผิด)
     const ROLE_SCORE_SYSTEM =
-      "คุณเป็น Sales Director ผู้ประเมินการ roleplay ขายระบบ POS อย่างเข้มงวดตามเกณฑ์ที่ให้ ตอบเป็นภาษาไทย กระชับ\n" +
+      "คุณเป็น Sales Director ผู้ประเมินการ roleplay ขายระบบ POS อย่างเข้มงวดตามเกณฑ์ 21 ข้อที่ให้ ตอบเป็นภาษาไทย กระชับ\n" +
       "สำคัญ (transcript): มาจากการถอดเสียงพูด อาจไม่ครบ/มีคำเพี้ยน ให้ประเมินจากใจความ ไม่หักเพราะคำตกหล่น\n" +
-      "วิธีคิดคะแนน (ทำตามนี้เคร่งครัด ห้ามคำนวณผิด):\n" +
-      "1) ให้คะแนน 'รายพาร์ท' 5 พาร์ท ตามคะแนนเต็มของแต่ละพาร์ทเท่านั้น: Opening เต็ม 9 · Understanding เต็ม 23 · Solution เต็ม 34 · Value & Objection เต็ม 24 · Closing เต็ม 10\n" +
-      "2) คะแนนแต่ละพาร์ทห้ามเกินคะแนนเต็มของพาร์ทนั้น\n" +
-      "3) คะแนนรวม = ผลบวกของทั้ง 5 พาร์ทเป๊ะ ๆ (คะแนนเต็มรวม = 100 พอดี) ตรวจการบวกให้ถูกก่อนตอบ\n" +
-      "4) ถ้าพาร์ทไหนไม่มีในบทสนทนา (เช่น เซลส์ยังไม่ได้ปิดการขาย) ให้พาร์ทนั้นได้คะแนนน้อยหรือ 0 ตามจริง แต่คะแนนเต็มของพาร์ทยังคงเดิม";
+      "หน้าที่ของคุณ: ตัดสิน Weight Score รายข้อเท่านั้น (2 / 1 / 0 ตามนิยามในเกณฑ์) ครบทุกข้อย่อย 1.1-5.1 ทั้ง 23 ข้อ ห้ามข้ามข้อ\n" +
+      "⛔ ห้ามคำนวณคะแนนรวม/คะแนนรายพาร์ทเองเด็ดขาด — ระบบจะคำนวณจากตารางของคุณเอง";
     const ROLE_RESULT_FORMAT =
-      "🎯 คะแนนรวม: X/100   (X = ผลบวกของ 5 พาร์ทด้านล่าง ต้องตรงกันเป๊ะ)\n" +
-      "รายพาร์ท:\n" +
-      "- Opening (เปิดการขาย): _/9\n" +
-      "- Understanding (เข้าใจ/วิเคราะห์ร้าน): _/23\n" +
-      "- Solution (นำเสนอโซลูชัน): _/34\n" +
-      "- Value & Objection (คุณค่า/ข้อโต้แย้ง): _/24\n" +
-      "- Closing (ปิดการขาย): _/10\n\n" +
+      "### ตารางประเมิน (ครบทุกข้อ 1.1-5.1 ห้ามข้าม ห้ามรวมข้อ)\n" +
+      "| ข้อ | Weight Score (0/1/2) | Quote/เหตุผลสั้น ๆ |\n" +
+      "| 1.1 แจ้งชื่อตัวเอง | X | \"...\" |\n" +
+      "(ไล่ครบ 1.1 1.2 1.3 1.4 1.5 1.6 1.7 2.1 2.2 2.3 2.4 2.5 3.1 3.2 3.3 3.4 3.5 3.6 4.1 4.2 4.3 4.4 5.1)\n\n" +
       "✅ ทำได้ดี\n- (2-3 ข้อ สั้น ๆ อ้างอิงสิ่งที่เซลส์พูดจริง)\n\n" +
       "⚠️ ต้องปรับ\n- (2-3 ข้อ สั้น ๆ พร้อมวิธีแก้ที่ทำได้จริง)\n\n" +
-      "💡 ครั้งหน้า: (1 ประโยคเด็ดที่นำไปใช้ได้ทันที)";
+      "💡 ครั้งหน้า: (1 ประโยคเด็ดที่นำไปใช้ได้ทันที)\n\n" +
+      "⛔ ห้ามใส่คะแนนรวมหรือคะแนนรายพาร์ท ระบบคำนวณให้เอง";
+
+    // น้ำหนักคะแนนจริงต่อข้อ (Weight Score 2 = ได้เต็มข้อ, 1 = ครึ่ง, 0 = ศูนย์)
+    const ITEM_W = { "1.1":1,"1.2":1,"1.3":1,"1.4":1,"1.5":1,"1.6":2,"1.7":2,
+                     "2.1":5,"2.2":3,"2.3":5,"2.4":5,"2.5":5,
+                     "3.1":6,"3.2":6,"3.3":6,"3.4":6,"3.5":5,"3.6":5,
+                     "4.1":5,"4.2":5,"4.3":8,"4.4":6, "5.1":10 };
+    const PART_META = { 1:["Opening",9], 2:["Understanding",23], 3:["Solution",34], 4:["Value & Objection",24], 5:["Closing",10] };
+    function computeRoleScore(text){
+      const found = {}; // id -> ws
+      text.split("\n").forEach(line=>{
+        const m = line.match(/\|?\s*([1-5]\.\d)[^|]*\|\s*([0-2])(?:\s|\/|\|)/);
+        if (m && ITEM_W[m[1]] !== undefined && found[m[1]] === undefined) found[m[1]] = parseInt(m[2],10);
+      });
+      const parts = {1:0,2:0,3:0,4:0,5:0};
+      let nFound = 0;
+      Object.keys(ITEM_W).forEach(id=>{
+        const ws = found[id];
+        if (ws !== undefined) nFound++;
+        const pts = (ws||0)/2 * ITEM_W[id];
+        parts[id[0]] += pts;
+      });
+      const r1 = x => Math.round(x*10)/10;
+      const total = r1(Object.values(parts).reduce((a,b)=>a+b,0));
+      let s = "🎯 คะแนนรวม: " + total + "/100\nรายพาร์ท:\n";
+      for (const p of [1,2,3,4,5]) s += `- ${PART_META[p][0]}: ${r1(parts[p])}/${PART_META[p][1]}\n`;
+      if (nFound < 23) s += `(หมายเหตุ: ระบบอ่านคะแนนได้ ${nFound}/23 ข้อ ข้อที่ขาดถูกนับเป็น 0)\n`;
+      return s.trim();
+    }
 
     // ---------- render cards ----------
     function cardHTML(s){
@@ -524,8 +548,9 @@
         });
         const data = await r.json();
         if (data.error) throw new Error(JSON.stringify(data));
-        logResult(data.result, `Roleplay Paid · ${current.title} (${DIFF[current.level].label})`);
-        showResult(data.result + tBlock, false);
+        const finalText = computeRoleScore(data.result) + "\n\n" + data.result; // คะแนนคำนวณโดย JS วางไว้บนสุด
+        logResult(finalText, `Roleplay Paid · ${current.title} (${DIFF[current.level].label})`);
+        showResult(finalText + tBlock, false);
       }catch(e){ showResult("ประเมินไม่สำเร็จ: "+e + tBlock, true); }
     }
 
